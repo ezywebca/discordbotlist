@@ -1,0 +1,32 @@
+{
+  "development": {
+	"use_env_variable": "DB_URI",
+
+	"operatorsAliases": false,
+
+	"define": {
+		"underscored": true,
+		"underscoredAll": true
+	}
+  },
+  "test": {
+  	"use_env_variable": "DB_URI",
+
+  	"operatorsAliases": false,
+
+  	"define": {
+  		"underscored": true,
+  		"underscoredAll": true
+  	}
+  },
+  "production": {
+  	"use_env_variable": "DB_URI",
+
+	"operatorsAliases": false,
+
+	"define": {
+		"underscored": true,
+		"underscoredAll": true
+	}
+  }
+}

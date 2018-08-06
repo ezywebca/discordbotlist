@@ -1,0 +1,24 @@
+$dark: #36393f;
+$really-dark: #2f3136;
+$really-really-dark: #202225;
+$light: #efefef;
+$blurple: #7289da;
+
+$primary-color: $blurple;
+
+$body-bg: $really-dark;
+$body-color: $light;
+
+$navbar-bg: $really-really-dark; // Not Bootstrap thing, used in app.scss
+$navbar-light-color: #ddd;
+$navbar-light-hover-color: #eee;
+$navbar-light-active-color: #eee;
+
+$dropdown-bg: lighten($dark, 5%);
+$dropdown-link-hover-bg: lighten($dark, 9%);
+
+$link-color: lighten($primary-color, 15%);
+
+$font-family-sans-serif: 'Lato', sans-serif;
+
+$fa-font-path: "./font-awesome-pro/webfonts";
