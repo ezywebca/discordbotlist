@@ -23,11 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 		},
 		avatar: {
-			type: DataTypes.STRING(24),
-			allowNull: false,
-		},
-		email: {
-			type: DataTypes.STRING(191),
+			type: DataTypes.STRING(32),
 			allowNull: false,
 		},
 		banned: {
@@ -59,18 +55,25 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: true,
 	});
 
-	user.transform = (user, hideEmail = true) => {
-		return {
+	user.associate = models => {
+		user.hasMany(models.bot, {foreignKey: 'owner_id'});
+	};
+
+	user.transform = user => {
+		const result = {
 			id: user.discord_id,
 			username: user.username,
 			discriminator: user.discriminator,
 			avatar: user.avatar,
-			...!hideEmail && {
-				email: user.email
-			},
+			admin: user.admin,
 			banned: user.banned,
-			createdAt: user.created_at
+			created_at: user.created_at
 		};
+
+		if (user.bots)
+			result.bots = user.bots.map(sequelize.models.bot.transform);
+
+		return result;
 	};
 
 	return user;

@@ -1,3 +1,4 @@
+$slightly-dark: #42454d;
 $dark: #36393f;
 $really-dark: #2f3136;
 $really-really-dark: #202225;
@@ -5,6 +6,12 @@ $light: #efefef;
 $blurple: #7289da;
 
 $primary-color: $blurple;
+
+$theme-colors: (
+	primary: $primary-color
+);
+
+$text-muted: #adadad;
 
 $body-bg: $really-dark;
 $body-color: $light;
@@ -14,8 +21,12 @@ $navbar-light-color: #ddd;
 $navbar-light-hover-color: #eee;
 $navbar-light-active-color: #eee;
 
-$dropdown-bg: lighten($dark, 5%);
-$dropdown-link-hover-bg: lighten($dark, 9%);
+$dropdown-bg: $slightly-dark;
+$dropdown-link-hover-bg: lighten($slightly-dark, 4%);
+
+$card-bg: $really-really-dark;
+$card-cap-bg: $really-really-dark;
+// $card-border-radius: 1px;
 
 $link-color: lighten($primary-color, 15%);
 

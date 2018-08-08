@@ -1,3 +1,9 @@
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const SET_DISCORD_OAUTH_URL = 'SET_DISCORD_OAUTH_URL';
+export const STORE_MY_BOTS = 'STORE_MY_BOTS';
+export const STORE_BOT_SEARCH_RESULTS = 'STORE_BOT_SEARCH_RESULTS';
+export const STORE_HOT_BOTS = 'STORE_HOT_BOTS';
+export const STORE_BOT = 'STORE_BOT';
+export const STORE_USER = 'STORE_USER';
+export const UPVOTE_BOT = 'UPVOTE_BOT';

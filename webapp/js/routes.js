@@ -2,6 +2,9 @@ import Home from './components/pages/Home';
 import About from './components/pages/About';
 import AuthCallback from './components/pages/AuthCallback';
 import MyBots from './components/pages/MyBots';
+import AddBot from './components/pages/AddBot';
+import ViewBot from './components/pages/ViewBot';
+import ViewUser from './components/pages/ViewUser';
 import NotFound from './components/pages/NotFound';
 
 export default [
@@ -24,6 +27,21 @@ export default [
 		meta: {
 			requiresAuth: true,
 		}
+	}, {
+		name: 'add-bot',
+		path: '/my-bots/add',
+		component: AddBot,
+		meta: {
+			requiresAuth: true,
+		}
+	}, {
+		name: 'view-bot',
+		path: '/bots/:id',
+		component: ViewBot,
+	}, {
+		name: 'view-user',
+		path: '/users/:id',
+		component: ViewUser,
 	},
 
 	// Error handling

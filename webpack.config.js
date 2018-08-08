@@ -4,6 +4,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 
@@ -81,7 +82,7 @@ module.exports = [
 					preserveLineBreaks: false
 				},
 				filename: path.join(__dirname, 'build', 'index.html'),
-			})
+			}),
 		],
 		...shared
 	},
@@ -113,3 +114,6 @@ module.exports = [
 		...shared
 	}
 ];
+
+if (prod)
+	module.exports[0].plugins.push(new UglifyJSPlugin());

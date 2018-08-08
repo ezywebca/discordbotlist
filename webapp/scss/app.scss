@@ -16,7 +16,7 @@ body,
 }
 
 body {
-	padding: 84px 4vw 0 4vw;
+	padding: 84px 4vw 5vh 4vw;
 }
 
 #app {
@@ -50,11 +50,42 @@ body {
 .toast .toast-content {
 	position: fixed;
 	padding: 16px 16px;
-	bottom: 3vh;
-	left: 3vw;
+	top: 90px;
+	right: 3vw;
 	cursor: pointer;
 	border-radius: 3px;
 	box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
 	font-size: 1rem;
 	background: #111;
+	z-index: 10000;
+}
+
+.alert-danger {
+	background: #521717;
+	color: $light;
+	border-color: darken(#521717, 2%);
+}
+
+a.nostyle {
+	text-decoration: none;
+	color: inherit;
+}
+
+.card-columns {
+	@include media-breakpoint-only(xl) {
+		column-count: 4;
+	}
+}
+
+.dangerous-text {
+	color: #e57373;
+
+	&:hover {
+		color: #ef9a9a;
+	}
+}
+
+a.disabled {
+	color: $text-muted;
+	pointer-events: none;
 }

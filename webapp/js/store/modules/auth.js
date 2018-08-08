@@ -2,6 +2,7 @@ import * as types from '../mutation-types';
 import root from 'window-or-global';
 
 const state = {
+	id: '',
 	username: '',
 	admin: false,
 	accessToken: null,
@@ -16,6 +17,7 @@ const actions = {
 			code
 		}).then(response => {
 			const auth = {
+				id: response.data.id,
 				username: response.data.username,
 				admin: response.data.admin,
 				token: response.data.token,
@@ -39,6 +41,7 @@ const actions = {
 
 const mutations = {
 	[types.LOGIN](state, payload) {
+		state.id = payload.id;
 		state.username = payload.username;
 		state.admin = payload.admin;
 		state.accessToken = payload.token;
@@ -47,6 +50,9 @@ const mutations = {
 	},
 
 	[types.LOGOUT](state) {
+		state.id = '';
+		state.username = '';
+		state.admin = false;
 		state.accessToken = null;
 		state.expiresIn = 0;
 		state.obtainedAt = 0;
@@ -57,7 +63,7 @@ const mutations = {
 			url += `?client_id=${encodeURIComponent(payload.discordId)}`;
 			url += `&redirect_uri=${encodeURIComponent(payload.discordRedirect)}`;
 			url += `&response_type=code`;
-			url += `&scope=identify%20email`;
+			url += `&scope=identify`;
 
 		state.discordOAuthURL = url;
 	}
@@ -66,7 +72,9 @@ const mutations = {
 const getters = {
 	isAuthenticated: state => state.accessToken ? ((state.obtainedAt + state.expiresIn > Date.now()) ?
 		true :
-		false) : false,
+	false) : false,
+	isAdmin: state => state.admin,
+	id: state => state.id,
 	discordOAuthURL: state => state.discordOAuthURL,
 	user: state => ({
 		username: state.username,

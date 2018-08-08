@@ -36,12 +36,15 @@
 			<div>
 				<div class="row">
 					<div class="col-auto">
-						<a class="navbar-brand ml-3" href="javascript:undefined" @click="toggleMenu">
-							<i class="fal fa-bars" aria-hidden="true" />
+						<a class="ml-3" href="javascript:undefined" @click="toggleMenu">
+							<i class="fal fa-bars navbar-burger" aria-hidden="true" />
 						</a>
 					</div>
 					<div class="col">
-						<span>PurpleBots</span>
+						<router-link :to="{name: 'home'}" class="navbar-brand">
+							<img src="/img/purplebots-white.png" alt="PB" height="34" title="PurpleBots">
+							<span class="ml-2 thin">PURPLEBOTS</span>
+						</router-link>
 					</div>
 				</div>
 

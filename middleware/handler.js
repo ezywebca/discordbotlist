@@ -3,7 +3,7 @@ const logger = require('../logger');
 module.exports = async (ctx, next) => {
 	try {
 		await next();
-
+		
 		if (ctx.status === 404) {
 			ctx.status = 404;
 			ctx.body = {

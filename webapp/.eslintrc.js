@@ -14,10 +14,6 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-        "indent": [
-            "error",
-            "tab"
-        ],
         "linebreak-style": [
             "error",
             "unix"
@@ -30,12 +26,21 @@ module.exports = {
             "error",
             "always"
         ],
+        "indent": "off",
+        "vue/order-in-components": "off",
+        "vue/mustache-interpolation-spacing": "off",
+        "vue/attributes-order": "off",
+        "vue/max-attributes-per-line": "off",
         "vue/script-indent": [
         	"error",
         	"tab",
         	{
         		"baseIndent": 1
         	}
+        ],
+        "vue/html-indent": [
+        	"error",
+        	"tab",
         ],
     },
     "globals": {

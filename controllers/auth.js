@@ -28,9 +28,9 @@ module.exports = {
 
 		const token = await githubOAuth.authorizationCode.getToken({
 			redirect_uri: process.env.OAUTH_DISCORD_REDIRECT,
-			scope: ['identify', 'email'],
+			scope: ['identify'],
 			code,
-		}).catch(e => {
+		}).catch(() => {
 			throw {status: 422, message: 'Error retrieving Discord data'};
 		});
 
@@ -39,14 +39,11 @@ module.exports = {
 				throw {status: 422, message: 'Error retrieving Discord data'};
 			});
 
-		if (!discordUser.verified)
-			throw {status: 403, message: 'You must activate your Discord email first'};
-
 		let user = await models.user.findOne({
 			where: {
 				discord_id: discordUser.id
 			},
-			attributes: ['id', 'discord_id', 'username', 'discriminator', 'avatar', 'email', 'banned'],
+			attributes: ['id', 'discord_id', 'username', 'discriminator', 'avatar', 'admin', 'banned'],
 		});
 
 		if (user) {
@@ -56,13 +53,13 @@ module.exports = {
 				user.username = discordUser.username;
 				user.discriminator = discordUser.discriminator;
 				user.avatar = discordUser.avatar;
-				user.email = discordUser.email;
 
 				await user.save();
 
-				const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'email', 'banned'])).toString();
+				const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'banned'])).toString();
 
 				ctx.body = {
+					id: user.discord_id,
 					username: user.username,
 					admin: user.admin,
 					expiresIn: 84600 * 90,
@@ -81,14 +78,14 @@ module.exports = {
 				username: discordUser.username,
 				discriminator: discordUser.discriminator,
 				avatar: discordUser.avatar,
-				email: discordUser.email,
 				banned: false,
 				admin: false,
 			});
 
-			const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'email', 'banned'])).toString();
+			const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'banned'])).toString();
 
 			ctx.body = {
+				id: user.discord_id,
 				username: user.username,
 				admin: user.admin,
 				expiresIn: 84600 * 90,
@@ -101,8 +98,6 @@ module.exports = {
 				}),
 			};
 		}
-
-		return next();
 	},
 };
 

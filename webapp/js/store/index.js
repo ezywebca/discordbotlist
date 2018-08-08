@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import auth from './modules/auth';
+import bots from './modules/bots';
+import users from './modules/users';
 
 Vue.use(Vuex);
 
@@ -11,6 +13,8 @@ export default new Vuex.Store({
 	state: {},
 	modules: {
 		auth,
+		bots,
+		users,
 	},
 	strict: debugging
 });
