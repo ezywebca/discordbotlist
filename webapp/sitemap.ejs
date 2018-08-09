@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<url>
+		<loc><%= absolute('/') %></loc>
+		<changefreq>hourly</changefreq>
+	</url>
+	<url>
+		<loc><%= absolute('/about') %></loc>
+	</url>
+
+	<% for (let bot of bots) { %>
+	<url>
+		<loc><%= absolute(`/bots/${bot.client_id}`) %></loc>
+		<lastmod><%= bot.updated_at.toISOString() %></lastmod>
+	</url>
+	<% } %>
+
+	<% for (let user of users) { %>
+	<url>
+		<loc><%= absolute(`/users/${user.username}`) %></loc>
+		<lastmod><%= user.updated_at.toISOString() %></lastmod>
+	</url>
+	<% } %>
+</urlset> 

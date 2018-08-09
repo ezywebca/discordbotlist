@@ -56,12 +56,13 @@ module.exports = {
 
 				await user.save();
 
-				const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'banned'])).toString();
+				const priv = cryptojs.SHA256(JSON.stringify(_.pick(user, ['id', 'discord_id', 'banned', 'admin']))).toString();
 
 				ctx.body = {
 					id: user.discord_id,
 					username: user.username,
 					admin: user.admin,
+					avatar: user.avatar,
 					expiresIn: 84600 * 90,
 					tokenType: 'Bearer',
 					token: jwt.sign({
@@ -82,12 +83,13 @@ module.exports = {
 				admin: false,
 			});
 
-			const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'banned'])).toString();
+			const priv = cryptojs.SHA256(JSON.stringify(_.pick(user, ['id', 'discord_id', 'banned', 'admin']))).toString();
 
 			ctx.body = {
 				id: user.discord_id,
 				username: user.username,
 				admin: user.admin,
+				avatar: user.avatar,
 				expiresIn: 84600 * 90,
 				tokenType: 'Bearer',
 				token: jwt.sign({

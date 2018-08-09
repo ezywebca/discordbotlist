@@ -1,12 +1,13 @@
 <template>
 	<div class="container">
-		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex">
+		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex"
+			itemscope itemtype="http://schema.org/Person">
 			<div class="col-4">
-				<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`" class="user-image">
+				<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`" class="user-image" itemprop="image">
 			</div>
 			<div class="col-8">
 				<h1 class="username">
-					<strong>{{user.username}}</strong>
+					<strong itemprop="additionalName">{{user.username}}</strong>
 					<span class="text-muted">#{{user.discriminator}}</span>
 				</h1>
 				<h6 class="text-muted">
@@ -75,6 +76,16 @@
 				</p>
 			</div>
 		</div>
+
+		<h3 class="mt-5 mb-3">{{user.username}} owns {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}}:</h3>
+		
+		<div class="card-columns">
+			<div v-for="bot in user.bots" :key="bot.client_id">
+				<bot :bot="bot"/>
+			</div>
+		</div>
+		<p v-if="user.bots.length < 1">What do you want to see here! Go away!</p>
+
 	</div>
 </template>
 
@@ -82,6 +93,7 @@
 	.user-image {
 		width: 100%;
 		border-radius: 5px;
+		background: #202225;
 	}
 
 	.links a {
@@ -91,9 +103,10 @@
 
 
 <script>
+	import Bot from '../Bot';
 	import moment from 'moment-mini';
 	import marked from 'marked';
-	import {mapGetters} from 'vuex';
+	import {mapGetters, mapState} from 'vuex';
 	import {extractError} from '../../helpers';
 
 	export default {
@@ -138,9 +151,11 @@
 		},
 
 		computed: {
+			...mapState('auth', {
+				isAdmin: state => state.admin
+			}),
 			...mapGetters({
 				getUserById: 'users/getUserById',
-				isAdmin: 'auth/isAdmin',
 			}),
 
 			user: function() {
@@ -153,11 +168,16 @@
 				title: this.user.username + '#' + this.user.discriminator || 'View user',
 
 				meta: [
+					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.user.id}/${this.user.avatar}.png?size=512`, vmid: 'og:image'},
 					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on PurpleBots` : 'View a user on PurpleBots'},
 					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / PurpleBots'},
 					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on PurpleBots` : 'View a user on PurpleBots'},
 				],
 			};
+		},
+
+		components: {
+			'bot': Bot,
 		},
 	};
 </script>

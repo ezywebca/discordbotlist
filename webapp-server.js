@@ -11,9 +11,13 @@ const koaEtag = require('koa-etag');
 const koaStatic = require('koa-static');
 const koaCompress = require('koa-compress');
 
+const ejs = require('ejs');
+const models = require('./models');
+
 const {
 	createBundleRenderer
 } = require('vue-server-renderer');
+const {isCrawler} = require('./helpers');
 
 app.use(handler);
 app.use(koaCompress({
@@ -50,9 +54,23 @@ app.use(koaStatic('./public', {
 }));
 
 app.use(async (ctx, next) => {
-	await next();
-	ctx.type = 'text/html; charset=utf-8';
-	ctx.body = await renderApp(ctx);
+	if (ctx.path === '/sitemap.xml') {
+		if (await isCrawler(ctx.ip)) {
+			const template = fs.readFileSync(path.join('webapp', 'sitemap.ejs'), 'utf8');
+			ctx.type = 'application/xml; charset=utf-8';
+			ctx.body = ejs.render(template, {
+				bots: await models.bot.findAll(),
+				users: await models.user.findAll(),
+				absolute: relative => ctx.origin + relative,
+			});
+		} else {
+			ctx.status = 403;
+			ctx.body = 'Access denied';
+		}
+	} else {
+		ctx.type = 'text/html; charset=utf-8';
+		ctx.body = await renderApp(ctx);
+	}
 });
 
 module.exports = app;

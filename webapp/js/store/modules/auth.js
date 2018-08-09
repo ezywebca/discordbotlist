@@ -5,6 +5,7 @@ const state = {
 	id: '',
 	username: '',
 	admin: false,
+	avatar: '',
 	accessToken: null,
 	expiresIn: 0,
 	obtainedAt: 0,
@@ -20,6 +21,7 @@ const actions = {
 				id: response.data.id,
 				username: response.data.username,
 				admin: response.data.admin,
+				avatar: response.data.avatar,
 				token: response.data.token,
 				expiresIn: response.data.expiresIn * 1000,
 				obtainedAt: Date.now(),
@@ -44,6 +46,7 @@ const mutations = {
 		state.id = payload.id;
 		state.username = payload.username;
 		state.admin = payload.admin;
+		state.avatar = payload.avatar;
 		state.accessToken = payload.token;
 		state.expiresIn = payload.expiresIn;
 		state.obtainedAt = payload.obtainedAt ? payload.obtainedAt : Date.now();
@@ -53,6 +56,7 @@ const mutations = {
 		state.id = '';
 		state.username = '';
 		state.admin = false;
+		state.avatar = '';
 		state.accessToken = null;
 		state.expiresIn = 0;
 		state.obtainedAt = 0;
@@ -73,13 +77,6 @@ const getters = {
 	isAuthenticated: state => state.accessToken ? ((state.obtainedAt + state.expiresIn > Date.now()) ?
 		true :
 	false) : false,
-	isAdmin: state => state.admin,
-	id: state => state.id,
-	discordOAuthURL: state => state.discordOAuthURL,
-	user: state => ({
-		username: state.username,
-		admin: state.admin
-	}),
 };
 
 export default {

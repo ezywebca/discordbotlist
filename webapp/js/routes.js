@@ -4,6 +4,8 @@ import AuthCallback from './components/pages/AuthCallback';
 import MyBots from './components/pages/MyBots';
 import AddBot from './components/pages/AddBot';
 import ViewBot from './components/pages/ViewBot';
+import EditBot from './components/pages/EditBot';
+import UpvoteBot from './components/pages/UpvoteBot';
 import ViewUser from './components/pages/ViewUser';
 import NotFound from './components/pages/NotFound';
 
@@ -38,6 +40,14 @@ export default [
 		name: 'view-bot',
 		path: '/bots/:id',
 		component: ViewBot,
+	}, {
+		name: 'edit-bot',
+		path: '/bots/:id/edit',
+		component: EditBot,
+	}, {
+		name: 'upvote-bot',
+		path: '/bots/:id/upvote',
+		component: UpvoteBot,
 	}, {
 		name: 'view-user',
 		path: '/users/:id',

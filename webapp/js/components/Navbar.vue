@@ -25,7 +25,10 @@
 
 				<!-- Protected links -->
 				<ul class="nav navbar-nav" v-if="isAuthenticated">
-					<navbar-dropdown :label="authedUser.username"
+					<router-link :to="{name: 'view-user', params: {id: user.id}}">
+						<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`" class="profile-image mr-1">
+					</router-link>
+					<navbar-dropdown :label="user.username"
 						:options="dropdownItems"
 						@on-select="onDropdown" />
 				</ul>
@@ -66,7 +69,10 @@
 
 				<!-- Protected links -->
 				<ul class="navbar-menu" v-if="showMenu && isAuthenticated">
-					<navbar-dropdown :label="authedUser.username"
+					<router-link :to="{name: 'view-user', params: {id: user.id}}">
+						<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`" class="profile-image mr-1">
+					</router-link>
+					<navbar-dropdown :label="user.username"
 						:options="dropdownItems"
 						@on-select="onDropdown" />
 				</ul>
@@ -78,6 +84,12 @@
 <style type="text/css" scoped>
 	.thin {
 		font-weight: 100;
+	}
+
+	.profile-image {
+		height: 36px;
+		border-radius: 50%;
+		margin-top: 4px;
 	}
 </style>
 
@@ -129,10 +141,16 @@
 		},
 
 		computed: {
+			...mapState('auth', {
+				discordOAuthURL: state => state.discordOAuthURL,
+				user: state => ({
+					id: state.id,
+					username: state.username,
+					avatar: state.avatar,
+				})
+			}),
 			...mapGetters({
 				isAuthenticated: 'auth/isAuthenticated',
-				discordOAuthURL: 'auth/discordOAuthURL',
-				authedUser: 'auth/user',
 			}),
 		},
 

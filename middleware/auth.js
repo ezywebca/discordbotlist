@@ -18,8 +18,7 @@ module.exports = (passthrough = false) => async (ctx, next) => {
 			else
 				throw error;
 
-		// TODO: Add 'admin' here too
-		const priv = cryptojs.SHA256(_.pick(user, ['id', 'discord_id', 'banned'])).toString();
+		const priv = cryptojs.SHA256(JSON.stringify(_.pick(user, ['id', 'discord_id', 'banned', 'admin']))).toString();
 
 		if (user && priv === ctx.state.user.priv)
 			ctx.state.user = user;

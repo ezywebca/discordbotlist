@@ -9,7 +9,6 @@
 </template>
 
 <script type="text/javascript">
-	import {mapGetters} from 'vuex';
 	import Navbar from './Navbar';
 
 	export default {
@@ -25,6 +24,10 @@
 		meta: {
 			title: '404',
 			titleTemplate: '%s / PurpleBots',
+
+			meta: [
+				{name: 'og:image', content: '/img/purplebots.png', vmid: 'og:image'},
+			]
 		},
 
 		components: {

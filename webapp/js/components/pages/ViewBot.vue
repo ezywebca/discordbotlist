@@ -29,6 +29,9 @@
 					<a :href="bot.bot_invite" target="_blank"><span class="mr-1 far fa-plus"/> Add bot</a>
 					<a :href="bot.server_invite" target="_blank" v-if="bot.server_invite"><span class="mr-1 fas fa-hand-peace"/> Join bot's official server</a>
 					<a :href="bot.website" target="_blank" v-if="bot.website"><span class="mr-1 far fa-link"/> See its website</a>
+					<router-link :to="{name: 'edit-bot', params: {id: bot.client_id}}" v-if="isAdmin || bot.owner.id === currentUserId">
+						<span class="mr-1 fas fa-pencil" /> Edit bot info
+					</router-link>
 					<a href="javascript:undefined" class="dangerous-text" @click="deleteBot" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-trash" /> {{verifyingDeletion ? 'You sure?' : 'Delete bot'}}
 					</a>
@@ -59,6 +62,9 @@
 					<a :href="bot.bot_invite" target="_blank"><span class="mr-1 far fa-plus" /> Add bot</a>
 					<a :href="bot.server_invite" target="_blank" v-if="bot.server_invite"><span class="mr-1 fas fa-hand-peace" /> Join bot's official server</a>
 					<a :href="bot.website" target="_blank" v-if="bot.website"><span class="mr-1 far fa-link" /> See its website</a>
+					<router-link :to="{name: 'edit-bot', params: {id: bot.client_id}}" v-if="isAdmin || bot.owner.id === currentUserId">
+						<span class="mr-1 fas fa-pencil" /> Edit bot info
+					</router-link>
 					<a href="javascript:undefined" class="dangerous-text" @click="deleteBot" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-trash" /> {{verifyingDeletion ? 'You sure?' : 'Delete bot'}}
 					</a>
@@ -74,6 +80,7 @@
 	.bot-image {
 		width: 100%;
 		border-radius: 5px;
+		background: #202225;
 	}
 
 	.links a {
@@ -85,7 +92,7 @@
 <script>
 	import moment from 'moment-mini';
 	import marked from 'marked';
-	import {mapGetters} from 'vuex';
+	import {mapGetters, mapState} from 'vuex';
 	import {extractError, generateRandomString} from '../../helpers';
 
 	export default {
@@ -119,7 +126,7 @@
 					window.location = this.discordOAuthURL + '&state=' + state;
 				} else {
 					axios.post(`/api/bots/${this.$route.params.id}/upvote`).then(response => {
-						this.$store.dispatch('bots/upvote', this.$route.params.id);
+						this.$store.dispatch('bots/upvote', {clientId: this.$route.params.id});
 					}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));
 					});
@@ -130,12 +137,15 @@
 		},
 
 		computed: {
+			...mapState('auth', {
+				discordOAuthURL: state => state.discordOAuthURL,
+				isAdmin: state => state.admin,
+				currentUserId: state => state.id,
+
+			}),
 			...mapGetters({
-				discordOAuthURL: 'auth/discordOAuthURL',
 				getBotById: 'bots/getBotById',
-				isAuthenticated: 'auth/isAuthenticated',
-				isAdmin: 'auth/isAdmin',
-				currentUserId: 'auth/id',
+				isAuthenticated: 'auth/isAuthenticated'
 			}),
 
 			bot: function() {
@@ -148,6 +158,7 @@
 				title: this.bot.username || 'View bot',
 
 				meta: [
+					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'View a bot on PurpleBots'},
 					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / PurpleBots'},
 					{property: 'og:description', content: this.bot.short_description || 'View a bot on PurpleBots'},

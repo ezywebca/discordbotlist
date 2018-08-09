@@ -1,4 +1,5 @@
 import * as types from '../mutation-types';
+import {unionState} from '../helpers';
 
 const state = {
 	mine: [],
@@ -6,6 +7,8 @@ const state = {
 	searchResults: [],
 	bots: [],
 };
+
+
 
 const actions = {
 	fetchMine: ({commit}) => {
@@ -34,43 +37,45 @@ const actions = {
 		});
 	},
 
-	upvote: ({commit}, {id}) => {
-		commit(types.UPVOTE_BOT, id);
+	upvote: ({commit}, {clientId}) => {
+		commit(types.UPVOTE_BOT, clientId);
 	}
 };
 
 const mutations = {
 	[types.STORE_MY_BOTS](state, bots) {
-		state.mine = bots;
+		state.mine = bots.map(bot => bot.client_id);
+		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
 	},
 
 	[types.STORE_BOT_SEARCH_RESULTS](state, bots) {
-		state.searchResults = bots;
+		state.searchResults = bots.map(bot => bot.client_id);
+		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
 	},
 
 	[types.STORE_HOT_BOTS](state, bots) {
-		state.hot = bots;
+		state.hot = bots.map(bot => bot.client_id);
+		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
 	},
 
 	[types.STORE_BOT](state, bot) {
-		state.bots.push(bot);
+		state.bots = unionState(state.bots, [bot], 'client_id', 'client_id');
 	},
 
-	[types.UPVOTE_BOT](state, id) {
-		let bot = state.bots.filter(bot => bot.id === id)[0];
-
-		Object.assign(bot, {
-			upvotes: bot.upvotes + 1,
-			is_upvoted: true,
-		});
+	[types.UPVOTE_BOT](state, clientId) {
+		const bot = state.bots.find(bot => bot.client_id === clientId);
+		++bot.upvotes;
+		bot.is_upvoted = true;
+		
+		state.bots = unionState(state.bots, [bot], 'client_id', 'client_id');
 	}
 };
 
 const getters = {
-	mine: state => state.mine,
-	hot: state => state.hot,
-	searchResults: state => state.searchResults,
-	getBotById: state => id => state.bots.filter(bot => bot.client_id === id)[0],
+	mine: state => state.mine.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
+	hot: state => state.hot.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
+	searchResults: state => state.searchResults.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
+	getBotById: state => id => state.bots.find(bot => bot.client_id === id),
 };
 
 export default {

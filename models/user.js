@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 		},
 		avatar: {
-			type: DataTypes.STRING(32),
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		banned: {

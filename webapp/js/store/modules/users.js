@@ -1,4 +1,5 @@
 import * as types from '../mutation-types';
+import {unionState} from '../helpers';
 
 const state = {
 	users: [],
@@ -13,13 +14,13 @@ const actions = {
 };
 
 const mutations = {
-	[types.STORE_USER](state, bot) {
-		state.users.push(bot);
+	[types.STORE_USER](state, user) {
+		state.users = unionState(state.users, [user]);
 	}
 };
 
 const getters = {
-	getUserById: state => id => state.users.filter(user => user.id === id)[0],
+	getUserById: state => id => state.users.find(user => user.id === id),
 };
 
 export default {

@@ -24,7 +24,7 @@ module.exports = {
 				allowNull: false
 			},
 			avatar: {
-				type: Sequelize.STRING(32),
+				type: Sequelize.STRING(128),
 				allowNull: false
 			},
 			banned: {

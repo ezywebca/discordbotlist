@@ -3,6 +3,7 @@ const axios = require('axios');
 const logger = require('../logger');
 const Sequelize = require('sequelize');
 const redis = require('../redis');
+const _ = require('lodash');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -13,35 +14,14 @@ const controller = {
 			prefix,
 			website,
 			bot_invite,
-			server_invite
+			server_invite,
 		} = ctx.request.body;
 
 		if (!client_id)
 			throw {status: 422, message: 'Client ID is missing'};
-		if (!short_description)
-			throw {status: 422, message: 'Short description is missing'};
-		if (!prefix)
-			throw {status: 422, message: 'Prefix is missing'};
-		if (!bot_invite)
-			throw {status: 422, message: 'Bot invite is missing'};
 
-		if (short_description.length < 32)
-			throw {status: 422, message: 'Short description is too short'};
-		if (short_description.length > 191)
-			throw {status: 422, message: 'Short description is too long'};
-		if (long_description.length > 8192)
-			throw {status: 422, message: 'Long description is too long'};
-		if (prefix.length > 16)
-			throw {status: 422, message: 'Prefix is too long'};
-		if (bot_invite.length > 191)
-			throw {status: 422, message: 'Bot invite is too long'};
-
-		if (website && !isURL(website))
-			throw {status: 422, message: 'Invalid website URL'};
-		if (bot_invite && !isURL(bot_invite))
-			throw {status: 422, message: 'Invalid bot invite URL'};
-		if (server_invite && !isURL(server_invite))
-			throw {status: 422, message: 'Invalid server invite URL'};
+		
+		verifyBotInfo(ctx.request.body);
 
 		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(client_id), {
 			headers: {
@@ -93,8 +73,8 @@ const controller = {
 
 		ctx.body = (await Promise.all((await Promise.all(bots.map(refreshBot)))
 			.map(async bot => {
-				const upvotes = await redis.keysAsync(`bot:${bot.id}:upvote:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bot:${bot.id}:upvote:${ctx.state.user.id}`);
+				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
 				return bot;
 			})))
@@ -114,8 +94,8 @@ const controller = {
 
 		await refreshBot(bot);
 
-		const upvotes = await redis.keysAsync(`bot:${bot.id}:upvote:*`);
-		bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bot:${bot.id}:upvote:${ctx.state.user.id}`);
+		const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+		bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 		bot.upvotes = upvotes.length;
 
 		ctx.body = models.bot.transform(bot);
@@ -128,22 +108,63 @@ const controller = {
 	},
 
 	getHot: async (ctx, next) => {
-		const newBots = await models.bot.findAll({
-			limit: 20,
-			orderBy: ['created_at'],
+		const start = Date.now();
+
+		const cacheKey = 'bots:hot';
+		let hotIds = JSON.parse(await redis.getAsync(cacheKey));
+
+		if (!hotIds) {
+			let bots = await models.bot.findAll({
+				order: [['created_at', 'DESC']]
+			});
+
+			bots = await Promise.all(bots.map(async bot => {
+				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+				bot.upvotes = upvotes.length;
+				return bot;
+			}));
+
+
+			// We're retrieving a bit extra because we remove duplicates later, so we consistently provide 20 bots
+			const newest = bots.slice(0, 10);
+			const mostUpvoted = bots.sort((a,b) => a.upvotes > b.upvotes ? -1 : (a.upvotes < b.upvotes ? 1 : 0)).slice(0, 25);
+
+			const mix = _.shuffle(_.uniqBy([
+				...newest,
+				...mostUpvoted
+			], 'id').slice(0, 20));
+
+			hotIds = mix.map(bot => bot.id);
+
+			await redis.setAsync(cacheKey, JSON.stringify(hotIds), 'EX', 15 * 60);
+		}
+
+		const bots = await models.bot.findAll({
+			where: {
+				id: {
+					[Sequelize.Op.or]: hotIds,
+				}
+			},
+
 			include: [models.user]
 		});
 
-		// TODO: mix with most upvoted
+		ctx.body = (await Promise.all(bots.map(async bot => {
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			return refreshBot(bot);
+		}))).sort((a, b) => {
+			if (hotIds.indexOf(a.id) < hotIds.indexOf(b.id))
+				return -1;
+			else if (hotIds.indexOf(a.id) > hotIds.indexOf(b.id))
+				return 1;
+			else
+				return 0;
+		}).map(models.bot.transform);
 
-		ctx.body = (await Promise.all((await Promise.all(newBots.map(refreshBot)))
-			.map(async bot => {
-				const upvotes = await redis.keysAsync(`bot:${bot.id}:upvote:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bot:${bot.id}:upvote:${ctx.state.user.id}`);
-				bot.upvotes = upvotes.length;
-				return bot;
-			})))
-			.map(models.bot.transform);
+		logger.info(`Refreshed hot bots list in ${Date.now() - start}ms`);
 	},
 
 	search: async (ctx, next) => {
@@ -175,8 +196,8 @@ const controller = {
 
 		ctx.body = (await Promise.all((await Promise.all(bots.map(refreshBot)))
 			.map(async bot => {
-				const upvotes = await redis.keysAsync(`bot:${bot.id}:upvote:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bot:${bot.id}:upvote:${ctx.state.user.id}`);
+				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
 				return bot;
 			})))
@@ -212,12 +233,42 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		const voteKey = `bot:${bot.id}:upvote:${ctx.state.user.id}`;
+		const voteKey = `bots:${bot.id}:upvotes:${ctx.state.user.id}`;
 
 		if (await redis.getAsync(voteKey))
-			throw {status: 422, message: 'You can only vote once per week'};
+			throw {status: 422, message: 'You can only vote once per 12 hours'};
 		
-		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
+		await redis.setAsync(voteKey, 1, 'EX', 3600 * 12); // 12 hours
+
+		ctx.status = 204;
+	},
+
+	edit: async (ctx, next) => {
+		const {
+			short_description,
+			long_description,
+			prefix,
+			website,
+			bot_invite,
+			server_invite
+		} = ctx.request.body;
+
+		
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+			
+		await bot.update({
+			short_description,
+			long_description,
+			prefix,
+			website,
+			bot_invite,
+			server_invite
+		});
 
 		ctx.status = 204;
 	},
@@ -234,7 +285,7 @@ function isURL(url) {
 
 async function refreshBot(bot) {
 	try {
-		const cacheKey = `bot:${bot.id}:fresh`;
+		const cacheKey = `bots:${bot.id}:fresh`;
 
 		if (!(await redis.getAsync(cacheKey))) {
 			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.client_id), {
@@ -262,6 +313,40 @@ async function refreshBot(bot) {
 
 	return bot;
 }
+
+function verifyBotInfo({
+	short_description,
+	long_description,
+	prefix,
+	website,
+	bot_invite,
+	server_invite
+}) {
+	if (!short_description)
+		throw {status: 422, message: 'Short description is missing'};
+	if (!prefix)
+		throw {status: 422, message: 'Prefix is missing'};
+	if (!bot_invite)
+		throw {status: 422, message: 'Bot invite is missing'};
+
+	if (short_description.length < 32)
+		throw {status: 422, message: 'Short description is too short'};
+	if (short_description.length > 191)
+		throw {status: 422, message: 'Short description is too long'};
+	if (long_description.length > 8192)
+		throw {status: 422, message: 'Long description is too long'};
+	if (prefix.length > 16)
+		throw {status: 422, message: 'Prefix is too long'};
+	if (bot_invite.length > 191)
+		throw {status: 422, message: 'Bot invite is too long'};
+
+	if (website && !isURL(website))
+		throw {status: 422, message: 'Invalid website URL'};
+	if (bot_invite && !isURL(bot_invite))
+		throw {status: 422, message: 'Invalid bot invite URL'};
+	if (server_invite && !isURL(server_invite))
+		throw {status: 422, message: 'Invalid server invite URL'};
+};
 
 
 module.exports = controller;

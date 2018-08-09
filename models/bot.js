@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 		},
 		avatar: {
-			type: DataTypes.STRING(32),
+			type: DataTypes.STRING(128),
 			allowNull: false,
 		},
 		short_description: {
@@ -77,23 +77,29 @@ module.exports = (sequelize, DataTypes) => {
 		bot.belongsTo(models.user, {foreignKey: 'owner_id'});
 	};
 
-	bot.transform = bot => ({
-		client_id: bot.client_id,
-		owner: sequelize.models.user.transform(bot.user),
-		username: bot.username,
-		discriminator: bot.discriminator,
-		avatar: bot.avatar,
-		short_description: bot.short_description,
-		long_description: bot.long_description,
-		prefix: bot.prefix,
-		website: bot.website,
-		bot_invite: bot.bot_invite,
-		server_invite: bot.server_invite,
-		upvotes: bot.upvotes,
-		is_upvoted: bot.is_upvoted,
-		created_at: bot.created_at,
-		updated_at: bot.updated_at,
-	});
+	bot.transform = bot => {
+		const result = {
+			client_id: bot.client_id,
+			username: bot.username,
+			discriminator: bot.discriminator,
+			avatar: bot.avatar,
+			short_description: bot.short_description,
+			long_description: bot.long_description,
+			prefix: bot.prefix,
+			website: bot.website,
+			bot_invite: bot.bot_invite,
+			server_invite: bot.server_invite,
+			upvotes: bot.upvotes,
+			is_upvoted: bot.is_upvoted,
+			created_at: bot.created_at,
+			updated_at: bot.updated_at,
+		};
+
+		if (bot.user)
+			result.owner = sequelize.models.user.transform(bot.user);
+
+		return result;
+	};
 
 	return bot;
 };
