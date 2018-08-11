@@ -15,7 +15,7 @@
 						'ml-2': true,
 						'mb-2': true,
 						'online': bot.stats.online,
-					}" title="Online" />
+					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
 				</h1>
 				<h6 class="text-muted">
 					<div class="row">
@@ -93,7 +93,7 @@
 						'ml-2': true,
 						'mb-2': true,
 						'online': bot.stats.online,
-					}" title="Online" />
+					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
 				</h1>
 				<h6 class="text-muted">
 					Added: {{moment(bot.created_at).fromNow()}} <br>

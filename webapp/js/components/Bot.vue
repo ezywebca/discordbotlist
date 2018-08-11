@@ -15,7 +15,7 @@
 						'ml-2': true,
 						'mb-1': true,
 						'online': bot.stats.online,
-					}" title="Online" />
+					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
 				</h5>
 			</router-link>
 			<h6 class="card-subtitle mb-2 text-muted">{{bot.upvotes}} upvotes</h6>

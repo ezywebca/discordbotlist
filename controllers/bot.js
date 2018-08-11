@@ -511,6 +511,9 @@ async function refreshBot(bot, force = false) {
 			logger.info(`Refreshed bot: ${bot.client_id}`);
 		}
 	} catch (e) {
+		if (e.response && e.response.status === 404)
+			await bot.destroy();
+			
 		logger.warn(`Could not refresh bot: ${bot.client_id}`);
 		logger.warn(e);
 	}
