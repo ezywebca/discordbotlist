@@ -35,3 +35,8 @@ export function extractError(error) {
 	else
 		return 'Network error!';
 }
+
+// https://stackoverflow.com/a/9461657/2164304
+export function kFormatter(num) {
+	return num > 999 ? (num / 1000).toFixed(1) + 'k' : num
+}

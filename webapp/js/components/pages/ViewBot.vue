@@ -22,10 +22,25 @@
 						<div class="col-auto">
 							Added: {{moment(bot.created_at).fromNow()}} <br>
 							Updated: {{moment(bot.updated_at).fromNow()}}
+
+							<template v-if="bot.stats.guilds">
+								<br>
+								Guilds: {{kFormatter(bot.stats.guilds)}}
+							</template>
+
+							<template v-if="bot.stats.voice_connections">
+								<br>
+								Voice connections: {{kFormatter(bot.stats.voice_connections)}}
+							</template>
 						</div>
 						<div class="col-auto">
 							Created by: <router-link :to="{name: 'view-user', params: {id: bot.owner.id}}">{{bot.owner.username}}#{{bot.owner.discriminator}}</router-link> <br>
 							Prefix: <code>{{bot.prefix}}</code>
+
+							<template v-if="bot.stats.users">
+								<br>
+								Users: {{kFormatter(bot.stats.users)}}
+							</template>
 						</div>
 					</div>
 				</h6>
@@ -85,6 +100,18 @@
 					Updated: {{moment(bot.updated_at).fromNow()}} <br>
 					Created by: {{bot.owner.username}}#{{bot.owner.discriminator}} <br>
 					Prefix: <code>{{bot.prefix}}</code>
+					<template v-if="bot.stats.guilds">
+						<br>
+						Guilds: {{kFormatter(bot.stats.guilds)}}
+					</template>
+					<template v-if="bot.stats.users">
+						<br>
+						Users: {{kFormatter(bot.stats.users)}}
+					</template>
+					<template v-if="bot.stats.voice_connections">
+						<br>
+						Voice connections: {{kFormatter(bot.stats.voice_connections)}}
+					</template>
 				</h6>
 				<p class="mt-3">{{bot.short_description}}</p>
 				<p class="links">
@@ -151,7 +178,7 @@
 	import moment from 'moment-mini';
 	import marked from 'marked';
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString} from '../../helpers';
+	import {extractError, generateRandomString, kFormatter} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -210,6 +237,7 @@
 
 			moment: moment.utc,
 			marked,
+			kFormatter,
 		},
 
 		computed: {

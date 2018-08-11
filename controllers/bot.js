@@ -6,6 +6,7 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
+const serviceBot = require('../bot');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -455,7 +456,7 @@ async function attachStats(bot) {
 	const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`));
 
 	bot.stats = {
-		online: true, // we'll fix that later
+		online: serviceBot.isOnline(bot.client_id),
 	};
 
 	if (!stats || stats.length < 1)
@@ -549,7 +550,7 @@ function verifyBotInfo({
 		throw {status: 422, message: 'Invalid bot invite URL'};
 	if (server_invite && !isURL(server_invite))
 		throw {status: 422, message: 'Invalid server invite URL'};
-};
+}
 
 
 module.exports = controller;

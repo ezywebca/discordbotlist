@@ -28,16 +28,26 @@
 			Soooo once you get authentication done right, you can <code>POST</code> to <code>/api/bots/:client_id/stats</code> the following:
 		</p>
 		<ul>
+			<li><code>shard_id</code> - <strong>Required.</strong> Use <code>0</code> if you don't use sharding.</li>
 			<li><code>guilds</code> - Number of guilds (int)</li>
 			<li><code>users</code> - Number of users (int)</li>
 			<li><code>voice_connections</code> - Number of voice connections (int)</li>
 		</ul>
 		<p>
-			<strong>All these fields are optional, though.</strong> You can just <code>POST</code> nothing to the end-point to mark your bot online
-			without providing any statistical data.
+			<strong>All these fields are optional, though.</strong> You can just <code>POST</code> nothing to the end-point (except shard_id)
+			(but that'd be pointless, right? lol)
 		</p>
 		<p>
-			The server will respond with status code <code>204</code>
+			The server will respond with status code <code>204</code> and will combine stats interally for each shard.
+		</p>
+		<p>
+			<strong>You should know</strong> that if you provide inconsistent data, stats may not show up at all. For example if you provide
+			<code>guilds</code> for shard 0 and not for shard 1, the guilds count won't show up at all. You <strong>must</strong> provide consistent
+			data in order for stats to show up.
+		</p>
+		<p>
+			In case you mess things up, we provided implemented a <code>DELETE</code> operation on the same end-point URL for wiping out all the stats
+			for all shards for that bot.
 		</p>
 	</div>
 </template>
