@@ -98,6 +98,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (bot.user)
 			result.owner = sequelize.models.user.transform(bot.user);
 
+		if (bot.stats)
+			result.stats = bot.stats;
+
 		return result;
 	};
 

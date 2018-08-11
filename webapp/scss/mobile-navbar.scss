@@ -42,10 +42,12 @@
 		left: 0;
 		right: 0;
 		width: 100vw;
-		background: $slightly-dark;
+		background: $really-really-really-dark;
 		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
 		padding-left: 0;
 		text-align: left;
+		padding: 12px 0px;
+
 		.nav-link {
 			color: $light;
 			&.active {

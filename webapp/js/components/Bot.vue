@@ -6,7 +6,17 @@
 		</router-link>
 		<div class="card-body">
 			<router-link :to="{name: 'view-bot', params: {id: bot.client_id}}" class="nostyle">
-				<h5 class="card-title">{{bot.username}}</h5>
+				<h5 class="card-title">
+					{{bot.username}}
+					<span :class="{
+						'fas': true,
+						'fa-circle': true,
+						'availability-badge': true,
+						'ml-2': true,
+						'mb-1': true,
+						'online': bot.stats.online,
+					}" title="Online" />
+				</h5>
 			</router-link>
 			<h6 class="card-subtitle mb-2 text-muted">{{bot.upvotes}} upvotes</h6>
 			<p class="card-text">{{bot.short_description}}</p>
@@ -16,6 +26,19 @@
 		</div>
 	</div>
 </template>
+
+<style scoped>
+	.availability-badge {
+		vertical-align: middle;
+		font-size: 15px;
+		color: #747f8d;
+	}
+
+	.online {
+		color: #43b581;
+	}
+</style>
+
 
 <script>
 	import moment from 'moment-mini';

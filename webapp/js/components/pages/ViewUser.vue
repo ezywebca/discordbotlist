@@ -30,6 +30,9 @@
 					</template>
 				</p>
 				<p class="links">
+					<a href="javascript:undefined" @click="refreshUser" v-if="isAdmin">
+						<span class="mr-1 far fa-sync" /> Refresh user
+					</a>
 					<template v-if="isAdmin && !user.admin">
 						<a href="javascript:undefined" class="dangerous-text" @click="banUser" v-if="!user.banned">
 							<span class="mr-1 far fa-ban" /> {{verifyingBan ? 'You sure?' : 'Ban user'}}
@@ -65,6 +68,9 @@
 					</template>
 				</p>
 				<p class="links">
+					<a href="javascript:undefined" @click="refreshUser" v-if="isAdmin">
+						<span class="mr-1 far fa-sync" /> Refresh user
+					</a>
 					<template v-if="isAdmin && !user.admin">
 						<a href="javascript:undefined" class="dangerous-text" @click="banUser" v-if="!user.banned">
 							<span class="mr-1 far fa-ban" /> {{verifyingBan ? 'You sure?' : 'Ban user'}}
@@ -144,6 +150,14 @@
 						this.$vueOnToast.pop('error', extractError(e));
 					});
 				}
+			},
+
+			refreshUser: function() {
+				axios.post(`/api/users/${this.$route.params.id}/refresh`).then(response => {
+					this.$router.go();
+				}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));
+				});
 			},
 
 			moment: moment.utc,

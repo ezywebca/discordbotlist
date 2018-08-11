@@ -7,6 +7,7 @@ import ViewBot from './components/pages/ViewBot';
 import EditBot from './components/pages/EditBot';
 import UpvoteBot from './components/pages/UpvoteBot';
 import ViewUser from './components/pages/ViewUser';
+import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
 
 export default [
@@ -52,6 +53,10 @@ export default [
 		name: 'view-user',
 		path: '/users/:id',
 		component: ViewUser,
+	}, {
+		name: 'api-docs',
+		path: '/api-docs',
+		component: APIDocs,
 	},
 
 	// Error handling

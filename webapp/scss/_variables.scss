@@ -2,6 +2,7 @@ $slightly-dark: #42454d;
 $dark: #36393f;
 $really-dark: #2f3136;
 $really-really-dark: #202225;
+$really-really-really-dark: #18191c;
 $light: #efefef;
 $blurple: #7289da;
 
@@ -21,8 +22,8 @@ $navbar-light-color: #ddd;
 $navbar-light-hover-color: #eee;
 $navbar-light-active-color: #eee;
 
-$dropdown-bg: $slightly-dark;
-$dropdown-link-hover-bg: lighten($slightly-dark, 4%);
+$dropdown-bg: $really-really-really-dark;
+$dropdown-link-hover-bg: lighten($really-really-really-dark, 4%);
 
 $card-bg: $really-really-dark;
 $card-cap-bg: $really-really-dark;

@@ -32,11 +32,17 @@ module.exports = () => {
 	router.get('/api/bots/:id', throttle(), protect(true), BotController.get);
 	router.put('/api/bots/:id', throttle(), protect(), BotController.edit);
 	router.delete('/api/bots/:id', throttle(), protect(), BotController.delete);
-	router.post('/api/bots/:id/upvote', throttle(), protect(), BotController.upvote);
+	router.get('/api/bots/:id/token', throttle(), protect(), BotController.generateToken);
+	router.get('/api/bots/:id/upvotes', throttle(), BotController.getUpvotes);
+	router.post('/api/bots/:id/refresh', throttle(), protect(), adminOnly, BotController.refresh);
+	router.post('/api/bots/:id/upvotes', throttle(), protect(), BotController.upvote);
+	router.post('/api/bots/:id/stats', throttle(), BotController.updateStats); // Token-based authentication inside controller
+	router.delete('/api/bots/:id/stats', throttle(), BotController.resetStats); // same
 	
 	router.get('/api/users/:id', throttle(), UserController.get);
 	router.post('/api/users/:id/ban', throttle(), protect(), adminOnly, UserController.ban);
 	router.delete('/api/users/:id/ban', throttle(), protect(), adminOnly, UserController.unban);
+	router.post('/api/users/:id/refresh', throttle(), protect(), adminOnly, UserController.refresh);
 
 	return router;
 };

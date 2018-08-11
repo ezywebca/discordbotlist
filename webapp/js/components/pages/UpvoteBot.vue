@@ -8,7 +8,10 @@
 		<button class="btn btn-primary btn-lg mt-4" :disabled="bot.is_upvoted" @click="upvote">
 			Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 		</button>
-		<p v-if="bot.is_upvoted" class="text-muted mt-3">You can upvote every 12 hours :)</p>
+		<router-link :to="{name: 'view-bot', params: {id: bot.client_id}}" class="mt-3" id="view-bot-link">
+			See bot profile
+		</router-link>
+		<p v-if="bot.is_upvoted" class="text-muted mt-4">You can upvote every 12 hours :)</p>
 	</div>
 </template>
 
@@ -16,6 +19,11 @@
 	.bot-image {
 		width: 100%;
 		max-width: 280px;
+		border-radius: 5px;
+	}
+
+	#view-bot-link {
+		display: block;
 	}
 </style>
 
@@ -36,7 +44,7 @@
 					localStorage.setItem('discord_oauth_state', state);
 					window.location = this.discordOAuthURL + '&state=' + state;
 				} else {
-					axios.post(`/api/bots/${this.$route.params.id}/upvote`).then(response => {
+					axios.post(`/api/bots/${this.$route.params.id}/upvotes`).then(response => {
 						this.$store.dispatch('bots/upvote', {clientId: this.$route.params.id});
 					}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));

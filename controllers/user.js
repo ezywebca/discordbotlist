@@ -54,14 +54,29 @@ module.exports = {
 		await user.save();
 
 		ctx.status = 204;
-	}
+	},
+
+	refresh: async (ctx, next) => {
+		const user = await models.user.findOne({
+			where: {
+				discord_id: ctx.params.id,
+			}
+		});
+
+		if (!user)
+			throw {status: 404, message: 'Not found'};
+
+		await refreshUser(user, true);
+
+		ctx.status = 204;
+	},
 };
 
-async function refreshUser(user) {
+async function refreshUser(user, force = false) {
 	try {
 		const cacheKey = `user:${user.id}:fresh`;
 
-		if (!(await redis.getAsync(cacheKey))) {
+		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
 			const newUserInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(user.discord_id), {
 				headers: {
 					'Authorization': `Bot ${process.env.BOT_TOKEN}`,

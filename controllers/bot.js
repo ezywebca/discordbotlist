@@ -4,6 +4,8 @@ const logger = require('../logger');
 const Sequelize = require('sequelize');
 const redis = require('../redis');
 const _ = require('lodash');
+const crypto = require('crypto');
+const cryptojs = require('crypto-js');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -76,6 +78,7 @@ const controller = {
 				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
+				await attachStats(bot);
 				return bot;
 			})))
 			.map(bot => models.bot.transform(bot));
@@ -93,6 +96,7 @@ const controller = {
 			throw {status: 404, message: 'Not found'};
 
 		await refreshBot(bot);
+		await attachStats(bot);
 
 		const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 		bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
@@ -108,12 +112,11 @@ const controller = {
 	},
 
 	getHot: async (ctx, next) => {
-		const start = Date.now();
-
 		const cacheKey = 'bots:hot';
 		let hotIds = JSON.parse(await redis.getAsync(cacheKey));
 
 		if (!hotIds) {
+			const start = Date.now();
 			let bots = await models.bot.findAll({
 				order: [['created_at', 'DESC']]
 			});
@@ -138,6 +141,8 @@ const controller = {
 			hotIds = mix.map(bot => bot.id);
 
 			await redis.setAsync(cacheKey, JSON.stringify(hotIds), 'EX', 15 * 60);
+
+			logger.info(`Refreshed hot bots list in ${Date.now() - start}ms`);
 		}
 
 		const bots = await models.bot.findAll({
@@ -154,6 +159,7 @@ const controller = {
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
+			await attachStats(bot);
 			return refreshBot(bot);
 		}))).sort((a, b) => {
 			if (hotIds.indexOf(a.id) < hotIds.indexOf(b.id))
@@ -163,8 +169,6 @@ const controller = {
 			else
 				return 0;
 		}).map(models.bot.transform);
-
-		logger.info(`Refreshed hot bots list in ${Date.now() - start}ms`);
 	},
 
 	search: async (ctx, next) => {
@@ -199,6 +203,7 @@ const controller = {
 				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
+				await attachStats(bot);
 				return bot;
 			})))
 			.map(models.bot.transform);
@@ -260,6 +265,8 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
+		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
+			throw {status: 403, message: 'Access denied'};
 			
 		await bot.update({
 			short_description,
@@ -272,7 +279,168 @@ const controller = {
 
 		ctx.status = 204;
 	},
+
+	refresh: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+			
+		await refreshBot(bot, true);
+
+		ctx.status = 204;
+	},
+
+	getUpvotes: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		const upvotesUserIds = (await redis.keysAsync(`bots:${bot.id}:upvotes:*`)).map(key => key.split(':')[3]);
+
+		if (upvotesUserIds.length < 1) {
+			ctx.body = [];
+		} else {
+			const users = await models.user.findAll({
+				where: {
+					id: {
+						[Sequelize.Op.or]: upvotesUserIds,
+					}
+				}
+			});
+
+			ctx.body = users.map(models.user.transform);
+		}
+	},
+
+	generateToken: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
+			throw {status: 403, message: 'Access denied'};
+
+		const token = crypto.randomBytes(32).toString('hex');
+
+		await redis.setAsync(`bots:${bot.id}:token`, cryptojs.SHA256(token).toString());
+
+		ctx.body = {token};
+	},
+
+	updateStats: async (ctx, next) => {
+		const authorization = ctx.headers.authorization;
+
+		if (!authorization)
+			throw {status: 401, message: 'Unauthenticated'};
+		if (!authorization.startsWith('Bot '))
+			throw {status: 400, message: 'Bad authentication header'};
+		if (!authorization.substring(4))
+			throw {status: 401, message: 'Bad token'};
+
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+		
+		const token = authorization.substring(4);
+		const hashedToken = await redis.getAsync(`bots:${bot.id}:token`);
+
+		if (!hashedToken || cryptojs.SHA256(token).toString() !== hashedToken)
+			throw {status: 401, message: 'Bad token'};
+
+		const {shard_id, guilds, users, voice_connections} = ctx.request.body;
+
+		if (!shard_id)
+			throw {status: 422, message: 'shard_id is a required parameter'};
+		if (!isInt(shard_id))
+			throw {status: 422, message: 'shard_id must be an integer'};
+		if (guilds && !isInt(guilds))
+			throw {status: 422, message: 'The \'guilds\' parameter must be a number'};
+		if (users && !isInt(users))
+			throw {status: 422, message: 'The \'users\' parameter must be a number'};
+		if (voice_connections && !isInt(voice_connections))
+			throw {status: 422, message: 'The \'voice_connections\' parameter must be a number'};
+
+		const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`)) || [];
+		const shardStats = stats.find(x => x.shard_id === shard_id);
+
+		if (shardStats) {
+			if (guilds)
+				shardStats.guilds = parseInt(guilds);
+			else
+				delete shardStats.guilds;
+			if (users)
+				shardStats.users = parseInt(users);
+			else
+				delete shardStats.users;
+			if (voice_connections)
+				shardStats.voiceConnections = parseInt(voice_connections);
+			else
+				delete shardStats.voiceConnections;
+		} else {
+			const newStats = {
+				shard_id: parseInt(shard_id)
+			};
+			if (guilds)
+				newStats.guilds = parseInt(guilds);
+			if (users)
+				newStats.users = parseInt(users);
+			if (voice_connections)
+				newStats.voiceConnections = parseInt(voice_connections);
+			stats.push(newStats);
+		}
+
+		await redis.setAsync(`bots:${bot.id}:stats`, JSON.stringify(stats));
+
+		ctx.status = 204;
+	},
+
+	resetStats: async (ctx, next) => {
+		const authorization = ctx.headers.authorization;
+
+		if (!authorization)
+			throw {status: 401, message: 'Unauthenticated'};
+		if (!authorization.startsWith('Bot '))
+			throw {status: 400, message: 'Bad authentication header'};
+		if (!authorization.substring(4))
+			throw {status: 401, message: 'Bad token'};
+
+		const bot = await models.bot.findOne({
+			where: {client_id: ctx.params.id}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+		
+		const token = authorization.substring(4);
+		const hashedToken = await redis.getAsync(`bots:${bot.id}:token`);
+
+		if (!hashedToken || cryptojs.SHA256(token).toString() !== hashedToken)
+			throw {status: 401, message: 'Bad token'};
+
+		await redis.delAsync(`bots:${bot.id}:stats`);
+
+		ctx.status = 204;
+	}
 };
+
+function isInt(value) {
+	let x;
+	if (isNaN(value))
+		return false;
+	x = parseFloat(value);
+	return (x | 0) === x;
+}
 
 function isURL(url) {
 	try {
@@ -283,11 +451,46 @@ function isURL(url) {
 	}
 }
 
-async function refreshBot(bot) {
+async function attachStats(bot) {
+	const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`));
+
+	bot.stats = {
+		online: true, // we'll fix that later
+	};
+
+	if (!stats || stats.length < 1)
+		return;
+
+	let showGuilds = stats.reduce((acc, item) => acc && !!item.guilds, true);
+	let showUsers = stats.reduce((acc, item) => acc && !!item.users, true);
+	let showVoiceConnections = stats.reduce((acc, item) => acc && !!item.voiceConnections, true);
+	
+	let guilds = 0;
+	let users = 0;
+	let voiceConnections = 0;
+
+	stats.forEach(item => {
+		if (showGuilds)
+			guilds += item.guilds;
+		if (showUsers)
+			users += item.users;
+		if (showVoiceConnections)
+			voiceConnections += item.voiceConnections;
+	});
+
+	if (showGuilds)
+		bot.stats.guilds = guilds;
+	if (showUsers)
+		bot.stats.users = users;
+	if (showVoiceConnections)
+		bot.stats.voice_connections = voiceConnections;
+}
+
+async function refreshBot(bot, force = false) {
 	try {
 		const cacheKey = `bots:${bot.id}:fresh`;
 
-		if (!(await redis.getAsync(cacheKey))) {
+		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
 			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.client_id), {
 				headers: {
 					'Authorization': `Bot ${process.env.BOT_TOKEN}`,

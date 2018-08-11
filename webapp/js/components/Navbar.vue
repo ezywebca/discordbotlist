@@ -14,6 +14,9 @@
 					<router-link :to="{name: 'about'}" tag="li" class="nav-item">
 						<a class="nav-link">HELP!!1</a>
 					</router-link>
+					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
+						<a class="nav-link">API</a>
+					</router-link>
 				</ul>
 
 				<!-- Unprotected links -->
@@ -58,6 +61,9 @@
 					<router-link :to="{name: 'about'}" tag="li" class="nav-item">
 						<a class="nav-link">HELP!!1</a>
 					</router-link>
+					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
+						<a class="nav-link">API</a>
+					</router-link>
 				</div>
 
 				<!-- Unprotected links -->
@@ -69,9 +75,6 @@
 
 				<!-- Protected links -->
 				<ul class="navbar-menu" v-if="showMenu && isAuthenticated">
-					<router-link :to="{name: 'view-user', params: {id: user.id}}">
-						<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`" class="profile-image mr-1">
-					</router-link>
 					<navbar-dropdown :label="user.username"
 						:options="dropdownItems"
 						@on-select="onDropdown" />
