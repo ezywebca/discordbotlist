@@ -5,6 +5,8 @@ const {getIP} = require('../helpers');
 module.exports = async (ctx, next) => {
 	let tabs = '\t';
 
+	const ip =  getIP(ctx);
+
 	if (ip.length < 34)
 		tabs += '\t';
 	if (ip.length < 28)
@@ -16,7 +18,7 @@ module.exports = async (ctx, next) => {
 		colors.black.bgYellow(' API ') :
 		colors.black.bgCyan(' RES ');
 
-	logger.recv(`${origin} ${getIP(ctx)} ${tabs} → ${ctx.url}`);
+	logger.recv(`${origin} ${ip} ${tabs} → ${ctx.url}`);
 
 	return next();
 };
