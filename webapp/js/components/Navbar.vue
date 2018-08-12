@@ -3,7 +3,7 @@
 		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-xs-none d-sm-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
-					<img src="/img/discordbotlist-white.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
+					<img src="/img/discordbotlist-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
 					<span class="ml-2 thin">DISCORD BOT LIST</span>
 				</router-link>
 
@@ -48,7 +48,7 @@
 					</div>
 					<div class="col">
 						<router-link :to="{name: 'home'}" class="navbar-brand">
-							<img src="/img/DiscordBotList-white.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
+							<img src="/img/DiscordBotList-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
 							<span class="ml-2 thin">DISCORD BOT LIST</span>
 						</router-link>
 					</div>

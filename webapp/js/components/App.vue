@@ -26,7 +26,7 @@
 			titleTemplate: '%s / DiscordBotList',
 
 			meta: [
-				{name: 'og:image', content: '/img/discordbotlist.svg', vmid: 'og:image'},
+				{name: 'og:image', content: '/img/discordbotlist.png', vmid: 'og:image'},
 			]
 		},
 
