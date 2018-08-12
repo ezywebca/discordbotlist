@@ -5,7 +5,6 @@ const path = require('path');
 
 const handler = require('./middleware/handler');
 const loggerMiddleware = require('./middleware/logger');
-const ip = require('./middleware/ip');
 
 const koaConditional = require('koa-conditional-get');
 const koaEtag = require('koa-etag');
@@ -18,7 +17,7 @@ const models = require('./models');
 const {
 	createBundleRenderer
 } = require('vue-server-renderer');
-const {isCrawler} = require('./helpers');
+const {isCrawler, getIP} = require('./helpers');
 
 app.use(handler);
 app.use(koaCompress({
@@ -29,7 +28,6 @@ app.use(koaCompress({
 app.use(koaConditional());
 app.use(koaEtag());
 
-app.use(ip);
 app.use(loggerMiddleware);
 
 async function renderApp(ctx) {
@@ -57,7 +55,7 @@ app.use(koaStatic('./public', {
 
 app.use(async (ctx, next) => {
 	if (ctx.path === '/sitemap.xml') {
-		if (await isCrawler(ctx.ip)) {
+		if (await isCrawler(getIP(ctx))) {
 			const template = fs.readFileSync(path.join('webapp', 'sitemap.ejs'), 'utf8');
 			ctx.type = 'application/xml; charset=utf-8';
 			ctx.body = ejs.render(template, {

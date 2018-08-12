@@ -71,9 +71,14 @@ async function isBingBot(ip) {
 	});
 }
 
+function getIP(ctx) {
+	return ctx.request.headers['cf-connecting-ip'] || ctx.ip;
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
 	isBingBot,
 	isDdgBot,
+	ip,
 };

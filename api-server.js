@@ -1,7 +1,6 @@
 const Koa = require('koa');
 const handler = require('./middleware/handler');
 const logger = require('./middleware/logger');
-const ip = require('./middleware/ip');
 const koaBody = require('koa-body');
 
 const koaConditional = require('koa-conditional-get');
@@ -13,7 +12,6 @@ const router = require('./router')(app);
 
 app
 	.use(handler)
-	.use(ip)
 	.use(logger)
 	.use(koaCompress({
 		threshold: 2048,
