@@ -80,5 +80,5 @@ module.exports = {
 	isGoogleBot,
 	isBingBot,
 	isDdgBot,
-	ip,
+	getIP,
 };
