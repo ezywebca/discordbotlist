@@ -5,6 +5,7 @@ const path = require('path');
 
 const handler = require('./middleware/handler');
 const loggerMiddleware = require('./middleware/logger');
+const ip = require('./middleware/ip');
 
 const koaConditional = require('koa-conditional-get');
 const koaEtag = require('koa-etag');
@@ -28,6 +29,7 @@ app.use(koaCompress({
 app.use(koaConditional());
 app.use(koaEtag());
 
+app.use(ip);
 app.use(loggerMiddleware);
 
 async function renderApp(ctx) {
