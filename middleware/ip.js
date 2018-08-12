@@ -1,4 +1,4 @@
 module.exports = async (ctx, next) => {
-	ctx.ip = ctx.get('CF_CONNECTING_IP') || ctx.ip;
+	ctx.ip = ctx.request.headers['cf-connecting-ip'] || ctx.ip;
 	return next();
 };
