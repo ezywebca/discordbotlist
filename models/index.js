@@ -22,7 +22,9 @@ var config = {
 	define: {
 		underscored: true,
 		underscoredAll: true
-	}
+	},
+
+	logging: false,
 };
 var db = {};
 
