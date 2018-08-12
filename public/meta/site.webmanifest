@@ -1,6 +1,6 @@
 {
-    "name": "PurpleBots",
-    "short_name": "PurpleBots",
+    "name": "Discord Bot List",
+    "short_name": "Discord Bot List",
     "icons": [
         {
             "src": "/meta/android-chrome-192x192.png",
@@ -15,5 +15,6 @@
     ],
     "theme_color": "#7289da",
     "background_color": "#7289da",
+    "start_url": "https://discordbotlist.com",
     "display": "standalone"
 }

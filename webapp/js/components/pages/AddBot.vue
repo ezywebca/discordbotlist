@@ -117,9 +117,9 @@
 			title: 'Add new bot',
 
 			meta: [
-				{name: 'description', content: 'Add new bot to PurpleBot\'s database'},
-				{property: 'og:title', content: 'Add new bot / PurpleBots'},
-				{property: 'og:description', content: 'Add new bot to PurpleBot\'s database'},
+				{name: 'description', content: 'Add new bot to Discord Bot List\'s database'},
+				{property: 'og:title', content: 'Add new bot / Discord Bot List'},
+				{property: 'og:description', content: 'Add new bot to Discord Bot List\'s database'},
 				{name: 'robots', content: 'noindex'},
 			],
 		}

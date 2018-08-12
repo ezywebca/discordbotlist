@@ -59,7 +59,7 @@
 
 			meta: [
 				{name: 'description', content: 'Read on how to use bot tokens and other stuff!'},
-				{property: 'og:title', content: 'API Documentation / PurpleBots'},
+				{property: 'og:title', content: 'API Documentation / Discord Bot List'},
 				{property: 'og:description', content: 'Read on how to use bot tokens and other stuff!'},
 				{name: 'robots', content: 'noindex'},
 			],

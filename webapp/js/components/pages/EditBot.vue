@@ -125,9 +125,9 @@
 
 				meta: [
 					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'Edit a bot on PurpleBots'},
-					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / PurpleBots'},
-					{property: 'og:description', content: this.bot.short_description || 'Edit a bot on PurpleBots'},
+					{name: 'description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
+					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / Discord Bot List'},
+					{property: 'og:description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
 				],
 			};
 		},

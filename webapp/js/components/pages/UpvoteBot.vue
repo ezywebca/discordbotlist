@@ -75,9 +75,9 @@
 
 				meta: [
 					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'Vote for a bot on PurpleBots'},
-					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / PurpleBots'},
-					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on PurpleBots'},
+					{name: 'description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
+					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bot List'},
+					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
 				],
 			};
 		},

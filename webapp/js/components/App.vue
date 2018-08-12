@@ -23,10 +23,10 @@
 
 		meta: {
 			title: '404',
-			titleTemplate: '%s / PurpleBots',
+			titleTemplate: '%s / DiscordBotList',
 
 			meta: [
-				{name: 'og:image', content: '/img/purplebots.png', vmid: 'og:image'},
+				{name: 'og:image', content: '/img/discordbotlist.png', vmid: 'og:image'},
 			]
 		},
 

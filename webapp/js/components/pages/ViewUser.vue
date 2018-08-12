@@ -21,12 +21,12 @@
 					</div>
 				</h6>
 				<p class="mt-3">
-					- {{user.username}} has {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}} here on PurpleBots
+					- {{user.username}} has {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}} here on Discord Bot List
 					<br>
 					- Their Discord ID is <code>{{user.id}}</code>
 					<template v-if="user.admin">
 						<br>
-						- {{user.username}} is also a PurpleBots administrator
+						- {{user.username}} is also a Discord Bot List administrator
 					</template>
 				</p>
 				<p class="links">
@@ -59,12 +59,12 @@
 					Banned: <span :class="{'dangerous-text': user.banned}">{{user.banned ? 'yes! finally!' : 'not yet'}}</span>
 				</h6>
 				<p class="mt-3">
-					- {{user.username}} has {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}} here on PurpleBots
+					- {{user.username}} has {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}} here on Discord Bot List
 					<br>
 					- Their Discord ID is <code>{{user.id}}</code>
 					<template v-if="user.admin">
 						<br>
-						- {{user.username}} is also a PurpleBots administrator
+						- {{user.username}} is also a Discord Bot List administrator
 					</template>
 				</p>
 				<p class="links">
@@ -183,9 +183,9 @@
 
 				meta: [
 					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.user.id}/${this.user.avatar}.png?size=512`, vmid: 'og:image'},
-					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on PurpleBots` : 'View a user on PurpleBots'},
-					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / PurpleBots'},
-					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on PurpleBots` : 'View a user on PurpleBots'},
+					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
+					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / Discord Bot List'},
+					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
 				],
 			};
 		},

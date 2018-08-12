@@ -47,7 +47,7 @@
 				<p class="mt-3">{{bot.short_description}}</p>
 				<p class="links">
 					<span>
-						<a href="javascript:undefined" target="_blank" :class="{disabled: bot.is_upvoted}" @click="upvote">
+						<a href="javascript:undefined" :class="{disabled: bot.is_upvoted}" @click="upvote">
 							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
 						<router-link :to="{name: 'upvote-bot', params: {id: bot.client_id}}" class="ml-1 text-muted">
@@ -116,7 +116,7 @@
 				<p class="mt-3">{{bot.short_description}}</p>
 				<p class="links">
 					<span>
-						<a href="javascript:undefined" target="_blank" :class="{disabled: bot.is_upvoted}" @click="upvote">
+						<a href="javascript:undefined" :class="{disabled: bot.is_upvoted}" @click="upvote">
 							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
 						<router-link :to="{name: 'upvote-bot', params: {id: bot.client_id}}" class="ml-1 text-muted">
@@ -263,9 +263,9 @@
 
 				meta: [
 					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'View a bot on PurpleBots'},
-					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / PurpleBots'},
-					{property: 'og:description', content: this.bot.short_description || 'View a bot on PurpleBots'},
+					{name: 'description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
+					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bot List'},
+					{property: 'og:description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
 				],
 			};
 		},

@@ -3,8 +3,8 @@
 		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-xs-none d-sm-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
-					<img src="/img/purplebots-white.png" alt="PB" height="34" title="PurpleBots">
-					<span class="ml-2 thin">PURPLEBOTS</span>
+					<img src="/img/discordbotlist-white.png" alt="PB" height="34" title="Discord Bot List">
+					<span class="ml-2 thin">DISCORD BOT LIST</span>
 				</router-link>
 
 				<ul class="nav navbar-nav ml-3 mr-auto">
@@ -48,8 +48,8 @@
 					</div>
 					<div class="col">
 						<router-link :to="{name: 'home'}" class="navbar-brand">
-							<img src="/img/purplebots-white.png" alt="PB" height="34" title="PurpleBots">
-							<span class="ml-2 thin">PURPLEBOTS</span>
+							<img src="/img/DiscordBotList-white.png" alt="PB" height="34" title="Discord Bot List">
+							<span class="ml-2 thin">DISCORD BOT LIST</span>
 						</router-link>
 					</div>
 				</div>

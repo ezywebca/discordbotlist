@@ -38,9 +38,9 @@
 			title: 'My bots',
 
 			meta: [
-				{name: 'description', content: 'Manage your bots on PurpleBots'},
-				{property: 'og:title', content: 'My bots / PurpleBots'},
-				{property: 'og:description', content: 'Manage your bots on PurpleBots'},
+				{name: 'description', content: 'Manage your bots on Discord Bot List'},
+				{property: 'og:title', content: 'My bots / Discord Bot List'},
+				{property: 'og:description', content: 'Manage your bots on Discord Bot List'},
 				{name: 'robots', content: 'noindex'},
 			],
 		},

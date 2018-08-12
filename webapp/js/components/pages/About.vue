@@ -33,7 +33,7 @@
 
 			meta: [
 				{name: 'description', content: 'Got a feedback? Have a concern for any content? Reach us now!'},
-				{property: 'og:title', content: 'About PurpleBots'},
+				{property: 'og:title', content: 'About Discord Bot List'},
 				{property: 'og:description', content: 'Got a feedback? Have a concern for any content? Reach us now!'},
 			],
 		}
