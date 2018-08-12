@@ -1,5 +1,5 @@
 import Home from './components/pages/Home';
-import About from './components/pages/About';
+import Contact from './components/pages/Contact';
 import AuthCallback from './components/pages/AuthCallback';
 import MyBots from './components/pages/MyBots';
 import AddBot from './components/pages/AddBot';
@@ -16,9 +16,9 @@ export default [
 		path: '/',
 		component: Home,
 	}, {
-		name: 'about',
-		path: '/about',
-		component: About,
+		name: 'contact',
+		path: '/contact',
+		component: Contact,
 	}, {
 		name: 'auth-callback',
 		path: '/auth/callback',
