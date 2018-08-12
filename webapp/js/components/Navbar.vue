@@ -48,7 +48,7 @@
 					</div>
 					<div class="col">
 						<router-link :to="{name: 'home'}" class="navbar-brand">
-							<img src="/img/DiscordBotList-white.png" alt="PB" height="34" title="Discord Bot List">
+							<img src="/img/DiscordBotList-white.svg" alt="PB" height="34" title="Discord Bot List">
 							<span class="ml-2 thin">DISCORD BOT LIST</span>
 						</router-link>
 					</div>
