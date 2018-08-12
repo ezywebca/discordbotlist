@@ -7,7 +7,9 @@
 	"define": {
 		"underscored": true,
 		"underscoredAll": true
-	}
+	},
+
+	"logging": false
   },
   "test": {
   	"use_env_variable": "DB_URI",
@@ -17,7 +19,9 @@
   	"define": {
   		"underscored": true,
   		"underscoredAll": true
-  	}
+	  },
+	  
+	  "logging": false
   },
   "production": {
   	"use_env_variable": "DB_URI",
@@ -27,6 +31,8 @@
 	"define": {
 		"underscored": true,
 		"underscoredAll": true
-	}
+	},
+
+	"logging": false
   }
 }
