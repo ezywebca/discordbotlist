@@ -7,3 +7,4 @@ export const STORE_HOT_BOTS = 'STORE_HOT_BOTS';
 export const STORE_BOT = 'STORE_BOT';
 export const STORE_USER = 'STORE_USER';
 export const UPVOTE_BOT = 'UPVOTE_BOT';
+export const STORE_INDEX_BOTS = 'STORE_INDEX_BOTS';

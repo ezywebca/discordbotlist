@@ -17,11 +17,15 @@
 		mounted: function() {
 			const code = getURLParameter('code');
 			const state = getURLParameter('state');
+			
+			console.log(`State ${state}`);
 
 			if (code) {
 				const originalState = localStorage.getItem('discord_oauth_state');
+				console.log(`Original state ${originalState}`);
 
 				if (!originalState || originalState !== state) {
+					console.log(`State mismatch ${originalState} !== ${state}`);
 					this.status = 'State mismatch error.';
 				} else {
 					localStorage.removeItem('discord_oauth_state');
@@ -31,7 +35,7 @@
 							this.$router.push({name: 'home'});
 						}).catch(error => {
 							this.status = extractError(error);
-						});
+					});
 				}
 			} else {
 				this.status = 'Missing auth code.';
@@ -48,5 +52,5 @@
 				{name: 'robots', content: 'noindex'},
 			],
 		},
-	}
+	};
 </script>

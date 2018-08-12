@@ -9,12 +9,17 @@ import UpvoteBot from './components/pages/UpvoteBot';
 import ViewUser from './components/pages/ViewUser';
 import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
+import Index from './components/pages/Index';
 
 export default [
 	{
 		name: 'home',
 		path: '/',
 		component: Home,
+	}, {
+		name: 'index',
+		path: '/index',
+		component: Index,
 	}, {
 		name: 'contact',
 		path: '/contact',

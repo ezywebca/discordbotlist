@@ -1,5 +1,4 @@
 import root from 'window-or-global';
-import {createApp} from './app';
 const isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = context => {
@@ -10,6 +9,8 @@ module.exports = context => {
 
 	root.serverRendering = true;
 	root.apiHost = context.apiHost;
+
+	const {createApp} = require('./app');
 
 	return new Promise(async (resolve, reject) => {
 		const s = isDev && Date.now();

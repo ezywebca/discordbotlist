@@ -14,6 +14,9 @@ import store from './store';
 
 root.axios = axios;
 
+if (!root.serverRendering)
+	Vue.use(require('vue-infinite-scroll'));
+
 Vue.use(VueMeta, {
 	keyName: 'meta',
 });

@@ -107,9 +107,12 @@ const controller = {
 	},
 
 	index: async (ctx, next) => {
-		if (ctx.query.keywords) {
+		if (ctx.query.all)
+			return controller.getAll(ctx, next);
+		else if (ctx.query.keywords)
 			return controller.search(ctx, next);
-		} else return controller.getHot(ctx, next);
+		else
+			return controller.getHot(ctx, next);
 	},
 
 	getHot: async (ctx, next) => {
@@ -432,7 +435,27 @@ const controller = {
 		await redis.delAsync(`bots:${bot.id}:stats`);
 
 		ctx.status = 204;
-	}
+	},
+
+	getAll: async (ctx, next) => {
+		if (ctx.query.skip && (!isInt(ctx.query.skip) || ctx.query.skip < 0))
+			throw {status: 404, message: '\'skip\' parameter must be a number'};
+
+		const skip = parseInt(ctx.query.skip) || 0;
+
+		const bots = await models.bot.findAll({
+			order: [['updated_at', 'DESC']],
+			limit: skip + 20,
+		});
+
+		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			await attachStats(bot);
+			return models.bot.transform(bot);
+		}));
+	},
 };
 
 function isInt(value) {

@@ -11,6 +11,9 @@
 					<router-link :to="{name: 'home'}" tag="li" class="nav-item" exact>
 						<a class="nav-link">Home</a>
 					</router-link>
+					<router-link :to="{name: 'index'}" tag="li" class="nav-item">
+						<a class="nav-link">Index</a>
+					</router-link>
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>
 					</router-link>
@@ -57,6 +60,9 @@
 				<div class="row nav">
 					<router-link :to="{name: 'home'}" tag="li" class="nav-item" exact>
 						<a class="nav-link">Home</a>
+					</router-link>
+					<router-link :to="{name: 'index'}" tag="li" class="nav-item">
+						<a class="nav-link">Index</a>
 					</router-link>
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>
@@ -132,7 +138,10 @@
 
 			signIn: function() {
 				const state = generateRandomString(32);
+				console.log(`Storing state ${state}`);
 				localStorage.setItem('discord_oauth_state', state);
+				console.log(`Stated stored! ${localStorage.getItem('discord_oauth_state')}`);
+				
 				window.location = this.discordOAuthURL + '&state=' + state;
 			}
 		},
