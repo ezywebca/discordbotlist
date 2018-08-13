@@ -19,7 +19,9 @@ app
 	}))
 	.use(koaConditional())
 	.use(koaEtag())
-	.use(koaBody())
+	.use(koaBody({
+		multipart: true,
+	}))
 	.use(router.routes())
 	.use(router.allowedMethods());
 
