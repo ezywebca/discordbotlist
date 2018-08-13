@@ -99,7 +99,7 @@ app.use(async (ctx, next) => {
 				items.push(`${kFormatter(bot.stats.voice_connections)} voice connections`);
 
 			if (items.length < 2)
-				items.push(`Currently ${bot.stats.online ? 'Online' : 'Offline'}`);
+				items.push(`Currently ${bot.stats.online ? 'online' : 'offline'}`);
 			if (items.length < 2)
 				items.push(`Updated ${moment.utc(bot.updated_at).fromNow()}`);
 
