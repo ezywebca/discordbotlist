@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-xs-none d-sm-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
+		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
 			<div class="container">
 				<router-link :to="{name: 'home'}" class="navbar-brand">
 					<img src="/img/discordbotlist-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
@@ -41,7 +41,7 @@
 			</div>
 		</nav>
 
-		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top mobile-navbar d-xs-block d-sm-block d-md-none d-lg-none d-xl-none">
+		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top mobile-navbar d-block d-md-none d-lg-none d-xl-none">
 			<div>
 				<div class="row">
 					<div class="col-auto">
@@ -51,7 +51,7 @@
 					</div>
 					<div class="col">
 						<router-link :to="{name: 'home'}" class="navbar-brand">
-							<img src="/img/DiscordBotList-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
+							<img src="/img/discordbotlist-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
 							<span class="ml-2 thin">DISCORD BOT LIST</span>
 						</router-link>
 					</div>
