@@ -13,6 +13,9 @@ const koaCompress = require('koa-compress');
 
 const ejs = require('ejs');
 const models = require('./models');
+const {attachBotStats, refreshBot, kFormatter} = require('./helpers');
+const redis = require('./redis');
+const moment = require('moment-mini');
 
 const {
 	createBundleRenderer
@@ -56,7 +59,7 @@ app.use(koaStatic('./public', {
 app.use(async (ctx, next) => {
 	if (ctx.path === '/sitemap.xml') {
 		if (await isCrawler(getIP(ctx))) {
-			const template = fs.readFileSync(path.join('webapp', 'sitemap.ejs'), 'utf8');
+			const template = await fs.readFile(path.join('webapp', 'sitemap.ejs'), 'utf8');
 			ctx.type = 'application/xml; charset=utf-8';
 			ctx.body = ejs.render(template, {
 				bots: await models.bot.findAll(),
@@ -66,6 +69,46 @@ app.use(async (ctx, next) => {
 		} else {
 			ctx.status = 403;
 			ctx.body = 'Access denied';
+		}
+	} else if (ctx.path.match('/bots/\\d+/widget/*')) {
+		const clientId = ctx.path.substring(6).split('/')[0];
+		const bot = await models.bot.findOne({
+			where: {client_id: clientId},
+			include: [models.user],
+		});
+
+		if (!bot) {
+			ctx.type = 'text/html; charset=utf-8';
+			ctx.body = 'Not found';
+		} else {
+			await refreshBot(bot);
+			await attachBotStats(bot);
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			const template = await fs.readFile(path.join('webapp', 'widget-template.ejs'), 'utf8');
+			ctx.type = 'image/svg+xml; charset=utf-8';
+
+			const items = [];
+
+			if (bot.stats.guilds)
+				items.push(`${kFormatter(bot.stats.guilds)} guilds`);
+			if (bot.stats.users)
+				items.push(`${kFormatter(bot.stats.users)} users`);
+			if (bot.stats.voice_connections)
+				items.push(`${kFormatter(bot.stats.voice_connections)} voice connections`);
+
+			if (items.length < 2)
+				items.push(`Currently ${bot.stats.online ? 'Online' : 'Offline'}`);
+			if (items.length < 2)
+				items.push(`Updated ${moment.utc(bot.updated_at).fromNow()}`);
+
+			ctx.body = ejs.render(template, {
+				items,
+				upvotes: kFormatter(bot.upvotes),
+				username: bot.username,
+				link: `https://discordbotlist.com/bots/${bot.client_id}`,
+			});
 		}
 	} else {
 		ctx.type = 'text/html; charset=utf-8';

@@ -1,0 +1,30 @@
+<svg version="1.1"
+     baseProfile="full"
+     width="350"
+     height="200"
+     xmlns="http://www.w3.org/2000/svg"
+	 xmlns:xlink="http://www.w3.org/1999/xlink">
+	 
+    <style type="text/css">
+		@import url(https://fonts.googleapis.com/css?family=Roboto:400,700,900);
+        text {
+            font-family: 'Roboto', sans-serif;
+            
+		}
+		
+		.bold {
+			font-weight: bold;
+		}
+	</style>
+	
+    <rect width="350" height="200" fill="#202225" rx="5" ry="5" />
+	<text x="20" y="56" font-size="38" fill="#f44336" class="bold"><%= upvotes %> upvotes</text>
+
+	<% for (let i = 0; i < items.length; i++) { %>
+		<text x="20" y="<%= 88 + i*24 %>"  font-size="18" fill="#adadad"><%= items[i] %></text>
+	<% } %>
+
+	<a xlink:href="<%= link %>" target="_blank">
+		<text x="20" y="176" font-size="18" fill="#7289da">View <%= username %> on DBL 🢚</text>
+	</a>
+</svg>

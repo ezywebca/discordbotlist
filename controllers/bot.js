@@ -6,7 +6,7 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
-const serviceBot = require('../bot');
+const {refreshBot, attachBotStats} = require('../helpers');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -79,7 +79,7 @@ const controller = {
 				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
-				await attachStats(bot);
+				await attachBotStats(bot);
 				return bot;
 			})))
 			.map(bot => models.bot.transform(bot));
@@ -97,7 +97,7 @@ const controller = {
 			throw {status: 404, message: 'Not found'};
 
 		await refreshBot(bot);
-		await attachStats(bot);
+		await attachBotStats(bot);
 
 		const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 		bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
@@ -163,7 +163,7 @@ const controller = {
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
-			await attachStats(bot);
+			await attachBotStats(bot);
 			return refreshBot(bot);
 		}))).sort((a, b) => {
 			if (hotIds.indexOf(a.id) < hotIds.indexOf(b.id))
@@ -207,7 +207,7 @@ const controller = {
 				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 				bot.upvotes = upvotes.length;
-				await attachStats(bot);
+				await attachBotStats(bot);
 				return bot;
 			})))
 			.map(models.bot.transform);
@@ -452,7 +452,7 @@ const controller = {
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
-			await attachStats(bot);
+			await attachBotStats(bot);
 			return models.bot.transform(bot);
 		}));
 	},
@@ -473,75 +473,6 @@ function isURL(url) {
 	} catch (e) {
 		return false;
 	}
-}
-
-async function attachStats(bot) {
-	const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`));
-
-	bot.stats = {
-		online: serviceBot.isOnline(bot.client_id),
-	};
-
-	if (!stats || stats.length < 1)
-		return;
-
-	let showGuilds = stats.reduce((acc, item) => acc && !!item.guilds, true);
-	let showUsers = stats.reduce((acc, item) => acc && !!item.users, true);
-	let showVoiceConnections = stats.reduce((acc, item) => acc && !!item.voiceConnections, true);
-	
-	let guilds = 0;
-	let users = 0;
-	let voiceConnections = 0;
-
-	stats.forEach(item => {
-		if (showGuilds)
-			guilds += item.guilds;
-		if (showUsers)
-			users += item.users;
-		if (showVoiceConnections)
-			voiceConnections += item.voiceConnections;
-	});
-
-	if (showGuilds)
-		bot.stats.guilds = guilds;
-	if (showUsers)
-		bot.stats.users = users;
-	if (showVoiceConnections)
-		bot.stats.voice_connections = voiceConnections;
-}
-
-async function refreshBot(bot, force = false) {
-	try {
-		const cacheKey = `bots:${bot.id}:fresh`;
-
-		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
-			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.client_id), {
-				headers: {
-					'Authorization': `Bot ${process.env.BOT_TOKEN}`,
-				},
-			}).then(response => response.data);
-
-			bot.username = newBotInfo.username;
-			bot.discriminator = newBotInfo.discriminator;
-			bot.avatar = newBotInfo.avatar;
-
-			bot.changed('updated_at', true); // Because users need to know our info is up to date! ha!
-
-			await bot.save();
-			await bot.reload(); // Because Sequelize is too dumb to replace CURRENT_TIMESTAMP with the actual current timestamp after save
-			await redis.setAsync(cacheKey, 1, 'EX', 15 * 60);
-
-			logger.info(`Refreshed bot: ${bot.client_id}`);
-		}
-	} catch (e) {
-		if (e.response && e.response.status === 404)
-			await bot.destroy();
-			
-		logger.warn(`Could not refresh bot: ${bot.client_id}`);
-		logger.warn(e);
-	}
-
-	return bot;
 }
 
 function verifyBotInfo({
