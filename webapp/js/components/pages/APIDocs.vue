@@ -52,9 +52,13 @@
 
 		<h3>Widget</h3>
 		<p>You can embed a nice widget to your website by appending <code>/widget</code> to your bot URL to get an SVG, something like this:</p>
-		<pre><code>&lt;img src="https://discordbotlist.com/bots/460847447602757633/widget"&gt;</code></pre>
+
+		<pre><code>{{widgetCode}}</code></pre>
+
 		<p>...which looks like this:</p>
-		<img src="/bots/460847447602757633/widget">
+		<object type="image/svg+xml" data="/bots/460847447602757633/widget">
+			Discord Bot List widget <!-- fallback -->
+		</object>
 	</div>
 </template>
 
@@ -66,9 +70,14 @@
 	}
 </style>
 
-
 <script>
 	export default {
+		data: function() {
+			return {
+				widgetCode: '<object type="image/svg+xml" data="/bots/460847447602757633/widget">\n\tDiscord Bot List widget <!-- fallback -->\n</object>',
+			};
+		},
+
 		meta: {
 			title: 'API Documentation',
 
