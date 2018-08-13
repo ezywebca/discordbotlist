@@ -52,7 +52,8 @@
 					<div class="col">
 						<router-link :to="{name: 'home'}" class="navbar-brand">
 							<img src="/img/discordbotlist-transparent.svg" alt="Discord Bot List" height="34" title="Discord Bot List">
-							<span class="ml-2 thin">DISCORD BOT LIST</span>
+							<span class="ml-2 thin d-none d-sm-inline">DISCORD BOT LIST</span>
+							<span class="ml-2 thin d-inline d-sm-none">DBL</span>
 						</router-link>
 					</div>
 				</div>
