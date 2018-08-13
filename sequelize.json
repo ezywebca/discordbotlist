@@ -6,7 +6,8 @@
 
 	"define": {
 		"underscored": true,
-		"underscoredAll": true
+		"underscoredAll": true,
+		"charset": "utf8mb4"
 	}
   },
   "test": {
@@ -16,7 +17,8 @@
 
   	"define": {
   		"underscored": true,
-  		"underscoredAll": true
+  		"underscoredAll": true,
+  		"charset": "utf8mb4"
 	  }
   },
   "production": {
@@ -26,7 +28,8 @@
 
 	"define": {
 		"underscored": true,
-		"underscoredAll": true
+		"underscoredAll": true,
+		"charset": "utf8mb4"
 	}
   }
 }

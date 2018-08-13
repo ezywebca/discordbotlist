@@ -21,7 +21,8 @@ var config = {
 
 	define: {
 		underscored: true,
-		underscoredAll: true
+		underscoredAll: true,
+		charset: 'utf8mb4',
 	},
 
 	logging: false,
