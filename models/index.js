@@ -23,7 +23,7 @@ var config = {
 		underscored: true,
 		underscoredAll: true,
 		charset: 'utf8mb4',
-		collate: '',
+		collate: 'utf8mb4_general_ci',
 	},
 
 	logging: false,
