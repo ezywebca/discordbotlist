@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container mb-4">
 		<h3>Bot Statistics</h3>
 		<p class="mt-2">
 			If you're a bot owner, you might want to <code>POST</code> some stats to here. Here are few reasons why:
@@ -28,7 +28,7 @@
 			Soooo once you get authentication done right, you can <code>POST</code> to <code>/api/bots/:client_id/stats</code> the following:
 		</p>
 		<ul>
-			<li><code>shard_id</code> - <strong>Required.</strong> Use <code>0</code> if you don't use sharding.</li>
+			<li><code>shard_id</code> - Zero-indexed shard ID. <strong>If you do NOT use sharding,</strong> use <code>0</code></li>
 			<li><code>guilds</code> - Number of guilds (int)</li>
 			<li><code>users</code> - Number of users (int)</li>
 			<li><code>voice_connections</code> - Number of voice connections (int)</li>
@@ -49,8 +49,23 @@
 			In case you mess things up, we provided implemented a <code>DELETE</code> operation on the same end-point URL for wiping out all the stats
 			for all shards for that bot.
 		</p>
+
+		<h3>Widget</h3>
+		<p>You can embed a nice widget to your website by appending <code>/widget</code> to your bot URL to get an SVG, something like this:</p>
+		<pre><code>&lt;img src="https://discordbotlist.com/bots/460847447602757633/widget"&gt;</code></pre>
+		<p>...which looks like this:</p>
+		<img src="/bots/460847447602757633/widget">
 	</div>
 </template>
+
+<style scoped>
+	pre {
+		background: #202225;
+		color: #bababa;
+		padding: 16px;
+	}
+</style>
+
 
 <script>
 	export default {

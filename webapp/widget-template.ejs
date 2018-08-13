@@ -18,13 +18,13 @@
 	</style>
 	
     <rect width="350" height="200" fill="#202225" rx="5" ry="5" />
-	<text x="20" y="56" font-size="38" fill="#f44336" class="bold"><%= upvotes %> upvotes</text>
+	<text x="20" y="52" font-size="34" fill="#f44336" class="bold"><%= upvotes %> upvotes</text>
 
 	<% for (let i = 0; i < items.length; i++) { %>
-		<text x="20" y="<%= 88 + i*24 %>"  font-size="18" fill="#adadad"><%= items[i] %></text>
+		<text x="20" y="<%= 88 + i*24 %>"  font-size="16" fill="#adadad"><%= items[i] %></text>
 	<% } %>
 
 	<a xlink:href="<%= link %>" target="_blank">
-		<text x="20" y="176" font-size="18" fill="#7289da">View <%= username %> on DBL 🢚</text>
+		<text x="20" y="176" font-size="16" fill="#7289da">View <%= username %> on DBL 🢚</text>
 	</a>
 </svg>
