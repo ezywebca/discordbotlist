@@ -55,7 +55,7 @@
 		<pre><code>{{widgetCode}}</code></pre>
 
 		<p>...which looks like this:</p>
-		<object type="image/svg+xml" data="/bots/460847447602757633/widget">
+		<object type="image/svg+xml" data="https://discordbotlist.com/bots/460847447602757633/widget">
 			Discord Bot List widget <!-- fallback -->
 		</object>
 
