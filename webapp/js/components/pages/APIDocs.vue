@@ -5,7 +5,6 @@
 			If you're a bot owner, you might want to <code>POST</code> some stats to here. Here are few reasons why:
 		</p>
 		<ul>
-			<li>It makes the bot appear online</li>
 			<li>Based on the optional statistics you post, we might use that in the future promote your bot to more users</li>
 			<li>GuildsCountMasterRace™</li>
 			<li>Stats are fun!</li>
@@ -59,6 +58,9 @@
 		<object type="image/svg+xml" data="/bots/460847447602757633/widget">
 			Discord Bot List widget <!-- fallback -->
 		</object>
+
+		<h3>Online stats</h3>
+		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
 	</div>
 </template>
 
