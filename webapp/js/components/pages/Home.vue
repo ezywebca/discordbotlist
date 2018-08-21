@@ -3,7 +3,7 @@
 		<input class="form-control" v-model="keywords" placeholder="Search bots">
 		<div class="mt-4">
 			<div class="card-columns">
-				<div v-for="bot in bots" :key="bot.client_id">
+				<div v-for="bot in bots" :key="bot.id">
 					<bot :bot="bot"/>
 				</div>
 			</div>

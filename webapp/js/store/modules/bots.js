@@ -42,8 +42,8 @@ const actions = {
 		});
 	},
 
-	upvote: ({commit}, {clientId}) => {
-		commit(types.UPVOTE_BOT, clientId);
+	upvote: ({commit}, {id}) => {
+		commit(types.UPVOTE_BOT, id);
 	},
 
 	fetchIndex: ({commit}, {skip}) => {
@@ -58,47 +58,47 @@ const actions = {
 
 const mutations = {
 	[types.STORE_MY_BOTS](state, bots) {
-		state.mine = bots.map(bot => bot.client_id);
-		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
+		state.mine = bots.map(bot => bot.id);
+		state.bots = unionState(state.bots, bots, 'id', 'id');
 	},
 
 	[types.STORE_BOT_SEARCH_RESULTS](state, bots) {
-		state.searchResults = bots.map(bot => bot.client_id);
-		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
+		state.searchResults = bots.map(bot => bot.id);
+		state.bots = unionState(state.bots, bots, 'id', 'id');
 	},
 
 	[types.STORE_HOT_BOTS](state, bots) {
-		state.hot = bots.map(bot => bot.client_id);
-		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
+		state.hot = bots.map(bot => bot.id);
+		state.bots = unionState(state.bots, bots, 'id', 'id');
 	},
 
 	[types.STORE_BOT](state, bot) {
-		state.bots = unionState(state.bots, [bot], 'client_id', 'client_id');
+		state.bots = unionState(state.bots, [bot], 'id', 'id');
 	},
 
-	[types.UPVOTE_BOT](state, clientId) {
-		const bot = state.bots.find(bot => bot.client_id === clientId);
+	[types.UPVOTE_BOT](state, id) {
+		const bot = state.bots.find(bot => bot.id === id);
 		++bot.upvotes;
 		bot.is_upvoted = true;
 		
-		state.bots = unionState(state.bots, [bot], 'client_id', 'client_id');
+		state.bots = unionState(state.bots, [bot], 'id', 'id');
 	},
 
 	[types.STORE_INDEX_BOTS](state, bots) {
 		state.index = [...new Set([
 			...state.index,
-			...bots.map(bot => bot.client_id)
+			...bots.map(bot => bot.id)
 		])];
-		state.bots = unionState(state.bots, bots, 'client_id', 'client_id');
+		state.bots = unionState(state.bots, bots, 'id', 'id');
 	},
 };
 
 const getters = {
-	mine: state => state.mine.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
-	hot: state => state.hot.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
-	searchResults: state => state.searchResults.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
-	getBotById: state => id => state.bots.find(bot => bot.client_id === id),
-	index: state => state.index.map(clientId => state.bots.find(bot => bot.client_id === clientId)),
+	mine: state => state.mine.map(id => state.bots.find(bot => bot.id === id)),
+	hot: state => state.hot.map(id => state.bots.find(bot => bot.id === id)),
+	searchResults: state => state.searchResults.map(id => state.bots.find(bot => bot.id === id)),
+	getBotById: state => id => state.bots.find(bot => bot.id === id),
+	index: state => state.index.map(id => state.bots.find(bot => bot.id === id)),
 };
 
 export default {

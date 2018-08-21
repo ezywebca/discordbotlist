@@ -25,7 +25,7 @@
 			request.
 		</p>
 		<p>
-			Soooo once you get authentication done right, you can <code>POST</code> to <code>/api/bots/:client_id/stats</code> the following:
+			Soooo once you get authentication done right, you can <code>POST</code> to <code>/api/bots/:bot_id/stats</code> the following:
 		</p>
 		<ul>
 			<li><code>shard_id</code> - Zero-indexed shard ID. <strong>If you do NOT use sharding,</strong> use <code>0</code></li>

@@ -12,9 +12,9 @@
 		</div>
 		<form class="mt-4" @submit.prevent="add">
 			<div class="form-group row">
-				<label for="client-id" class="col-sm-2 col-form-label">Client ID</label>
+				<label for="bot-id" class="col-sm-2 col-form-label">Bot ID</label>
 				<div class="col-sm-10">
-					<input type="text" id="client-id" class="form-control" v-model="clientId" placeholder="Right click ⇒ Copy ID" maxlength="32" required>
+					<input type="text" id="bot-id" class="form-control" v-model="botId" placeholder="Right click bot ⇒ Copy ID" maxlength="32" required>
 				</div>
 			</div>
 			<div class="form-group row mt-3">
@@ -59,7 +59,7 @@
 						placeholder="Official guild invitation (you have one, right? otherwise that's LAME)">
 				</div>
 			</div>
-			<p class="mt-4">We'll use Client ID to pull more information.</p>
+			<p class="mt-4">We'll use Bot ID to pull more information.</p>
 			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="addButton">Add</button>
 		</form>
 	</div>
@@ -82,7 +82,7 @@
 	export default {
 		data: function() {
 			return {
-				clientId: '',
+				botId: '',
 				shortDescription: '',
 				longDescription: '',
 				prefix: '',
@@ -97,7 +97,7 @@
 				this.$refs.addButton.disabled = true;
 
 				axios.post('/api/bots', {
-					client_id: this.clientId,
+					id: this.botId,
 					short_description: this.shortDescription,
 					long_description: this.longDescription,
 					prefix: this.prefix,
@@ -105,7 +105,7 @@
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
 				}).then(response => {
-					this.$router.push({name: 'view-bot', params: {id: this.clientId}});
+					this.$router.push({name: 'view-bot', params: {id: this.botId}});
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));	
 					this.$refs.addButton.disabled = false;

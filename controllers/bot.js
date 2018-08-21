@@ -11,7 +11,7 @@ const {refreshBot, attachBotStats} = require('../helpers');
 const controller = {
 	add: async (ctx, next) => {
 		const {
-			client_id,
+			id,
 			short_description,
 			long_description,
 			prefix,
@@ -20,13 +20,13 @@ const controller = {
 			server_invite,
 		} = ctx.request.body;
 
-		if (!client_id)
-			throw {status: 422, message: 'Client ID is missing'};
+		if (!id)
+			throw {status: 422, message: 'Bot ID is missing'};
 
 		
 		verifyBotInfo(ctx.request.body);
 
-		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(client_id), {
+		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(id), {
 			headers: {
 				'Authorization': `Bot ${process.env.BOT_TOKEN}`,
 			},
@@ -46,7 +46,7 @@ const controller = {
 			throw {status: 422, message: 'Specified Client ID doesn\'t belong to a bot'};
 
 		const existingBot = await models.bot.findOne({
-			where: {client_id}
+			where: {id}
 		});
 
 		if (existingBot)
@@ -54,7 +54,7 @@ const controller = {
 			
 		const bot = await models.bot.create({
 			owner_id: ctx.state.user.id,
-			client_id,
+			discord_id: id,
 			short_description,
 			long_description,
 			prefix,
@@ -88,7 +88,7 @@ const controller = {
 	get: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				client_id: ctx.params.id
+				discord_id: ctx.params.id
 			},
 			include: [models.user]
 		});
@@ -216,7 +216,7 @@ const controller = {
 	delete: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				client_id: ctx.params.id
+				discord_id: ctx.params.id
 			},
 			include: [models.user]
 		});
@@ -234,7 +234,7 @@ const controller = {
 	upvote: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				client_id: ctx.params.id
+				discord_id: ctx.params.id
 			},
 			include: [models.user]
 		});
@@ -264,7 +264,7 @@ const controller = {
 
 		
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)
@@ -286,7 +286,7 @@ const controller = {
 
 	refresh: async (ctx, next) => {
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)
@@ -299,7 +299,7 @@ const controller = {
 
 	getUpvotes: async (ctx, next) => {
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)
@@ -324,7 +324,7 @@ const controller = {
 
 	generateToken: async (ctx, next) => {
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)
@@ -350,7 +350,7 @@ const controller = {
 			throw {status: 401, message: 'Bad token'};
 
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)
@@ -420,7 +420,7 @@ const controller = {
 			throw {status: 401, message: 'Bad token'};
 
 		const bot = await models.bot.findOne({
-			where: {client_id: ctx.params.id}
+			where: {discord_id: ctx.params.id}
 		});
 
 		if (!bot)

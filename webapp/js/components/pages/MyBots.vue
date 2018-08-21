@@ -10,7 +10,7 @@
 		</div>
 		<div class="mt-4">
 			<div class="card-columns">
-				<div v-for="bot in myBots" :key="bot.client_id">
+				<div v-for="bot in myBots" :key="bot.id">
 					<bot :bot="bot"/>
 				</div>
 			</div>

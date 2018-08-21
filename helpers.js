@@ -84,7 +84,7 @@ async function attachBotStats(bot) {
 	const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`));
 
 	bot.stats = {
-		online: serviceBot.isOnline(bot.client_id),
+		online: serviceBot.isOnline(bot.discord_id),
 	};
 
 	if (!stats || stats.length < 1)
@@ -120,7 +120,7 @@ async function refreshBot(bot, force = false) {
 		const cacheKey = `bots:${bot.id}:fresh`;
 
 		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
-			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.client_id), {
+			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.discord_id), {
 				headers: {
 					'Authorization': `Bot ${process.env.BOT_TOKEN}`,
 				},
@@ -136,13 +136,13 @@ async function refreshBot(bot, force = false) {
 			await bot.reload(); // Because Sequelize is too dumb to replace CURRENT_TIMESTAMP with the actual current timestamp after save
 			await redis.setAsync(cacheKey, 1, 'EX', 15 * 60);
 
-			logger.info(`Refreshed bot: ${bot.client_id}`);
+			logger.info(`Refreshed bot: ${bot.discord_id}`);
 		}
 	} catch (e) {
 		if (e.response && e.response.status === 404)
 			await bot.destroy();
 			
-		logger.warn(`Could not refresh bot: ${bot.client_id}`);
+		logger.warn(`Could not refresh bot: ${bot.discord_id}`);
 		logger.warn(e);
 	}
 

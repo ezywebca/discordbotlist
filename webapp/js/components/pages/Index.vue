@@ -2,7 +2,7 @@
 	<div class="container" id="header">
 		<div class="card-columns"
 			v-infinite-scroll="loadMore" infinite-scroll-disabled="disableScroll" infinite-scroll-distance="10">
-			<bot :bot="bot" v-for="bot in bots" :key="bot.client_id" />
+			<bot :bot="bot" v-for="bot in bots" :key="bot.id" />
 		</div>
 		<p v-if="!loading && bots.length < 1">There's none.</p>
 		<div v-if="end" class="mt-4 text-muted text-center">

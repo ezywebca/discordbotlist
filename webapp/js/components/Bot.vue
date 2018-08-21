@@ -1,11 +1,11 @@
 <template>
 	<div class="card">
-		<router-link :to="{name: 'view-bot', params: {id: bot.client_id}}">
+		<router-link :to="{name: 'view-bot', params: {id: bot.id}}">
 			<img class="card-img-top" :alt="bot.username"
-				:src="`https://cdn.discordapp.com/avatars/${bot.client_id}/${bot.avatar}.png?size=512`">
+				:src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`">
 		</router-link>
 		<div class="card-body">
-			<router-link :to="{name: 'view-bot', params: {id: bot.client_id}}" class="nostyle">
+			<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="nostyle">
 				<h5 class="card-title">
 					{{bot.username}}
 					<span :class="{

@@ -14,7 +14,7 @@ module.exports = {
 				type: Sequelize.INTEGER.UNSIGNED,
 				allowNull: false
 			},
-			client_id: {
+			discord_id: {
 				type: Sequelize.STRING(32),
 				allowNull: false,
 				unique: true,

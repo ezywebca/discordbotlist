@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex">
 			<div class="col-4">
-				<img :src="`https://cdn.discordapp.com/avatars/${bot.client_id}/${bot.avatar}.png?size=512`" class="bot-image">
+				<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image">
 			</div>
 			<div class="col-8">
 				<h1 class="username">
@@ -50,7 +50,7 @@
 						<a href="javascript:undefined" :class="{disabled: bot.is_upvoted}" @click="upvote">
 							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
-						<router-link :to="{name: 'upvote-bot', params: {id: bot.client_id}}" class="ml-1 text-muted">
+						<router-link :to="{name: 'upvote-bot', params: {id: bot.id}}" class="ml-1 text-muted">
 							<em>// voting page</em>
 						</router-link>
 					</span>
@@ -68,7 +68,7 @@
 							<em>// see docs</em>
 						</router-link>
 					</span>
-					<router-link :to="{name: 'edit-bot', params: {id: bot.client_id}}" v-if="isAdmin || bot.owner.id === currentUserId">
+					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
 					<a href="javascript:undefined" class="dangerous-text" @click="deleteBot" v-if="isAdmin || bot.owner.id === currentUserId">
@@ -81,7 +81,7 @@
 		<!-- Collapsed (Mobile) -->
 		<div class="collapsed row d-md-none d-lg-none d-xl-none">
 			<div class="text-center">
-				<img :src="`https://cdn.discordapp.com/avatars/${bot.client_id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
+				<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
 
 				<h1 class="username mt-3">
 					<strong itemprop="additionalName">{{bot.username}}</strong>
@@ -119,7 +119,7 @@
 						<a href="javascript:undefined" :class="{disabled: bot.is_upvoted}" @click="upvote">
 							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
-						<router-link :to="{name: 'upvote-bot', params: {id: bot.client_id}}" class="ml-1 text-muted">
+						<router-link :to="{name: 'upvote-bot', params: {id: bot.id}}" class="ml-1 text-muted">
 							<em>// upvoting page</em>
 						</router-link>
 					</span>
@@ -137,7 +137,7 @@
 							<em>// see docs</em>
 						</router-link>
 					</span>
-					<router-link :to="{name: 'edit-bot', params: {id: bot.client_id}}" v-if="isAdmin || bot.owner.id === currentUserId">
+					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
 					<a href="javascript:undefined" class="dangerous-text" @click="deleteBot" v-if="isAdmin || bot.owner.id === currentUserId">
@@ -212,7 +212,7 @@
 					window.location = this.discordOAuthURL + '&state=' + state;
 				} else {
 					axios.post(`/api/bots/${this.$route.params.id}/upvotes`).then(response => {
-						this.$store.dispatch('bots/upvote', {clientId: this.$route.params.id});
+						this.$store.dispatch('bots/upvote', {id: this.$route.params.id});
 					}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));
 					});
@@ -262,7 +262,7 @@
 				title: this.bot.username || 'View bot',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
 					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.bot.short_description || 'View a bot on Discord Bot List'},

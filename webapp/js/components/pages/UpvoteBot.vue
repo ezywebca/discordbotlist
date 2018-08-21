@@ -1,6 +1,6 @@
 <template>
 	<div class="container text-center">
-		<img :src="`https://cdn.discordapp.com/avatars/${bot.client_id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
+		<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
 		<h2 class="mt-3">
 			<strong>{{bot.username}}</strong>
 			<span class="text-muted">#{{bot.discriminator}}</span>
@@ -8,7 +8,7 @@
 		<button class="btn btn-primary btn-lg mt-4" :disabled="bot.is_upvoted" @click="upvote">
 			Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
 		</button>
-		<router-link :to="{name: 'view-bot', params: {id: bot.client_id}}" class="mt-3" id="view-bot-link">
+		<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="mt-3" id="view-bot-link">
 			See bot profile
 		</router-link>
 		<p v-if="bot.is_upvoted" class="text-muted mt-4">You can upvote every 12 hours :)</p>
@@ -45,7 +45,7 @@
 					window.location = this.discordOAuthURL + '&state=' + state;
 				} else {
 					axios.post(`/api/bots/${this.$route.params.id}/upvotes`).then(response => {
-						this.$store.dispatch('bots/upvote', {clientId: this.$route.params.id});
+						this.$store.dispatch('bots/upvote', {id: this.$route.params.id});
 					}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));
 					});
@@ -74,7 +74,7 @@
 				title: `Vote for ${this.bot.username}` || 'Vote for a bot',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.client_id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
 					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},

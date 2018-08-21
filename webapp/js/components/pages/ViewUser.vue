@@ -86,7 +86,7 @@
 		<h3 class="mt-5 mb-3">{{user.username}} owns {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}}:</h3>
 		
 		<div class="card-columns">
-			<div v-for="bot in user.bots" :key="bot.client_id">
+			<div v-for="bot in user.bots" :key="bot.id">
 				<bot :bot="bot"/>
 			</div>
 		</div>

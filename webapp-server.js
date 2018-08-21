@@ -71,9 +71,9 @@ app.use(async (ctx, next) => {
 			ctx.body = 'Access denied';
 		}
 	} else if (ctx.path.match('/bots/\\d+/widget/*')) {
-		const clientId = ctx.path.substring(6).split('/')[0];
+		const discordId = ctx.path.substring(6).split('/')[0];
 		const bot = await models.bot.findOne({
-			where: {client_id: clientId},
+			where: {discord_id: discordId},
 			include: [models.user],
 		});
 
@@ -107,7 +107,7 @@ app.use(async (ctx, next) => {
 				items,
 				upvotes: kFormatter(bot.upvotes),
 				username: bot.username,
-				link: `https://discordbotlist.com/bots/${bot.client_id}`,
+				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
 			});
 		}
 	} else {
