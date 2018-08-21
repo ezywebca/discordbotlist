@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h1>Edit {{bot.username}}</h1>
-		<form class="mt-4" @submit.prevent="edit">
+		<form class="mt-4" @submit.prevent="save">
 			<div class="form-group row mt-3">
 				<label for="short-description" class="col-sm-2 col-form-label">Short description</label>
 				<div class="col-sm-10">
@@ -44,7 +44,7 @@
 						placeholder="Official guild invitation (you have one, right? otherwise that's LAME)">
 				</div>
 			</div>
-			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="editButton">Edit</button>
+			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="editButton">Save</button>
 		</form>
 	</div>
 </template>
@@ -100,7 +100,7 @@
 		},
 
 		methods: {
-			edit() {
+			save() {
 				this.$refs.editButton.disabled = true;
 
 				axios.put(`/api/bots/${this.$route.params.id}`, {
