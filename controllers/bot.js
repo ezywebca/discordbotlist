@@ -46,11 +46,15 @@ const controller = {
 			throw {status: 422, message: 'Specified Client ID doesn\'t belong to a bot'};
 
 		const existingBot = await models.bot.findOne({
-			where: {id}
+			where: {discord_id: id},
+			paranoid: false,
 		});
 
 		if (existingBot)
-			throw {status: 422, message: 'Bot is already added!'};
+			if (existingBot.deleted_at)
+				throw {status: 422, message: 'Contact a DBL administrator'};
+			else 
+				throw {status: 422, message: 'Bot is already added!'};
 			
 		const bot = await models.bot.create({
 			owner_id: ctx.state.user.id,
