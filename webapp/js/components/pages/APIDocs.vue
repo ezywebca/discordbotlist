@@ -55,11 +55,11 @@
 		<pre><code>{{widgetCode}}</code></pre>
 
 		<p>...which looks like this:</p>
-		<object type="image/svg+xml" data="https://discordbotlist.com/bots/460847447602757633/widget">
+		<object type="image/svg+xml" data="/bots/460847447602757633/widget">
 			Discord Bot List widget <!-- fallback -->
 		</object>
 
-		<h3>Online stats</h3>
+		<h3 class="mt-3">Online stats</h3>
 		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
 	</div>
 </template>
@@ -76,7 +76,7 @@
 	export default {
 		data: function() {
 			return {
-				widgetCode: '<object type="image/svg+xml" data="/bots/460847447602757633/widget">\n\tDiscord Bot List widget <!-- fallback -->\n</object>',
+				widgetCode: '<object type="image/svg+xml" data="https://discordbotlist.com/bots/460847447602757633/widget">\n\tDiscord Bot List widget <!-- fallback -->\n</object>',
 			};
 		},
 
