@@ -6,9 +6,9 @@ module.exports = {
         "node": true
     },
     "extends": [
-		"eslint:recommended",
-		"plugin:vue/recommended"
-	],
+        "eslint:recommended",
+        "plugin:vue/recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
@@ -32,18 +32,18 @@ module.exports = {
         "vue/attributes-order": "off",
         "vue/max-attributes-per-line": "off",
         "vue/script-indent": [
-        	"error",
-        	"tab",
-        	{
-        		"baseIndent": 1
-        	}
+            "error",
+            "tab",
+            {
+                "baseIndent": 1
+            }
         ],
         "vue/html-indent": [
-        	"error",
-        	"tab",
+            "error",
+            "tab",
         ],
     },
     "globals": {
-    	"axios": false,
+        "axios": false,
     }
 };
