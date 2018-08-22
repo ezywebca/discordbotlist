@@ -53,6 +53,18 @@ const actions = {
 			commit(types.STORE_INDEX_BOTS, response.data);
 			return response;
 		});
+	},
+
+	verify: ({commit}, {id}) => {
+		return axios.post(`/api/bots/${id}/verification`).then(response => {
+			commit(types.VERIFY_BOT, id);
+		});
+	},
+
+	unverify: ({commit}, {id}) => {
+		return axios.delete(`/api/bots/${id}/verification`).then(response => {
+			commit(types.UNVERIFY_BOT, id);
+		});
 	}
 };
 
@@ -90,6 +102,20 @@ const mutations = {
 			...bots.map(bot => bot.id)
 		])];
 		state.bots = unionState(state.bots, bots, 'id', 'id');
+	},
+
+	[types.VERIFY_BOT](state, id) {
+		state.bots = unionState(state.bots, [{
+			...state.bots.find(bot => bot.id === id),
+			verified: true,
+		}], 'id', 'id');
+	},
+
+	[types.UNVERIFY_BOT](state, id) {
+		state.bots = unionState(state.bots, [{
+			...state.bots.find(bot => bot.id === id),
+			verified: false,
+		}], 'id', 'id');
 	},
 };
 

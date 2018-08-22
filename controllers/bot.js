@@ -460,6 +460,38 @@ const controller = {
 			return models.bot.transform(bot);
 		}));
 	},
+
+	verify: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: ctx.params.id,
+			}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		bot.verified = true;
+		await bot.save();
+		
+		ctx.status = 204;
+	},
+
+	unverify: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: ctx.params.id,
+			}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		bot.verified = false;
+		await bot.save();
+
+		ctx.status = 204;
+	},
 };
 
 function isInt(value) {

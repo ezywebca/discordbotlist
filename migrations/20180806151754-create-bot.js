@@ -55,6 +55,11 @@ module.exports = {
 				type: Sequelize.STRING(191),
 				allowNull: false,
 			},
+			verified: {
+				type: Sequelize.BOOLEAN,
+				allowNull: false,
+				defaultValue: false,
+			},
 			deleted_at: {
 				type: TIMESTAMP,
 				defaultValue: null,

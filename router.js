@@ -36,6 +36,10 @@ module.exports = () => {
 	router.get('/api/bots/:id/upvotes', throttle(), BotController.getUpvotes);
 	router.post('/api/bots/:id/refresh', throttle(), protect(), adminOnly, BotController.refresh);
 	router.post('/api/bots/:id/upvotes', throttle(), protect(), BotController.upvote);
+
+	router.post('/api/bots/:id/verification', throttle(), protect(), adminOnly, BotController.verify);
+	router.delete('/api/bots/:id/verification', throttle(), protect(), adminOnly, BotController.unverify);
+
 	router.post('/api/bots/:id/stats', throttle(), BotController.updateStats); // Token-based authentication inside controller
 	router.delete('/api/bots/:id/stats', throttle(2, 900, true), BotController.resetStats); // same
 	

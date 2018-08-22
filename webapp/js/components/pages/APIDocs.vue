@@ -1,5 +1,5 @@
 <template>
-	<div class="container mb-4">
+	<div class="container mb-5">
 		<h3>Bot Statistics</h3>
 		<p class="mt-2">
 			If you're a bot owner, you might want to <code>POST</code> some stats to here. Here are few reasons why:
@@ -61,6 +61,12 @@
 
 		<h3 class="mt-3">Online stats</h3>
 		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
+
+		<h3>Bot verification</h3>
+		<p>
+			If you want your bot to have a fancy golden star that assures the user the bot is not spam, then
+			<router-link :to="{name: 'contact'}">contact us thru Discord.</router-link>
+		</p>
 	</div>
 </template>
 

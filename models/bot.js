@@ -54,6 +54,11 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING(191),
 			allowNull: true,
 		},
+		verified: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
 		deleted_at: {
 			type: TIMESTAMP,
 			defaultValue: null,
@@ -89,6 +94,7 @@ module.exports = (sequelize, DataTypes) => {
 			website: bot.website,
 			bot_invite: bot.bot_invite,
 			server_invite: bot.server_invite,
+			verified: !!bot.verified,
 			upvotes: bot.upvotes,
 			is_upvoted: bot.is_upvoted,
 			created_at: bot.created_at,

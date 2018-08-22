@@ -16,6 +16,7 @@
 						'mb-2': true,
 						'online': bot.stats.online,
 					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
+					<span class=" fas fa-star ml-1 mb-2 verification-badge" title="Verified" v-if="bot.verified" />
 				</h1>
 				<h6 class="text-muted">
 					<div class="row">
@@ -68,6 +69,9 @@
 							<em>// see docs</em>
 						</router-link>
 					</span>
+					<a href="javascript:undefined" @click="() => (bot.verified ? unverifyBot : verifyBot)()" v-if="isAdmin">
+						<span class="mr-1 fas fa-star" /> {{bot.verified ? 'Un-verify bot' : 'Verify bot'}}
+					</a>
 					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
@@ -94,6 +98,7 @@
 						'mb-2': true,
 						'online': bot.stats.online,
 					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
+					<span class=" fas fa-star ml-1 mb-2 verification-badge" title="Verified" v-if="bot.verified" />
 				</h1>
 				<h6 class="text-muted">
 					Added: {{moment(bot.created_at).fromNow()}} <br>
@@ -137,6 +142,9 @@
 							<em>// see docs</em>
 						</router-link>
 					</span>
+					<a href="javascript:undefined" @click="() => (bot.verified ? unverifyBot : verifyBot)()" v-if="isAdmin">
+						<span class="mr-1 fas fa-star" /> {{bot.verified ? 'Un-verify bot' : 'Verify bot'}}
+					</a>
 					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
@@ -162,9 +170,16 @@
 		display: block;
 	}
 
-	.availability-badge {
+	.verification-badge, .availability-badge {
 		vertical-align: middle;
 		font-size: 18px;
+	}
+
+	.verification-badge {
+		color: #e0cf37;
+	}
+
+	.availability-badge {
 		color: #747f8d;
 	}
 
@@ -231,6 +246,18 @@
 				axios.get(`/api/bots/${this.$route.params.id}/token`).then(response => {
 					this.botToken = response.data.token;
 				}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));
+				});
+			},
+
+			verifyBot: function() {
+				this.$store.dispatch('bots/verify', {id: this.$route.params.id}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));
+				});
+			},
+
+			unverifyBot: function() {
+				this.$store.dispatch('bots/unverify', {id: this.$route.params.id}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));
 				});
 			},

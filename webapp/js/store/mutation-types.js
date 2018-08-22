@@ -8,3 +8,5 @@ export const STORE_BOT = 'STORE_BOT';
 export const STORE_USER = 'STORE_USER';
 export const UPVOTE_BOT = 'UPVOTE_BOT';
 export const STORE_INDEX_BOTS = 'STORE_INDEX_BOTS';
+export const VERIFY_BOT = 'VERIFY_BOT';
+export const UNVERIFY_BOT = 'UNVERIFY_BOT';

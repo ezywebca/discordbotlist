@@ -16,6 +16,7 @@
 						'mb-1': true,
 						'online': bot.stats.online,
 					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
+					<span class=" fas fa-star ml-1 mb-1 verification-badge" title="Verified" v-if="bot.verified" />
 				</h5>
 			</router-link>
 			<h6 class="card-subtitle mb-2 text-muted">{{bot.upvotes}} upvotes</h6>
@@ -28,9 +29,16 @@
 </template>
 
 <style scoped>
-	.availability-badge {
+	.verification-badge, .availability-badge {
 		vertical-align: middle;
-		font-size: 15px;
+		font-size: 18px;
+	}
+
+	.verification-badge {
+		color: #e0cf37;
+	}
+
+	.availability-badge {
 		color: #747f8d;
 	}
 
