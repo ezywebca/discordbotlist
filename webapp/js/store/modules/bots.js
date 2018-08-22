@@ -43,7 +43,9 @@ const actions = {
 	},
 
 	upvote: ({commit}, {id}) => {
-		commit(types.UPVOTE_BOT, id);
+		return axios.post(`/api/bots/${id}/upvotes`).then(response => {
+			commit(types.UPVOTE_BOT, id);
+		});
 	},
 
 	fetchIndex: ({commit}, {skip}) => {

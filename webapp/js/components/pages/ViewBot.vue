@@ -226,9 +226,7 @@
 					localStorage.setItem('discord_oauth_state', state);
 					window.location = this.discordOAuthURL + '&state=' + state;
 				} else {
-					axios.post(`/api/bots/${this.$route.params.id}/upvotes`).then(response => {
-						this.$store.dispatch('bots/upvote', {id: this.$route.params.id});
-					}).catch(e => {
+					this.$store.dispatch('bots/upvote', {id: this.$route.params.id}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));
 					});
 				}
