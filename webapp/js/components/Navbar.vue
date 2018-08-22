@@ -11,8 +11,8 @@
 					<router-link :to="{name: 'home'}" tag="li" class="nav-item" exact>
 						<a class="nav-link">Home</a>
 					</router-link>
-					<router-link :to="{name: 'index'}" tag="li" class="nav-item">
-						<a class="nav-link">Index</a>
+					<router-link :to="{name: 'bots'}" tag="li" class="nav-item">
+						<a class="nav-link">Bots</a>
 					</router-link>
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>
@@ -62,8 +62,8 @@
 					<router-link :to="{name: 'home'}" tag="li" class="nav-item" exact>
 						<a class="nav-link">Home</a>
 					</router-link>
-					<router-link :to="{name: 'index'}" tag="li" class="nav-item">
-						<a class="nav-link">Index</a>
+					<router-link :to="{name: 'bots'}" tag="li" class="nav-item">
+						<a class="nav-link">Bots</a>
 					</router-link>
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>

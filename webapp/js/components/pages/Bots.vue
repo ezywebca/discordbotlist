@@ -26,7 +26,7 @@
 		},
 
 		asyncData: function(store) {
-			return store.dispatch('bots/fetchIndex', {skip: 0});
+			return store.dispatch('bots/fetchAll', {skip: 0});
 		},
 
 		methods: {
@@ -34,7 +34,7 @@
 				this.loading = true;
 				this.disableScroll = true;
 
-				this.$store.dispatch('bots/fetchIndex', {skip: this.bots.length}).then(response => {
+				this.$store.dispatch('bots/fetchAll', {skip: this.bots.length}).then(response => {
 					if (response.data && response.data.length < 1)
 						this.end = true;
 					else
@@ -47,16 +47,16 @@
 
 		computed: {
 			...mapGetters({
-				bots: 'bots/index',
+				bots: 'bots/all',
 			}),
 		},
 
 		meta: {
-			title: 'Index',
+			title: 'Bots',
 
 			meta: [
 				{name: 'description', content: 'All the bots on Discord Bot List!'},
-				{property: 'og:title', content: 'Index / Discord Bot List'},
+				{property: 'og:title', content: 'Bots / Discord Bot List'},
 				{property: 'og:description', content: 'All the bots on Discord Bot List!'},
 			],
 		},

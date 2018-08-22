@@ -6,7 +6,7 @@ const state = {
 	hot: [],
 	searchResults: [],
 	bots: [],
-	index: [],
+	all: [],
 };
 
 
@@ -48,11 +48,11 @@ const actions = {
 		});
 	},
 
-	fetchIndex: ({commit}, {skip}) => {
+	fetchAll: ({commit}, {skip}) => {
 		return axios.get('/api/bots', {
 			params: {skip, all: 1}
 		}).then(response => {
-			commit(types.STORE_INDEX_BOTS, response.data);
+			commit(types.STORE_ALL_BOTS, response.data);
 			return response;
 		});
 	},
@@ -104,9 +104,9 @@ const mutations = {
 		state.bots = unionState(state.bots, [bot], 'id', 'id');
 	},
 
-	[types.STORE_INDEX_BOTS](state, bots) {
-		state.index = [...new Set([
-			...state.index,
+	[types.STORE_ALL_BOTS](state, bots) {
+		state.all = [...new Set([
+			...state.all,
 			...bots.map(bot => bot.id)
 		])];
 		state.bots = unionState(state.bots, bots, 'id', 'id');
@@ -132,7 +132,7 @@ const mutations = {
 		state.hot = state.hot.filter(hot => hot !== id);
 		state.searchResults = state.searchResults.filter(result => result !== id);
 		state.mine = state.mine.filter(item => item !== id);
-		state.index = state.index.filter(item => item !== id);
+		state.all = state.all.filter(item => item !== id);
 	}
 };
 
@@ -141,7 +141,7 @@ const getters = {
 	hot: state => state.hot.map(id => state.bots.find(bot => bot.id === id)),
 	searchResults: state => state.searchResults.map(id => state.bots.find(bot => bot.id === id)),
 	getBotById: state => id => state.bots.find(bot => bot.id === id),
-	index: state => state.index.map(id => state.bots.find(bot => bot.id === id)),
+	all: state => state.all.map(id => state.bots.find(bot => bot.id === id)),
 };
 
 export default {
