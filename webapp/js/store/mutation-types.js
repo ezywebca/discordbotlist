@@ -10,3 +10,4 @@ export const UPVOTE_BOT = 'UPVOTE_BOT';
 export const STORE_INDEX_BOTS = 'STORE_INDEX_BOTS';
 export const VERIFY_BOT = 'VERIFY_BOT';
 export const UNVERIFY_BOT = 'UNVERIFY_BOT';
+export const DELETE_BOT = 'DELETE_BOT';

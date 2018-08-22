@@ -67,6 +67,12 @@ const actions = {
 		return axios.delete(`/api/bots/${id}/verification`).then(response => {
 			commit(types.UNVERIFY_BOT, id);
 		});
+	},
+
+	delete: ({commit}, {id}) => {
+		return axios.delete(`/api/bots/${id}`).then(response => {
+			commit(types.DELETE_BOT, id);	
+		});
 	}
 };
 
@@ -119,6 +125,15 @@ const mutations = {
 			verified: false,
 		}], 'id', 'id');
 	},
+
+	[types.DELETE_BOT](state, id) {
+		state.bots = state.bots.filter(bot => bot.id !== id);
+
+		state.hot = state.hot.filter(hot => hot !== id);
+		state.searchResults = state.searchResults.filter(result => result !== id);
+		state.mine = state.mine.filter(item => item !== id);
+		state.index = state.index.filter(item => item !== id);
+	}
 };
 
 const getters = {

@@ -212,9 +212,8 @@
 				if (!this.verifyingDeletion) {
 					this.verifyingDeletion = true;
 				} else {
-					axios.delete('/api/bots/' + this.$route.params.id).then(response => {
-						this.$router.push({name: 'my-bots'});
-					}).catch(e => {
+					this.$router.push({name: 'my-bots'});
+					this.$store.dispatch('bots/delete', {id: this.$route.params.id}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));
 					});
 				}
