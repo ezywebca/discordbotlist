@@ -223,7 +223,7 @@
 				if (!this.isAuthenticated) {
 					const state = generateRandomString(32);
 					localStorage.setItem('discord_oauth_state', state);
-					setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 300);
+					setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
 				} else {
 					this.$store.dispatch('bots/upvote', {id: this.$route.params.id}).catch(e => {
 						this.$vueOnToast.pop('error', extractError(e));

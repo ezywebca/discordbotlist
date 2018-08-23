@@ -140,7 +140,7 @@
 			signIn: function() {
 				const state = generateRandomString(32);
 				localStorage.setItem('discord_oauth_state', state);
-				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 300);
+				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
 			}
 		},
 
