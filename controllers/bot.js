@@ -78,15 +78,14 @@ const controller = {
 			include: [models.user]
 		});
 
-		ctx.body = (await Promise.all((await Promise.all(bots.map(refreshBot)))
-			.map(async bot => {
-				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-				bot.upvotes = upvotes.length;
-				await attachBotStats(bot);
-				return bot;
-			})))
-			.map(bot => models.bot.transform(bot));
+		ctx.body = (await Promise.all(bots.map(async bot => {
+			await refreshBot(bot);
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			await attachBotStats(bot);
+			return bot;
+		}))).map(bot => models.bot.transform(bot));
 	},
 
 	get: async (ctx, next) => {
@@ -164,11 +163,12 @@ const controller = {
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
+			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
 			await attachBotStats(bot);
-			return refreshBot(bot);
+			return bot;
 		}))).sort((a, b) => {
 			if (hotIds.indexOf(a.id) < hotIds.indexOf(b.id))
 				return -1;
@@ -206,15 +206,14 @@ const controller = {
 			include: [models.user]
 		});
 
-		ctx.body = (await Promise.all((await Promise.all(bots.map(refreshBot)))
-			.map(async bot => {
-				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-				bot.upvotes = upvotes.length;
-				await attachBotStats(bot);
-				return bot;
-			})))
-			.map(models.bot.transform);
+		ctx.body = (await Promise.all(bots.map(async bot => {
+			await refreshBot(bot);
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			await attachBotStats(bot);
+			return bot;
+		}))).map(models.bot.transform);
 	},
 
 	delete: async (ctx, next) => {

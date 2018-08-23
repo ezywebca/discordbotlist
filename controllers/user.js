@@ -14,6 +14,8 @@ module.exports = {
 		if (!user)
 			throw {status: 404, message: 'Not found'};
 
+		await refreshUser(user);
+
 		user.bots = await Promise.all(user.bots.map(async bot => {
 			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
@@ -23,7 +25,7 @@ module.exports = {
 			return bot;
 		}));
 
-		ctx.body = models.user.transform(await refreshUser(user));
+		ctx.body = models.user.transform(user);
 	},
 
 	ban: async (ctx, next) => {
