@@ -139,11 +139,8 @@
 
 			signIn: function() {
 				const state = generateRandomString(32);
-				console.log(`Storing state ${state}`);
 				localStorage.setItem('discord_oauth_state', state);
-				console.log(`Stated stored! ${localStorage.getItem('discord_oauth_state')}`);
-				
-				window.location = this.discordOAuthURL + '&state=' + state;
+				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 300);
 			}
 		},
 

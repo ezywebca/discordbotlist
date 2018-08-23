@@ -18,11 +18,9 @@
 			const code = getURLParameter('code');
 			const state = getURLParameter('state');
 
-			console.log(code, state);
-
 			if (code) {
 				const originalState = localStorage.getItem('discord_oauth_state');
-				console.log(originalState);
+				
 				if (!originalState || originalState !== state) {
 					this.status = 'State mismatch error.';
 				} else {
