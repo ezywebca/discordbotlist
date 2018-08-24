@@ -84,9 +84,9 @@ const controller = {
 • Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 • Short description: **${short_description}**
 • Prefix: **${prefix}**
-• Website: ${website ? `[link](${website})` : '*None*'}
+• Website: ${website ? `[link](${website})` : 'None'}
 • Invite: [link](${bot_invite})
-• Website: [link](${server_invite})
+• Server: [link](${server_invite})
 `,
 		});
 
@@ -328,7 +328,7 @@ const controller = {
 		if (server_invite !== bot.server_invite)
 			description += `\n• New server: [link](${server_invite})`;
 		if (website !== bot.website)
-			description += `\n• New website: [link](${website})`;
+			description += `\n• New website: ${website ? `[link](${website})` : 'None'}`;
 
 		await bot.update({
 			short_description,
