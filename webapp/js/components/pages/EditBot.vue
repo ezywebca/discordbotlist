@@ -19,7 +19,7 @@
 			<div class="form-group row mt-3">
 				<label for="prefix" class="col-sm-2 col-form-label">Prefix</label>
 				<div class="col-sm-10">
-					<input type="text" id="prefix" class="form-control" v-model="prefix" maxlength="16" required
+					<input type="text" id="prefix" class="form-control" v-model="prefix" maxlength="48" required
 						placeholder="Prefix (something like ! or +)">
 				</div>
 			</div>
