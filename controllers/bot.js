@@ -81,7 +81,7 @@ const controller = {
 			color: '#43b581',
 			description: `
 • Bot: **${botInfo.username}#${botInfo.discriminator}** (ID: **${id}**)		
-• Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${id}**)
+• Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 • Short description: **${short_description}**
 • Prefix: **${prefix}**
 • Website: ${website ? `[link](${website})` : '*None*'}
@@ -250,6 +250,20 @@ const controller = {
 			throw {status: 403, message: 'Access denied'};
 
 		await bot.destroy();
+
+		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
+			`https://cdn.discordapp.com/embed/avatars/${botInfo.discriminator % 5}.png`;
+
+		serviceBot.log({
+			title: 'Bot deleted',
+			image: avatarUrl,
+			color: '#f04747',
+			description: `
+• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
+• Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
+• Deleted by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
+`,
+		});
 
 		ctx.status = 204;
 	},
