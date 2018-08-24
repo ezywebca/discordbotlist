@@ -43,6 +43,8 @@ module.exports = {
 		if (image)
 			embed.setImage(image);
 
+		embed.setTimestamp(Date.now());
+
 		return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.LOGGING_CHANNEL_ID)
 			.send(embed);
 	},
