@@ -7,6 +7,7 @@ const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
 const {refreshBot, attachBotStats} = require('../helpers');
+const serviceBot = require('../bot');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -68,6 +69,25 @@ const controller = {
 			username: botInfo.username,
 			discriminator: botInfo.discriminator,
 			avatar: botInfo.avatar,
+		});
+
+		const avatarUrl = botInfo.avatar ? `https://cdn.discordapp.com/avatars/${id}/${botInfo.avatar}.png?size=512`
+			: `https://cdn.discordapp.com/embed/avatars/${botInfo.discriminator % 5}.png`;
+
+		serviceBot.log({
+			title: 'New bot added',
+			url: `${ctx.origin}/bots/${id}`,
+			image: avatarUrl,
+			color: '#43b581',
+			description: `
+• Bot: **${botInfo.username}#${botInfo.discriminator}** (ID: **${id}**)		
+• Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${id}**)
+• Short description: **${short_description}**
+• Prefix: **${prefix}**
+• Website: ${website ? `[link](${website})` : '*None*'}
+• Invite: [link](${bot_invite})
+• Website: [link](${server_invite})
+`,
 		});
 
 		ctx.status = 204;
