@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import VueMeta from 'vue-meta';
 import VueOnToast from 'vue-on-toast';
+import VueAnalytics from 'vue-analytics';
 import App from './components/App';
 import axios from 'axios';
 import root from 'window-or-global';
@@ -59,6 +60,11 @@ router.beforeEach((to, from, next) => {
 	} else next();
 });
 
+if (process.env.NODE_ENV === 'production')
+	Vue.use(VueAnalytics, {
+		id: 'UA-80585608-2',
+		router,
+	});
 
 export function createApp() {
 	const app = new Vue({
