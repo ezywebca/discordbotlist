@@ -310,7 +310,27 @@ const controller = {
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
 			
-		const bot = await bot.update({
+
+		let description = `
+• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
+• Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
+• Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
+`;
+
+		if (short_description !== bot.short_description)
+			description += `\n• New short description: **${short_description}**`;
+		if (long_description !== bot.long_description)
+			description += '\n• Long description changed';
+		if (prefix !== bot.prefix)
+			description += `\n• New prefix: **${prefix}**`;
+		if (bot_invite !== bot.bot_invite)
+			description += `\n• New invite: [link](${bot_invite})`;
+		if (server_invite !== bot.server_invite)
+			description += `\n• New server: [link](${server_invite})`;
+		if (website !== bot.website)
+			description += `\n• New website: [link](${website})`;
+
+		await bot.update({
 			short_description,
 			long_description,
 			prefix,
@@ -325,13 +345,10 @@ const controller = {
 
 		serviceBot.log({
 			title: 'Bot edited',
+			url: `${ctx.origin}/bots/${bot.discord_id}`,
 			image: avatarUrl,
 			color: '#e0cf37',
-			description: `
-• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
-• Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
-• Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
-`,
+			description,
 		});
 
 		ctx.status = 204;
