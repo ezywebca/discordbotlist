@@ -379,7 +379,7 @@ const controller = {
 			throw {status: 422, message: 'The \'voice_connections\' parameter must be a number'};
 
 		const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`)) || [];
-		const shardStats = stats.find(x => x.shard_id === shard_id);
+		const shardStats = stats.find(x => x.shard_id === parseInt(shard_id));
 
 		if (shardStats) {
 			if (guilds)
