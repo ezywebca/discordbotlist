@@ -252,7 +252,7 @@ const controller = {
 		await bot.destroy();
 
 		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
-			`https://cdn.discordapp.com/embed/avatars/${botInfo.discriminator % 5}.png`;
+			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
 
 		serviceBot.log({
 			title: 'Bot deleted',
@@ -301,7 +301,8 @@ const controller = {
 
 		
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
+			where: {discord_id: ctx.params.id},
+			include: [models.user],
 		});
 
 		if (!bot)
@@ -309,13 +310,28 @@ const controller = {
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
 			
-		await bot.update({
+		const bot = await bot.update({
 			short_description,
 			long_description,
 			prefix,
 			website,
 			bot_invite,
 			server_invite
+		});
+
+
+		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
+			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
+
+		serviceBot.log({
+			title: 'Bot edited',
+			image: avatarUrl,
+			color: '#e0cf37',
+			description: `
+• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
+• Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
+• Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
+`,
 		});
 
 		ctx.status = 204;
