@@ -112,10 +112,6 @@
 		data: function() {
 			return {
 				showMenu: false,
-				dropdownItems: [
-					{label: 'My bots', key: 'my-bots'},
-					{label: 'Sign out', key: 'sign-out'},
-				]
 			};
 		},
 
@@ -133,6 +129,9 @@
 					break;
 				case 'my-bots':
 					this.$router.push({name: 'my-bots'});
+					break;
+				case 'uninvited-bots':
+					this.$router.push({name: 'uninvited-bots'});
 					break;
 				}
 			},
@@ -159,11 +158,21 @@
 					id: state.id,
 					username: state.username,
 					avatar: state.avatar,
+					admin: state.admin,
 				})
 			}),
+
 			...mapGetters({
 				isAuthenticated: 'auth/isAuthenticated',
 			}),
+
+			dropdownItems: function() {
+				return [
+					{label: 'My bots', key: 'my-bots'},
+					...(this.user && this.user.admin ? [{label: 'Uninvited bots', key: 'uninvited-bots'}] : []),
+					{label: 'Sign out', key: 'sign-out'},
+				];
+			},
 		},
 
 		components: {

@@ -558,6 +558,20 @@ const controller = {
 
 		ctx.status = 204;
 	},
+
+	getUninvited: async (ctx, next) => {
+		const bots = await models.bot.findAll();
+		const uninvitedBots = bots.filter(bot => !serviceBot.isInvited(bot.id));
+
+		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
+			await refreshBot(bot);
+			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
+			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
+			bot.upvotes = upvotes.length;
+			await attachBotStats(bot);
+			return models.bot.transform(bot);
+		}));
+	}
 };
 
 function isInt(value) {

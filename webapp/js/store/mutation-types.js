@@ -11,3 +11,4 @@ export const STORE_ALL_BOTS = 'STORE_ALL_BOTS';
 export const VERIFY_BOT = 'VERIFY_BOT';
 export const UNVERIFY_BOT = 'UNVERIFY_BOT';
 export const DELETE_BOT = 'DELETE_BOT';
+export const STORE_UNINVITED_BOTS = 'STORE_UNINVITED_BOTS';

@@ -7,6 +7,7 @@ const state = {
 	searchResults: [],
 	bots: [],
 	all: [],
+	uninvited: [],
 };
 
 
@@ -24,6 +25,13 @@ const actions = {
 			params: {keywords}
 		}).then(response => {
 			commit(types.STORE_BOT_SEARCH_RESULTS, response.data);
+			return response;
+		});
+	},
+
+	fetchUninvited: ({commit}) => {
+		return axios.get('/api/bots/uninvited').then(response => {
+			commit(types.STORE_UNINVITED_BOTS, response.data);
 			return response;
 		});
 	},
@@ -133,11 +141,20 @@ const mutations = {
 		state.searchResults = state.searchResults.filter(result => result !== id);
 		state.mine = state.mine.filter(item => item !== id);
 		state.all = state.all.filter(item => item !== id);
+	},
+
+	[types.STORE_UNINVITED_BOTS](state, bots) {
+		state.uninvited = [...new Set([
+			...state.all,
+			...bots.map(bot => bot.id)
+		])];
+		state.bots = unionState(state.bots, bots, 'id', 'id');
 	}
 };
 
 const getters = {
 	mine: state => state.mine.map(id => state.bots.find(bot => bot.id === id)),
+	uninvited: state => state.uninvited.map(id => state.bots.find(bot => bot.id === id)),
 	hot: state => state.hot.map(id => state.bots.find(bot => bot.id === id)),
 	searchResults: state => state.searchResults.map(id => state.bots.find(bot => bot.id === id)),
 	getBotById: state => id => state.bots.find(bot => bot.id === id),

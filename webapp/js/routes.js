@@ -10,6 +10,7 @@ import ViewUser from './components/pages/ViewUser';
 import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
 import Bots from './components/pages/Bots';
+import UninvitedBots from './components/pages/UninvitedBots';
 
 export default [
 	{
@@ -30,10 +31,18 @@ export default [
 		component: AuthCallback,
 	}, {
 		name: 'my-bots',
-		path: '/my-bots',
+		path: '/bots/mine',
 		component: MyBots,
 		meta: {
 			requiresAuth: true,
+		}
+	}, {
+		name: 'uninvited-bots',
+		path: '/bots/uninvited',
+		component: UninvitedBots,
+		meta: {
+			requiresAuth: true,
+			requiresAdmin: true,
 		}
 	}, {
 		name: 'add-bot',

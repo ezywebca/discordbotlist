@@ -51,6 +51,9 @@ router.beforeEach((to, from, next) => {
 		} else {
 			next({name: 'home'})
 		}
+	} else if (to.meta.requiresAdmin && (!store.getters['auth/isAuthenticated'] || !store.state.auth.admin)) {
+		VueOnToast.ToastService.pop('error', 'How about no');
+		next({name: 'home'});
 	} else if (to.name === 'auth-callback' && store.getters['auth/isAuthenticated']) {
 		if (from.name) {
 			VueOnToast.ToastService.pop('error', 'You are already signed in!');

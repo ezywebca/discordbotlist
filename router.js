@@ -27,6 +27,7 @@ module.exports = () => {
 	router.post('/api/auth/login', throttle(5, 120), AuthController.login);
 
 	router.get('/api/bots', throttle(), protect(true), BotController.index);
+	router.get('/api/bots/uninvited', throttle(), protect(), adminOnly, BotController.getUninvited);
 	router.post('/api/bots', throttle(2, 900, true), protect(), BotController.add);
 	router.get('/api/bots/mine', throttle(), protect(), BotController.getMine);
 	router.get('/api/bots/:id', throttle(), protect(true), BotController.get);

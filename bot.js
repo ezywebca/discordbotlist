@@ -20,6 +20,10 @@ module.exports = {
 		});
 	},
 
+	isInvited: id => {
+		return !!bot.guilds.get(process.env.GUILD_ID).members.find(member => member.id === id);
+	},
+
 	log: ({title, description, color, url, image}) => {
 		if (discordLoggingDisabled)
 			return;
