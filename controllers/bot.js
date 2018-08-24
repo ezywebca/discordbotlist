@@ -367,7 +367,7 @@ const controller = {
 
 		const {shard_id, guilds, users, voice_connections} = ctx.request.body;
 
-		if (!shard_id)
+		if (!shard_id && shard_id !== 0)
 			throw {status: 422, message: 'shard_id is a required parameter'};
 		if (!isInt(shard_id))
 			throw {status: 422, message: 'shard_id must be an integer'};
