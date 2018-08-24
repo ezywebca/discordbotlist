@@ -598,7 +598,7 @@ function verifyBotInfo({
 		throw {status: 422, message: 'Short description is too long'};
 	if (long_description.length > 8192)
 		throw {status: 422, message: 'Long description is too long'};
-	if (prefix.length > 16)
+	if (prefix.length > 48)
 		throw {status: 422, message: 'Prefix is too long'};
 	if (bot_invite.length > 191)
 		throw {status: 422, message: 'Bot invite is too long'};
