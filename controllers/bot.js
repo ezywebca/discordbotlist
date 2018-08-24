@@ -561,7 +561,7 @@ const controller = {
 
 	getUninvited: async (ctx, next) => {
 		const bots = await models.bot.findAll();
-		const uninvitedBots = bots.filter(bot => !serviceBot.isInvited(bot.id));
+		const uninvitedBots = bots.filter(bot => !serviceBot.isInvited(bot.discord_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await refreshBot(bot);
