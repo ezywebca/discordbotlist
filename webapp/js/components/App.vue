@@ -23,7 +23,7 @@
 
 		meta: {
 			title: '404',
-			titleTemplate: '%s / DiscordBotList',
+			titleTemplate: '%s / Discord Bot List',
 
 			meta: [
 				{name: 'og:image', content: '/img/discordbotlist.png', vmid: 'og:image'},
