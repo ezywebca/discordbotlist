@@ -3,7 +3,7 @@
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex"
 			itemscope itemtype="http://schema.org/Person">
 			<div class="col-4">
-				<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`" class="user-image" itemprop="image">
+				<img :src="getAvatar(user)" class="user-image" itemprop="image">
 			</div>
 			<div class="col-8">
 				<h1 class="username">
@@ -48,7 +48,7 @@
 		<!-- Collapsed (Mobile) -->
 		<div class="collapsed row d-md-none d-lg-none d-xl-none">
 			<div class="text-center">
-				<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`" class="user-image center-block">
+				<img :src="getAvatar(user)" class="user-image center-block">
 
 				<h1 class="username mt-3">
 					<strong>{{user.username}}</strong>
@@ -113,7 +113,7 @@
 	import moment from 'moment-mini';
 	import marked from 'marked';
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError} from '../../helpers';
+	import {extractError, getAvatar} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -162,6 +162,7 @@
 
 			moment: moment.utc,
 			marked,
+			getAvatar,
 		},
 
 		computed: {
@@ -182,7 +183,7 @@
 				title: this.user.username + '#' + this.user.discriminator || 'View user',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.user.id}/${this.user.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: getAvatar(this.user), vmid: 'og:image'},
 					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
 					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},

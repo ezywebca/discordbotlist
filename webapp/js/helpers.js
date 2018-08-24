@@ -40,3 +40,10 @@ export function extractError(error) {
 export function kFormatter(num) {
 	return num > 999 ? (num / 1000).toFixed(1) + 'k' : num
 }
+
+export function getAvatar(entity) {
+	if (entity.avatar)
+		return `https://cdn.discordapp.com/avatars/${entity.id}/${entity.avatar}.png?size=512`;
+	else
+		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
+}

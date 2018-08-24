@@ -32,7 +32,7 @@
 				<!-- Protected links -->
 				<ul class="nav navbar-nav" v-if="isAuthenticated">
 					<router-link :to="{name: 'view-user', params: {id: user.id}}">
-						<img :src="`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`" class="profile-image mr-1">
+						<img :src="getAvatar(user)" class="profile-image mr-1">
 					</router-link>
 					<navbar-dropdown :label="user.username"
 						:options="dropdownItems"
@@ -106,7 +106,7 @@
 <script type="text/javascript">
 	import { mapGetters, mapState } from 'vuex';
 	import NavbarDropdown from './NavbarDropdown';
-	import {generateRandomString} from '../helpers';
+	import {generateRandomString, getAvatar} from '../helpers';
 
 	export default {
 		data: function() {
@@ -141,7 +141,9 @@
 				const state = generateRandomString(32);
 				localStorage.setItem('discord_oauth_state', state);
 				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
-			}
+			},
+
+			getAvatar,
 		},
 
 		mounted: function() {

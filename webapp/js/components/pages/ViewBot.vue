@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex">
 			<div class="col-4">
-				<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image">
+				<img :src="getAvatar(bot)" class="bot-image">
 			</div>
 			<div class="col-8">
 				<h1 class="username">
@@ -85,7 +85,7 @@
 		<!-- Collapsed (Mobile) -->
 		<div class="collapsed row d-md-none d-lg-none d-xl-none">
 			<div class="text-center">
-				<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
+				<img :src="getAvatar(bot)" class="bot-image center-block">
 
 				<h1 class="username mt-3">
 					<strong itemprop="additionalName">{{bot.username}}</strong>
@@ -193,7 +193,7 @@
 	import moment from 'moment-mini';
 	import marked from 'marked';
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString, kFormatter} from '../../helpers';
+	import {extractError, generateRandomString, kFormatter, getAvatar} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -262,6 +262,7 @@
 			moment: moment.utc,
 			marked,
 			kFormatter,
+			getAvatar,
 		},
 
 		computed: {
@@ -286,7 +287,7 @@
 				title: this.bot.username || 'View bot',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
 					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.bot.short_description || 'View a bot on Discord Bot List'},

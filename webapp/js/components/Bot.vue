@@ -2,7 +2,7 @@
 	<div class="card">
 		<router-link :to="{name: 'view-bot', params: {id: bot.id}}">
 			<img class="card-img-top" :alt="bot.username"
-				:src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`">
+				:src="getAvatar(bot)">
 		</router-link>
 		<div class="card-body">
 			<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="nostyle">
@@ -50,6 +50,7 @@
 
 <script>
 	import moment from 'moment-mini';
+	import {getAvatar} from '../helpers';
 
 	export default {
 		props: {
@@ -61,6 +62,7 @@
 
 		methods: {
 			moment: moment.utc,
+			getAvatar,
 		},
 	};
 </script>

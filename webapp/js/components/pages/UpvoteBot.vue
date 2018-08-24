@@ -1,6 +1,6 @@
 <template>
 	<div class="container text-center">
-		<img :src="`https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=512`" class="bot-image center-block">
+		<img :src="getAvatar(bot)" class="bot-image center-block">
 		<h2 class="mt-3">
 			<strong>{{bot.username}}</strong>
 			<span class="text-muted">#{{bot.discriminator}}</span>
@@ -30,7 +30,7 @@
 
 <script>
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString} from '../../helpers';
+	import {extractError, generateRandomString, getAvatar} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -49,6 +49,8 @@
 					});
 				}
 			},
+
+			getAvatar,
 		},
 
 		computed: {
@@ -72,7 +74,7 @@
 				title: `Vote for ${this.bot.username}` || 'Vote for a bot',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
 					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},

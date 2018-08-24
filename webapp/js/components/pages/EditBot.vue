@@ -61,7 +61,7 @@
 
 
 <script>
-	import {extractError} from '../../helpers';
+	import {extractError, getAvatar} from '../../helpers';
 	import {mapGetters} from 'vuex';
 
 	export default {
@@ -124,7 +124,7 @@
 				title: `Edit ${this.bot.username}` || 'Edit bot',
 
 				meta: [
-					{name: 'og:image', content: `https://cdn.discordapp.com/avatars/${this.bot.id}/${this.bot.avatar}.png?size=512`, vmid: 'og:image'},
+					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
 					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / Discord Bot List'},
 					{property: 'og:description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
