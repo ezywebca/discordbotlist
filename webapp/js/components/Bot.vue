@@ -21,9 +21,14 @@
 			</router-link>
 			<h6 class="card-subtitle mb-2 text-muted">{{bot.upvotes}} upvotes</h6>
 			<p class="card-text">{{bot.short_description}}</p>
-			<a :href="bot.bot_invite" class="card-link" target="_blank">Add</a>
-			<a :href="bot.server_invite" class="card-link" target="_blank" v-if="bot.server_invite">Join server</a>
-			<a :href="bot.website" class="card-link" target="_blank" v-if="!bot.server_invite && bot.website">See website</a>
+			<template v-if="overrideInvitation">
+				<a :href="`https://discordapp.com/oauth2/authorize?client_id=${bot.id}&scope=bot&guild_id=450100127256936458`" class="card-link" target="_blank">Add to DBL server</a>
+			</template>
+			<template v-else>
+				<a :href="bot.bot_invite" class="card-link" target="_blank">Add</a>
+				<a :href="bot.server_invite" class="card-link" target="_blank" v-if="bot.server_invite">Join server</a>
+				<a :href="bot.website" class="card-link" target="_blank" v-if="!bot.server_invite && bot.website">See website</a>
+			</template>
 		</div>
 	</div>
 </template>
@@ -57,7 +62,13 @@
 			bot: {
 				type: Object,
 				required: true,
-			}
+			},
+
+			overrideInvitation: {
+				type: Boolean,
+				required: false,
+				default: false,
+			},
 		},
 
 		methods: {

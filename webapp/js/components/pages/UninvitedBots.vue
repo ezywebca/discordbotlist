@@ -4,7 +4,7 @@
 		<div class="mt-4">
 			<div class="card-columns">
 				<div v-for="bot in bots" :key="bot.id">
-					<bot :bot="bot"/>
+					<bot :bot="bot" override-invitation/>
 				</div>
 			</div>
 			<p v-if="bots.length < 1">All done!</p>
