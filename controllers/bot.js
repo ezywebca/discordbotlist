@@ -92,6 +92,8 @@ const controller = {
 `,
 		});
 
+		await serviceBot.ensureDevRole(ctx.state.user.discord_id);
+
 		ctx.status = 204;
 	},
 
@@ -99,6 +101,11 @@ const controller = {
 		const bots = await ctx.state.user.getBots({
 			include: [models.user]
 		});
+
+		if (bots.length > 0)
+			await serviceBot.ensureDevRole(ctx.state.user.discord_id);
+		else
+			await serviceBot.ensureWithoutDevRole(ctx.state.user.discord_id);
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
 			await refreshBot(bot);
@@ -251,6 +258,11 @@ const controller = {
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
 
+		if ((await bot.user.getBots()).length > 1) // 1 because current bot is yet to be deleted
+			await serviceBot.ensureDevRole(bot.user.discord_id);
+		else
+			await serviceBot.ensureWithoutDevRole(bot.user.discord_id);
+
 		await bot.destroy();
 
 		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
@@ -353,6 +365,8 @@ const controller = {
 			color: '#e0cf37',
 			description,
 		});
+
+		await serviceBot.ensureDevRole(bot.user.discord_id);
 
 		ctx.status = 204;
 	},
