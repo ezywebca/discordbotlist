@@ -20,7 +20,7 @@ module.exports = {
 		});
 	},
 
-	isInvited: id => {
+	isInGuild: id => {
 		return !!bot.guilds.get(process.env.GUILD_ID).members.some(member => member.id === id);
 	},
 

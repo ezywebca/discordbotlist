@@ -24,6 +24,8 @@ const controller = {
 		if (!id)
 			throw {status: 422, message: 'Bot ID is missing'};
 
+		if (!serviceBot.isInGuild(ctx.state.user.discord_id))
+			throw {status: 422, message: 'Where are you in the official guild???'};
 		
 		verifyBotInfo(ctx.request.body);
 
@@ -562,7 +564,7 @@ const controller = {
 
 	getUninvited: async (ctx, next) => {
 		const bots = await models.bot.findAll();
-		const uninvitedBots = bots.filter(bot => !serviceBot.isInvited(bot.discord_id));
+		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await refreshBot(bot);
