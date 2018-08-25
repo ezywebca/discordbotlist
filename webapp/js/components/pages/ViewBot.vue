@@ -155,7 +155,7 @@
 			</div>
 		</div>
 
-		<div class="mt-5" v-html="marked(bot.long_description, {sanitize: true})" />
+		<div class="mt-5 description" v-html="marked(bot.long_description, {sanitize: true})" />
 	</div>
 </template>
 
@@ -189,6 +189,10 @@
 
 	.online {
 		color: #43b581;
+	}
+
+	.description img {
+		max-width: 100%;
 	}
 </style>
 
