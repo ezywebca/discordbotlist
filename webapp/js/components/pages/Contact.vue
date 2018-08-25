@@ -4,7 +4,7 @@
 		<p class="mt-3">Feel free to contact us with any inquiries or questions that you may have. We value any comments or feedback, and read every email that we receive. </p>
 		<p>
 			Email: <a ref="email" /> <br>
-			Discord: <a href="https://discord.gg/cc7Y4jX">https://discord.gg/cc7Y4jX</a>
+			Discord: <a href="https://discord.gg/cc7Y4jX" target="_blank">https://discord.gg/cc7Y4jX</a>
 		</p>
 	</div>
 </template>
