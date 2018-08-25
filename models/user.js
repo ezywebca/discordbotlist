@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		avatar: {
 			type: DataTypes.STRING(128),
-			allowNull: false,
+			allowNull: true,
 		},
 		banned: {
 			type: DataTypes.BOOLEAN,
