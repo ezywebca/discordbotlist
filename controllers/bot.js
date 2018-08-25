@@ -584,7 +584,9 @@ function isInt(value) {
 
 function isURL(url) {
 	try {
-		new URL(url);
+		const obj = new URL(url);
+		if (!obj.protocol.startsWith('http') && !obj.protocol.startsWith('https'))
+			return false;
 		return true;
 	} catch (e) {
 		return false;
