@@ -309,7 +309,8 @@ const controller = {
 			throw {status: 404, message: 'Not found'};
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
-			
+		
+		verifyBotInfo(ctx.request.body);
 
 		let description = `
 • Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
