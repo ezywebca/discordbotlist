@@ -105,6 +105,10 @@
 	.links a {
 		display: block;
 	}
+
+	.links {
+		display: inline-block;
+	}
 </style>
 
 

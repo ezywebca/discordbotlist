@@ -170,6 +170,10 @@
 		display: block;
 	}
 
+	.links {
+		display: inline-block;
+	}
+
 	.verification-badge, .availability-badge {
 		vertical-align: middle;
 		font-size: 18px;
