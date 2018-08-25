@@ -191,7 +191,7 @@
 		color: #43b581;
 	}
 
-	.description img {
+	.description >>> img {
 		max-width: 100%;
 	}
 </style>
