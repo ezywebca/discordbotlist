@@ -451,10 +451,8 @@ const controller = {
 
 		const {shard_id, guilds, users, voice_connections} = ctx.request.body;
 
-		if (!shard_id && shard_id !== 0)
-			throw {status: 422, message: 'shard_id is a required parameter'};
-		if (!isInt(shard_id))
-			throw {status: 422, message: 'shard_id must be an integer'};
+		if (shard_id && !isInt(shard_id))
+			throw {status: 422, message: 'The \'shard_id\' parameter must be a number'};
 		if (guilds && !isInt(guilds))
 			throw {status: 422, message: 'The \'guilds\' parameter must be a number'};
 		if (users && !isInt(users))
@@ -463,7 +461,7 @@ const controller = {
 			throw {status: 422, message: 'The \'voice_connections\' parameter must be a number'};
 
 		const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`)) || [];
-		const shardStats = stats.find(x => x.shard_id === parseInt(shard_id));
+		const shardStats = stats.find(x => x.shard_id === parseInt(shard_id || 0));
 
 		if (shardStats) {
 			if (guilds)
@@ -480,7 +478,7 @@ const controller = {
 				delete shardStats.voiceConnections;
 		} else {
 			const newStats = {
-				shard_id: parseInt(shard_id)
+				shard_id: parseInt(shard_id || 0)
 			};
 			if (guilds)
 				newStats.guilds = parseInt(guilds);
