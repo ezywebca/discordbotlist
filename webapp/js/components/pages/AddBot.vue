@@ -27,7 +27,7 @@
 			<div class="form-group row mt-3">
 				<label for="long-description" class="col-sm-2 col-form-label">Long description</label>
 				<div class="col-sm-10">
-					<textarea id="long-description" class="form-control" v-model="longDescription" maxlength="8192"
+					<textarea id="long-description" class="form-control" v-model="longDescription" maxlength="16384"
 						placeholder="This is like GitHub's README.md or whatever, you can make it long and include everything. (Markdown supported) (Optional)" />
 				</div>
 			</div>

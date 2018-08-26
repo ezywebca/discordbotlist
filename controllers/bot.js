@@ -629,7 +629,7 @@ function verifyBotInfo({
 		throw {status: 422, message: 'Short description is too short'};
 	if (short_description.length > 191)
 		throw {status: 422, message: 'Short description is too long'};
-	if (long_description.length > 8192)
+	if (long_description.length > 16384)
 		throw {status: 422, message: 'Long description is too long'};
 	if (prefix.length > 48)
 		throw {status: 422, message: 'Prefix is too long'};
