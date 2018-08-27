@@ -1,8 +1,7 @@
 const dns = require('dns');
-const logger = require('./logger');
 const serviceBot = require('./bot');
 const redis = require('./redis');
-const axios = require('axios');
+const DBLockedError = require('./errors/db-locked-error');
 
 async function isCrawler(ip) {
 	return await isDdgBot(ip) ||
@@ -138,6 +137,13 @@ function formatNumber(num) {
 	return `${num}`; // returned type consistency
 }
 
+async function checkDBLock() {
+	const dbLock = await redis.getAsync('db-lock');
+
+	if (dbLock)
+		throw new DBLockedError();
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -147,4 +153,5 @@ module.exports = {
 	attachBotStats,
 	shorten,
 	formatNumber,
+	checkDBLock,
 };

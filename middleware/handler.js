@@ -1,4 +1,5 @@
 const logger = require('../logger');
+const DBLockedError = require('../errors/db-locked-error');
 
 module.exports = async (ctx, next) => {
 	try {
@@ -16,7 +17,12 @@ module.exports = async (ctx, next) => {
 			};
 		}
 	} catch (e) {
-		if (e.status && e.message) {
+		if (e instanceof DBLockedError) {
+			ctx.status = 503;
+			ctx.body = {
+				error: 'Service unavailable, try again later'
+			};
+		} else if (e.status && e.message) {
 			ctx.status = e.status;
 			ctx.body = {
 				error: e.message

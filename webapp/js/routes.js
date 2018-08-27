@@ -11,6 +11,7 @@ import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
 import Bots from './components/pages/Bots';
 import UninvitedBots from './components/pages/UninvitedBots';
+import DBLConfigurations from './components/pages/DBLConfigurations';
 
 export default [
 	{
@@ -40,6 +41,14 @@ export default [
 		name: 'uninvited-bots',
 		path: '/bots/uninvited',
 		component: UninvitedBots,
+		meta: {
+			requiresAuth: true,
+			requiresAdmin: true,
+		}
+	}, {
+		name: 'dbl-configurations',
+		path: '/db/configurations',
+		component: DBLConfigurations,
 		meta: {
 			requiresAuth: true,
 			requiresAdmin: true,

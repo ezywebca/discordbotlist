@@ -93,6 +93,13 @@ a.nostyle {
 		color: #ef9a9a;
 	}
 }
+.success-text {
+	color: #43b581;
+
+	&:hover {
+		color: #48c48c;
+	}
+}
 
 a.disabled {
 	color: $text-muted;

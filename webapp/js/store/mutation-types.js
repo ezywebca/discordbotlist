@@ -12,3 +12,5 @@ export const VERIFY_BOT = 'VERIFY_BOT';
 export const UNVERIFY_BOT = 'UNVERIFY_BOT';
 export const DELETE_BOT = 'DELETE_BOT';
 export const STORE_UNINVITED_BOTS = 'STORE_UNINVITED_BOTS';
+export const STORE_DBL_CONFIG = 'FETCH_DBL_CONFIG';
+export const STORE_DBL_DB_LOCK = 'STORE_DBL_DB_LOCK';
