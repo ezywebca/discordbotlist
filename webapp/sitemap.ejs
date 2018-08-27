@@ -17,7 +17,7 @@
 
 	<% for (let user of users) { %>
 	<url>
-		<loc><%= absolute(`/users/${user.username}`) %></loc>
+		<loc><%= absolute(`/users/${user.discord_id}`) %></loc>
 		<lastmod><%= user.updated_at.toISOString() %></lastmod>
 	</url>
 	<% } %>
