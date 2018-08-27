@@ -77,6 +77,7 @@
 				website: '',
 				botInvite: '',
 				serverInvite: '',
+				saved: false,
 			};
 		},
 
@@ -111,12 +112,20 @@
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
 				}).then(response => {
+					this.saved = true;
 					this.$router.push({name: 'view-bot', params: {id: this.bot.id}});
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));	
 					this.$refs.editButton.disabled = false;
 				});
 			}
+		},
+
+		beforeRouteLeave(to, from, next) {
+			if (this.saved || confirm('You have unsaved changes tho!'))
+				next();
+			else
+				next(false);
 		},
 
 		meta: function() {
