@@ -22,7 +22,7 @@
 			<h6 class="card-subtitle mb-2 text-muted">
 				{{bot.upvotes}} upvotes
 				<template v-if="bot.stats.guilds">
-					• {{formatNumber(bot.stats.guilds)}}
+					• {{formatNumber(bot.stats.guilds)}} servers
 				</template>
 			</h6>
 			<p class="card-text">{{bot.short_description}}</p>
