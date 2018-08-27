@@ -13,7 +13,7 @@ const koaCompress = require('koa-compress');
 
 const ejs = require('ejs');
 const models = require('./models');
-const {attachBotStats, refreshBot, formatNumber} = require('./helpers');
+const {attachBotStats, formatNumber} = require('./helpers');
 const redis = require('./redis');
 const moment = require('moment-mini');
 
@@ -81,7 +81,6 @@ app.use(async (ctx, next) => {
 			ctx.type = 'text/html; charset=utf-8';
 			ctx.body = 'Not found';
 		} else {
-			await refreshBot(bot);
 			await attachBotStats(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
