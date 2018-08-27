@@ -69,6 +69,12 @@ body {
 	border-color: darken(#521717, 2%);
 }
 
+.alert-success {
+	background: #2c5c2e;
+	color: $light;
+	border-color: darken(#2c5c2e, 2%);
+}
+
 a.nostyle {
 	text-decoration: none;
 	color: inherit;

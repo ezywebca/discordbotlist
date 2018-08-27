@@ -10,6 +10,12 @@
 			</ul>
 			<span>Violation of any of these can result in <strong>permanent ban.</strong> (that doesn't make us uncool, dare you!)</span>
 		</div>
+		<div class="mt-4 alert alert-success">
+			<span>
+				In order to add a bot, you <strong>must</strong> to join DBL's official guild:
+				<a href="https://discord.gg/cc7Y4jX" target="_blank">https://discord.gg/cc7Y4jX</a>
+			</span>
+		</div>
 		<form class="mt-4" @submit.prevent="add">
 			<div class="form-group row">
 				<label for="bot-id" class="col-sm-2 col-form-label">Bot ID</label>
