@@ -8,6 +8,12 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 
+const hljsLanguages = [
+	'java', 'cpp', 'cs', 'css', 'python', 'php', 'javascript',
+	'perl', 'ruby', 'powershell', 'lua', 'json', 'bash', 'less', 'markdown', 'scss',
+	'sql', 'xml', 'yaml', 'dart'
+];
+
 const prod = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'production';
 
 const shared = {
@@ -83,6 +89,10 @@ module.exports = [
 				},
 				filename: path.join(__dirname, 'build', 'index.html'),
 			}),
+			new webpack.ContextReplacementPlugin(
+				/highlight\.js\/lib\/languages$/,
+				new RegExp(`^./(${hljsLanguages.join('|')})$`)
+			),
 		],
 		...shared
 	},
@@ -105,10 +115,15 @@ module.exports = [
 				'process.env': {
 					NODE_ENV: `'${prod ? 'production' : 'development'}'`
 				},
-				'process.env.VUE_ENV': '"server"'
+				'process.env.VUE_ENV': '"server"',
 			}),
 
 			new VueSSRServerPlugin(),
+
+			new webpack.ContextReplacementPlugin(
+				/highlight\.js\/lib\/languages$/,
+				new RegExp(`^./(${hljsLanguages.join('|')})$`)
+			),
 		],
 
 		...shared

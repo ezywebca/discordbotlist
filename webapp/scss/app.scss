@@ -9,6 +9,9 @@
 @import './pace';
 @import './mobile-navbar';
 
+@import '~highlight.js/styles/hybrid.css';
+
+
 html,
 body,
 #app {
@@ -88,4 +91,9 @@ a.nostyle {
 a.disabled {
 	color: $text-muted;
 	pointer-events: none;
+}
+
+pre code {
+	background: #36393f !important;
+	border: 1px solid #2e3136 !important;
 }

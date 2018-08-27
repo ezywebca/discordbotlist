@@ -192,9 +192,16 @@ function shorten(str, len, ellipsis = '…') {
 	return result + ellipsis;
 }
 
-// https://stackoverflow.com/a/9461657/2164304
-function kFormatter(num) {
-	return num > 999 ? (num / 1000).toFixed(1) + 'k' : num
+// https://codebottle.io/s/61ca238092
+function formatNumber(num) {
+	if (num > 999999999)
+		return `${(num/1e9).toFixed(1)}B`;
+	if (num > 999999)
+		return `${(num/1e6).toFixed(1)}M`;
+	if (num > 999)
+		return `${(num/1e3).toFixed(1)}K`;
+
+	return `${num}`; // returned type consistency
 }
 
 module.exports = {
@@ -207,5 +214,5 @@ module.exports = {
 	refreshUser,
 	attachBotStats,
 	shorten,
-	kFormatter,
+	formatNumber,
 };

@@ -26,12 +26,12 @@
 
 							<template v-if="bot.stats.guilds">
 								<br>
-								Guilds: {{kFormatter(bot.stats.guilds)}}
+								Guilds: {{formatNumber(bot.stats.guilds)}}
 							</template>
 
 							<template v-if="bot.stats.voice_connections">
 								<br>
-								Voice connections: {{kFormatter(bot.stats.voice_connections)}}
+								Voice connections: {{formatNumber(bot.stats.voice_connections)}}
 							</template>
 						</div>
 						<div class="col-auto">
@@ -40,7 +40,7 @@
 
 							<template v-if="bot.stats.users">
 								<br>
-								Users: {{kFormatter(bot.stats.users)}}
+								Users: {{formatNumber(bot.stats.users)}}
 							</template>
 						</div>
 					</div>
@@ -107,15 +107,15 @@
 					Prefix: <code>{{bot.prefix}}</code>
 					<template v-if="bot.stats.guilds">
 						<br>
-						Guilds: {{kFormatter(bot.stats.guilds)}}
+						Guilds: {{formatNumber(bot.stats.guilds)}}
 					</template>
 					<template v-if="bot.stats.users">
 						<br>
-						Users: {{kFormatter(bot.stats.users)}}
+						Users: {{formatNumber(bot.stats.users)}}
 					</template>
 					<template v-if="bot.stats.voice_connections">
 						<br>
-						Voice connections: {{kFormatter(bot.stats.voice_connections)}}
+						Voice connections: {{formatNumber(bot.stats.voice_connections)}}
 					</template>
 				</h6>
 				<p class="mt-3">{{bot.short_description}}</p>
@@ -201,7 +201,7 @@
 	import moment from 'moment-mini';
 	import marked from 'marked';
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString, kFormatter, getAvatar} from '../../helpers';
+	import {extractError, generateRandomString, formatNumber, getAvatar, highlightCode} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -269,7 +269,7 @@
 
 			moment: moment.utc,
 			marked,
-			kFormatter,
+			formatNumber,
 			getAvatar,
 		},
 
@@ -288,6 +288,10 @@
 			bot: function() {
 				return this.getBotById(this.$route.params.id);
 			}
+		},
+
+		mounted: function() {
+			highlightCode();
 		},
 
 		meta: function() {

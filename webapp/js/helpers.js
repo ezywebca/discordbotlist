@@ -1,3 +1,5 @@
+import hljs from './hljs';
+
 // https://codebottle.io/s/4e85668754
 export function getURLParameter(param) {
 	if (window.location.href.endsWith("#"))
@@ -36,9 +38,16 @@ export function extractError(error) {
 		return 'Network error!';
 }
 
-// https://stackoverflow.com/a/9461657/2164304
-export function kFormatter(num) {
-	return num > 999 ? (num / 1000).toFixed(1) + 'k' : num
+// https://codebottle.io/s/61ca238092
+export function formatNumber(num) {
+	if (num > 999999999)
+		return `${(num/1e9).toFixed(1)}B`;
+	if (num > 999999)
+		return `${(num/1e6).toFixed(1)}M`;
+	if (num > 999)
+		return `${(num/1e3).toFixed(1)}K`;
+
+	return `${num}`; // returned type consistency
 }
 
 export function getAvatar(entity) {
@@ -46,4 +55,12 @@ export function getAvatar(entity) {
 		return `https://cdn.discordapp.com/avatars/${entity.id}/${entity.avatar}.png?size=512`;
 	else
 		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
+}
+
+export function highlightCode() {
+	document.querySelectorAll('pre code:not(.hljs)').forEach(b => {
+		if (b.classList.contains('lang-text') || b.classList.length === 0)
+			b.classList.add('hljs', 'no-highlight');
+		hljs.highlightBlock(b);
+	});
 }

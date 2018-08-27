@@ -13,7 +13,7 @@ const koaCompress = require('koa-compress');
 
 const ejs = require('ejs');
 const models = require('./models');
-const {attachBotStats, refreshBot, kFormatter} = require('./helpers');
+const {attachBotStats, refreshBot, formatNumber} = require('./helpers');
 const redis = require('./redis');
 const moment = require('moment-mini');
 
@@ -92,11 +92,11 @@ app.use(async (ctx, next) => {
 			const items = [];
 
 			if (bot.stats.guilds)
-				items.push(`${kFormatter(bot.stats.guilds)} guilds`);
+				items.push(`${formatNumber(bot.stats.guilds)} guilds`);
 			if (bot.stats.users)
-				items.push(`${kFormatter(bot.stats.users)} users`);
+				items.push(`${formatNumber(bot.stats.users)} users`);
 			if (bot.stats.voice_connections)
-				items.push(`${kFormatter(bot.stats.voice_connections)} voice connections`);
+				items.push(`${formatNumber(bot.stats.voice_connections)} voice connections`);
 
 			if (items.length < 2)
 				items.push(`Currently ${bot.stats.online ? 'online' : 'offline'}`);
@@ -105,7 +105,7 @@ app.use(async (ctx, next) => {
 
 			ctx.body = ejs.render(template, {
 				items,
-				upvotes: kFormatter(bot.upvotes),
+				upvotes: formatNumber(bot.upvotes),
 				username: bot.username,
 				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
 			});
