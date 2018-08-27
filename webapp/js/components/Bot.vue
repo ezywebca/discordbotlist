@@ -19,7 +19,12 @@
 					<span class=" fas fa-star ml-1 mb-1 verification-badge" title="Verified" v-if="bot.verified" />
 				</h5>
 			</router-link>
-			<h6 class="card-subtitle mb-2 text-muted">{{bot.upvotes}} upvotes</h6>
+			<h6 class="card-subtitle mb-2 text-muted">
+				{{bot.upvotes}} upvotes
+				<template v-if="bot.stats.guilds">
+					• {{formatNumber(bot.stats.guilds)}}
+				</template>
+			</h6>
 			<p class="card-text">{{bot.short_description}}</p>
 			<template v-if="overrideInvitation">
 				<a :href="`https://discordapp.com/oauth2/authorize?client_id=${bot.id}&scope=bot&guild_id=450100127256936458`" class="card-link" target="_blank">Add to DBL server</a>
@@ -55,7 +60,7 @@
 
 <script>
 	import moment from 'moment-mini';
-	import {getAvatar} from '../helpers';
+	import {getAvatar, formatNumber} from '../helpers';
 
 	export default {
 		props: {
@@ -74,6 +79,7 @@
 		methods: {
 			moment: moment.utc,
 			getAvatar,
+			formatNumber,
 		},
 	};
 </script>
