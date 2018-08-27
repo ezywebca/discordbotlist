@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const logger = require('./logger');
+const models = require('./models');
 
 const bot = new Discord.Client();
 let discordLoggingDisabled = false;
@@ -8,6 +9,31 @@ bot.login(process.env.BOT_TOKEN);
 
 bot.on('ready', () => {
 	logger.info('Bot is connected!');
+});
+
+bot.on('userUpdate', async (oldUser, newUser) => {
+	const bot = oldUser.bot || newUser.bot;
+
+	let entity;
+
+	if (bot)
+		entity = await models.bot.findOne({
+			where: {discord_id: oldUser.id},
+		});
+	else
+		entity = await models.user.findOne({
+			where: {discord_id: oldUser.id},
+		});
+	
+	if (!entity)
+		return logger.warn(`Error refreshing non-existant bot ${oldUser.id}`);
+	
+	entity.username = newUser.username;
+	entity.discriminator = newUser.discriminator;
+	entity.avatar = newUser.avatar;
+	await entity.save();
+
+	logger.info(`Refreshed ${bot ? 'bot' : 'user'}: ${oldUser.id}`);
 });
 
 

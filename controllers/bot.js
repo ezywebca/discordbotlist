@@ -6,7 +6,7 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
-const {refreshBot, attachBotStats} = require('../helpers');
+const {attachBotStats} = require('../helpers');
 const serviceBot = require('../bot');
 
 const controller = {
@@ -108,7 +108,6 @@ const controller = {
 			await serviceBot.ensureWithoutDevRole(ctx.state.user.discord_id);
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
@@ -128,7 +127,6 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		await refreshBot(bot);
 		await attachBotStats(bot);
 
 		const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
@@ -192,7 +190,6 @@ const controller = {
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
@@ -236,7 +233,6 @@ const controller = {
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
@@ -378,8 +374,6 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
-			
-		await refreshBot(bot, true);
 
 		ctx.status = 204;
 	},
@@ -579,7 +573,6 @@ const controller = {
 		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
-			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;

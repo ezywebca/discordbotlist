@@ -115,72 +115,6 @@ async function attachBotStats(bot) {
 		bot.stats.voice_connections = voiceConnections;
 }
 
-async function refreshBot(bot, force = false) {
-	try {
-		const cacheKey = `bots:${bot.id}:fresh`;
-
-		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
-			const newBotInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.discord_id), {
-				headers: {
-					'Authorization': `Bot ${process.env.BOT_TOKEN}`,
-				},
-			}).then(response => response.data);
-
-			bot.username = newBotInfo.username;
-			bot.discriminator = newBotInfo.discriminator;
-			bot.avatar = newBotInfo.avatar;
-
-			bot.changed('updated_at', true); // Because users need to know our info is up to date! ha!
-
-			await bot.save();
-			await bot.reload(); // Because Sequelize is too dumb to replace CURRENT_TIMESTAMP with the actual current timestamp after save
-			await redis.setAsync(cacheKey, 1, 'EX', 15 * 60);
-
-			logger.info(`Refreshed bot: ${bot.discord_id}`);
-		}
-	} catch (e) {
-		if (e.response && e.response.status === 404)
-			await bot.destroy();
-			
-		logger.warn(`Could not refresh bot: ${bot.discord_id}`);
-		logger.warn(e);
-	}
-
-	return bot;
-}
-
-
-async function refreshUser(user, force = false) {
-	try {
-		const cacheKey = `user:${user.id}:fresh`;
-
-		if (force || (!force && !(await redis.getAsync(cacheKey)))) {
-			const newUserInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(user.discord_id), {
-				headers: {
-					'Authorization': `Bot ${process.env.BOT_TOKEN}`,
-				},
-			}).then(response => response.data);
-
-			user.username = newUserInfo.username;
-			user.discriminator = newUserInfo.discriminator;
-			user.avatar = newUserInfo.avatar;
-
-			user.changed('updated_at', true); // Because users need to know our info is up to date! ha!
-
-			await user.save();
-			await user.reload(); // Because Sequelize is too dumb to replace CURRENT_TIMESTAMP with the actual current timestamp after save
-			await redis.setAsync(cacheKey, 1, 'EX', 15 * 60);
-
-			logger.info(`Refreshed user: ${user.discord_id}`);
-		}
-	} catch (e) {
-		logger.warn(`Could not refresh user: ${user.discord_id}`);
-		logger.warn(e);
-	}
-
-	return user;
-}
-
 // https://codebottle.io/s/2a5e5efd87
 function shorten(str, len, ellipsis = '…') {
 	if (str.length <= len)
@@ -210,8 +144,6 @@ module.exports = {
 	isBingBot,
 	isDdgBot,
 	getIP,
-	refreshBot,
-	refreshUser,
 	attachBotStats,
 	shorten,
 	formatNumber,

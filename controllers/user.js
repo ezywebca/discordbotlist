@@ -1,5 +1,5 @@
 const models = require('../models');
-const {refreshUser, refreshBot, attachBotStats} = require('../helpers');
+const {attachBotStats} = require('../helpers');
 const redis = require('../redis');
 
 module.exports = {
@@ -14,10 +14,7 @@ module.exports = {
 		if (!user)
 			throw {status: 404, message: 'Not found'};
 
-		await refreshUser(user);
-
 		user.bots = await Promise.all(user.bots.map(async bot => {
-			await refreshBot(bot);
 			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
 			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
 			bot.upvotes = upvotes.length;
@@ -74,8 +71,6 @@ module.exports = {
 
 		if (!user)
 			throw {status: 404, message: 'Not found'};
-
-		await refreshUser(user, true);
 
 		ctx.status = 204;
 	},
