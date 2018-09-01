@@ -111,8 +111,8 @@ module.exports = {
 			});
 	},
 	
-	kick: id => {
-		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick()
+	kick: (id, reason) => {
+		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick(reason)
 			.catch(e => {
 				logger.err(`Cannot kick member: ${e}`);
 			});

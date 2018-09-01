@@ -276,7 +276,7 @@ const controller = {
 		});
 
 		if (serviceBot.isInGuild(bot.discord_id))
-			serviceBot.kick(bot.discord_id);
+			serviceBot.kick(bot.discord_id, 'Deleted on bot list');
 
 		ctx.status = 204;
 	},
