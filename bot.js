@@ -110,4 +110,11 @@ module.exports = {
 				logger.err('Cannot deliver log message to Discord');
 			});
 	},
+	
+	kick: id => {
+		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick()
+			.catch(e => {
+				logger.err(`Cannot kick member: ${e}`);
+			});
+	},
 };

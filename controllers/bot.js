@@ -275,6 +275,9 @@ const controller = {
 `,
 		});
 
+		if (serviceBot.isInGuild(bot.discord_id))
+			serviceBot.kick(bot.discord_id);
+
 		ctx.status = 204;
 	},
 
