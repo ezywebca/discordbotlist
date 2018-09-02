@@ -4,7 +4,9 @@
 		<h4 class="text-muted">Check them out!</h4>
 		<div class="mt-4 mb-5">
 			<div class="card">
-				<img src="https://i.imgur.com/lvb0Nek.png" class="card-img-top">
+				<a href="https://discordsl.com">
+					<img src="https://i.imgur.com/lvb0Nek.png" class="card-img-top">
+				</a>
 				<div class="card-body">
 					<h4 class="card-title">DiscordSL</h4>
 					<p>
