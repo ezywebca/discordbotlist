@@ -4,7 +4,7 @@
 		<h4 class="text-muted">Check them out!</h4>
 		<div class="mt-4 mb-5">
 			<div class="card">
-				<a href="https://discordsl.com">
+				<a href="https://discordsl.com" target="_blank">
 					<img src="https://i.imgur.com/lvb0Nek.png" class="card-img-top">
 				</a>
 				<div class="card-body">
@@ -13,7 +13,7 @@
 						These guys have thousands and thousands of Discord Servers!
 						Their website is rather cool and I am a bit jealous about their web design. 👀
 					</p>
-					<a href="https://discordsl.com" target="_blank">See their website</a>
+					<a href="https://discordsl.com" target="_blank">Discord Servers</a>
 				</div>
 			</div>
 		</div>
