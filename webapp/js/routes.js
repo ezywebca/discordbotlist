@@ -1,5 +1,6 @@
 import Home from './components/pages/Home';
 import Contact from './components/pages/Contact';
+import Partners from './components/pages/Partners';
 import AuthCallback from './components/pages/AuthCallback';
 import MyBots from './components/pages/MyBots';
 import AddBot from './components/pages/AddBot';
@@ -26,6 +27,10 @@ export default [
 		name: 'contact',
 		path: '/contact',
 		component: Contact,
+	}, {
+		name: 'partners',
+		path: '/partners',
+		component: Partners,
 	}, {
 		name: 'auth-callback',
 		path: '/auth/callback',

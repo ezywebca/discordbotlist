@@ -58,4 +58,9 @@
 			}
 		}
 	}
+
+	.links-bar {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+	}
 }

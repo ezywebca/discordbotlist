@@ -17,6 +17,9 @@
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>
 					</router-link>
+					<router-link :to="{name: 'partners'}" tag="li" class="nav-item">
+						<a class="nav-link">Partners</a>
+					</router-link>
 					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
 						<a class="nav-link">API</a>
 					</router-link>
@@ -58,7 +61,7 @@
 					</div>
 				</div>
 
-				<div class="row nav">
+				<div class="row nav links-bar">
 					<router-link :to="{name: 'home'}" tag="li" class="nav-item" exact>
 						<a class="nav-link">Home</a>
 					</router-link>
@@ -67,6 +70,9 @@
 					</router-link>
 					<router-link :to="{name: 'contact'}" tag="li" class="nav-item">
 						<a class="nav-link">Contact</a>
+					</router-link>
+					<router-link :to="{name: 'partners'}" tag="li" class="nav-item">
+						<a class="nav-link">Partners</a>
 					</router-link>
 					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
 						<a class="nav-link">API</a>
