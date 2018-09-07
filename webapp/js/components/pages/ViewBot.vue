@@ -63,7 +63,7 @@
 					</a>
 					<span v-if="isAdmin || bot.owner.id === currentUserId">
 						<a href="javascript:undefined" @click="generateToken" :class="{disabled: !!botToken}">
-							<span class="mr-1 far fa-code" /> {{botToken ? botToken : 'Generate token'}}
+							<span class="mr-1 far fa-code" /> {{botToken ? botToken : (verifyingTokenGeneration ? 'You sure? This will invalidate old one' : 'Generate token')}}
 						</a>
 						<router-link :to="{name: 'api-docs'}" class="ml-1 text-muted">
 							<em>// see docs</em>
@@ -136,7 +136,7 @@
 					</a>
 					<span v-if="isAdmin || bot.owner.id === currentUserId">
 						<a href="javascript:undefined" @click="generateToken" v-if="isAdmin || bot.owner.id === currentUserId" :class="{disabled: !!botToken}">
-							<span class="mr-1 far fa-code" /> {{botToken ? botToken : 'Generate token'}}
+							<span class="mr-1 far fa-code" /> {{botToken ? botToken : (verifyingTokenGeneration ? 'You sure? This will invalidate old one' : 'Generate token')}}
 						</a>
 						<router-link :to="{name: 'api-docs'}" class="ml-1 text-muted">
 							<em>// see docs</em>
@@ -211,6 +211,7 @@
 		data: function() {
 			return {
 				verifyingDeletion: false,
+				verifyingTokenGeneration: false,
 				botToken: '',
 			};
 		},
@@ -248,6 +249,9 @@
 			},
 
 			generateToken: function() {
+				if (!this.verifyingTokenGeneration)
+					return this.verifyingTokenGeneration = true;
+				
 				axios.get(`/api/bots/${this.$route.params.id}/token`).then(response => {
 					this.botToken = response.data.token;
 				}).catch(e => {
