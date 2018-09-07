@@ -52,12 +52,13 @@
 		<h3>Widget</h3>
 		<p>You can embed a nice widget to your website by appending <code>/widget</code> to your bot URL to get an SVG, something like this:</p>
 
-		<pre><code>{{widgetCode}}</code></pre>
+		<pre><code class="lang-html">{{widgetCode}}</code></pre>
 
 		<p>...which looks like this:</p>
-		<object type="image/svg+xml" width="380" height="140" data="/bots/460847447602757633/widget">
-			Discord Bot List widget <!-- fallback -->
-		</object>
+
+		<a href="/bots/460847447602757633">
+			<img width="380" height="140" src="/bots/460847447602757633/widget" alt="Lithium stats on Discord Bot List">
+		</a>
 
 		<h3 class="mt-3">Online stats</h3>
 		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
@@ -70,19 +71,13 @@
 	</div>
 </template>
 
-<style scoped>
-	pre {
-		background: #202225;
-		color: #bababa;
-		padding: 16px;
-	}
-</style>
-
 <script>
+	import {highlightCode} from '../../helpers';
+
 	export default {
 		data: function() {
 			return {
-				widgetCode: '<object type="image/svg+xml" width="380" height="140" data="https://discordbotlist.com/bots/460847447602757633/widget">\n\tDiscord Bot List widget <!-- fallback -->\n</object>',
+				widgetCode: '<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
 			};
 		},
 
@@ -96,5 +91,9 @@
 				{name: 'robots', content: 'noindex'},
 			],
 		},
+
+		mounted() {
+			highlightCode();
+		}
 	};
 </script>

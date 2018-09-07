@@ -41,6 +41,7 @@
     "file-loader": "^1.1.11",
     "highlight.js": "^9.12.0",
     "html-webpack-plugin": "^3.2.0",
+    "imageurl-base64": "^1.0.0",
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.5.2",
     "koa-body": "^4.0.4",

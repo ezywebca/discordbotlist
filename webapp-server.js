@@ -20,6 +20,24 @@ const moment = require('moment-mini');
 const {createBundleRenderer} = require('vue-server-renderer');
 const {isCrawler, getIP, getAvatar} = require('./helpers');
 
+const util = require('util');
+const i2b = util.promisify(require('imageurl-base64'));
+
+async function renderAvatar(bot) {
+	const url = getAvatar(bot);
+	const cacheKey = `bots:${bot.id}:avatars:${Buffer.from(url).toString('base64')}`;
+	const cached = await redis.getAsync(cacheKey);
+
+	if (cached)
+		return cached;
+
+	const b64 = (await i2b(url)).dataUri;
+
+	await redis.setAsync(cacheKey, b64, 'EX', 7 * 24 * 60 * 60); // 1 week
+
+	return b64;
+}
+
 app.use(handler);
 app.use(koaCompress({
 	threshold: 2048,
@@ -105,7 +123,7 @@ app.use(async (ctx, next) => {
 			ctx.body = ejs.render(template, {
 				items,
 				username: bot.username,
-				avatar: getAvatar(bot),
+				avatar: await renderAvatar(bot),
 				online: true,
 				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
 			});
