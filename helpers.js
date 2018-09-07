@@ -144,6 +144,13 @@ async function checkDBLock() {
 		throw new DBLockedError();
 }
 
+function getAvatar(entity) {
+	if (entity.avatar)
+		return `https://cdn.discordapp.com/avatars/${entity.discord_id}/${entity.avatar}.png?size=512`;
+	else
+		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -154,4 +161,5 @@ module.exports = {
 	shorten,
 	formatNumber,
 	checkDBLock,
+	getAvatar,
 };

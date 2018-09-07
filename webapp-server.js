@@ -17,10 +17,8 @@ const {attachBotStats, formatNumber} = require('./helpers');
 const redis = require('./redis');
 const moment = require('moment-mini');
 
-const {
-	createBundleRenderer
-} = require('vue-server-renderer');
-const {isCrawler, getIP} = require('./helpers');
+const {createBundleRenderer} = require('vue-server-renderer');
+const {isCrawler, getIP, getAvatar} = require('./helpers');
 
 app.use(handler);
 app.use(koaCompress({
@@ -90,6 +88,8 @@ app.use(async (ctx, next) => {
 
 			const items = [];
 
+			items.push(`${formatNumber(bot.upvotes)} upvotes`);
+
 			if (bot.stats.guilds)
 				items.push(`${formatNumber(bot.stats.guilds)} guilds`);
 			if (bot.stats.users)
@@ -97,15 +97,16 @@ app.use(async (ctx, next) => {
 			if (bot.stats.voice_connections)
 				items.push(`${formatNumber(bot.stats.voice_connections)} voice connections`);
 
-			if (items.length < 2)
+			if (items.length < 3)
 				items.push(`Currently ${bot.stats.online ? 'online' : 'offline'}`);
-			if (items.length < 2)
+			if (items.length < 3)
 				items.push(`Updated ${moment.utc(bot.updated_at).fromNow()}`);
 
 			ctx.body = ejs.render(template, {
 				items,
-				upvotes: formatNumber(bot.upvotes),
 				username: bot.username,
+				avatar: getAvatar(bot),
+				online: true,
 				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
 			});
 		}
