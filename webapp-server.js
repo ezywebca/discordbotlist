@@ -124,7 +124,8 @@ app.use(async (ctx, next) => {
 				items,
 				username: bot.username,
 				avatar: await renderAvatar(bot),
-				online: true,
+				online: bot.stats.online,
+				verified: bot.verified,
 				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
 			});
 		}
