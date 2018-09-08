@@ -6,7 +6,7 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
-const {attachBotStats} = require('../helpers');
+const {attachBotStats, attachBotUpvotes, generateRandomString} = require('../helpers');
 const serviceBot = require('../bot');
 
 const controller = {
@@ -108,9 +108,7 @@ const controller = {
 			await serviceBot.ensureWithoutDevRole(ctx.state.user.discord_id);
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-			bot.upvotes = upvotes.length;
+			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
 		}))).map(bot => models.bot.transform(bot));
@@ -128,10 +126,7 @@ const controller = {
 			throw {status: 404, message: 'Not found'};
 
 		await attachBotStats(bot);
-
-		const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-		bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-		bot.upvotes = upvotes.length;
+		await attachBotUpvotes(bot, ctx.state.user);
 
 		ctx.body = models.bot.transform(bot);
 	},
@@ -156,9 +151,7 @@ const controller = {
 			});
 
 			bots = await Promise.all(bots.map(async bot => {
-				const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-				bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-				bot.upvotes = upvotes.length;
+				await attachBotUpvotes(bot, ctx.state.user);
 				return bot;
 			}));
 
@@ -190,9 +183,7 @@ const controller = {
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-			bot.upvotes = upvotes.length;
+			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
 		}))).sort((a, b) => {
@@ -233,9 +224,7 @@ const controller = {
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
-			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-			bot.upvotes = upvotes.length;
+			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
 		}))).map(models.bot.transform);
@@ -292,12 +281,13 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		const voteKey = `bots:${bot.id}:upvotes:${ctx.state.user.id}`;
 
-		if (await redis.getAsync(voteKey))
-			throw {status: 422, message: 'You can only vote once per 12 hours'};
-		
-		await redis.setAsync(voteKey, 1, 'EX', 3600 * 12); // 12 hours
+		if ((await redis.keysAsync(`bots:${bot.id}:upvotes:${ctx.state.user.id}:*`)).length >= 7)
+			throw {status: 422, message: 'You can only vote up to 7 times per week'};
+
+		const voteKey = `bots:${bot.id}:upvotes:${ctx.state.user.id}:${generateRandomString(4)}`;
+
+		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
 
 		ctx.status = 204;
 	},
@@ -402,7 +392,9 @@ const controller = {
 				}
 			});
 
-			ctx.body = users.map(models.user.transform);
+			ctx.body = Promise.all(users.map(models.user.transform).map(async user => {
+				user.upvotes_count = (await redis.keysAsync(`bots:${bot.id}:upvotes:${user.id}:*`)).length;
+			}));
 		}
 	},
 
@@ -531,9 +523,7 @@ const controller = {
 		});
 
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
-			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-			bot.upvotes = upvotes.length;
+			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return models.bot.transform(bot);
 		}));
@@ -576,9 +566,7 @@ const controller = {
 		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
-			const upvotes = await redis.keysAsync(`bots:${bot.id}:upvotes:*`);
-			bot.is_upvoted = !!ctx.state.user && upvotes.includes(`bots:${bot.id}:upvotes:${ctx.state.user.id}`);
-			bot.upvotes = upvotes.length;
+			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return models.bot.transform(bot);
 		}));

@@ -5,13 +5,13 @@
 			<strong>{{bot.username}}</strong>
 			<span class="text-muted">#{{bot.discriminator}}</span>
 		</h2>
-		<button class="btn btn-primary btn-lg mt-4" :disabled="bot.is_upvoted" @click="upvote">
-			Upvote{{bot.is_upvoted ? 'd' : ''}} ({{bot.upvotes}})
+		<button class="btn btn-primary btn-lg mt-4" :disabled="bot.my_upvotes >= 7" @click="upvote">
+			Upvote{{bot.my_upvotes >= 7 ? 'd' : ''}} ({{bot.upvotes}})
 		</button>
 		<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="mt-3" id="view-bot-link">
 			See bot profile
 		</router-link>
-		<p v-if="bot.is_upvoted" class="text-muted mt-4">You can upvote every 12 hours :)</p>
+		<p v-if="bot.my_upvotes >= 7" class="text-muted mt-4">You can upvote up to 7 times per week :)</p>
 	</div>
 </template>
 

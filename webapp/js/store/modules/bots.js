@@ -107,7 +107,7 @@ const mutations = {
 	[types.UPVOTE_BOT](state, id) {
 		const bot = state.bots.find(bot => bot.id === id);
 		++bot.upvotes;
-		bot.is_upvoted = true;
+		++bot.my_upvotes;
 		
 		state.bots = unionState(state.bots, [bot], 'id', 'id');
 	},

@@ -114,6 +114,11 @@ async function attachBotStats(bot) {
 		bot.stats.voice_connections = voiceConnections;
 }
 
+async function attachBotUpvotes(bot, user) {
+	bot.my_upvotes = user ? (await redis.keysAsync(`bots:${bot.id}:upvotes:${user.id}:*`)).length : 0;
+	bot.upvotes = (await redis.keysAsync(`bots:${bot.id}:upvotes:*`)).length;
+}
+
 // https://codebottle.io/s/2a5e5efd87
 function shorten(str, len, ellipsis = '…') {
 	if (str.length <= len)
@@ -151,6 +156,15 @@ function getAvatar(entity) {
 		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
 }
 
+function generateRandomString(length) {
+	var text = '';
+	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (var i = 0; i < length; i++) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return text;
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -158,8 +172,10 @@ module.exports = {
 	isDdgBot,
 	getIP,
 	attachBotStats,
+	attachBotUpvotes,
 	shorten,
 	formatNumber,
 	checkDBLock,
 	getAvatar,
+	generateRandomString,
 };
