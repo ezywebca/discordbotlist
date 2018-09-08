@@ -371,33 +371,6 @@ const controller = {
 		ctx.status = 204;
 	},
 
-	getUpvotes: async (ctx, next) => {
-		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
-		});
-
-		if (!bot)
-			throw {status: 404, message: 'Not found'};
-
-		const upvotesUserIds = (await redis.keysAsync(`bots:${bot.id}:upvotes:*`)).map(key => key.split(':')[3]);
-
-		if (upvotesUserIds.length < 1) {
-			ctx.body = [];
-		} else {
-			const users = await models.user.findAll({
-				where: {
-					id: {
-						[Sequelize.Op.or]: upvotesUserIds,
-					}
-				}
-			});
-
-			ctx.body = Promise.all(users.map(models.user.transform).map(async user => {
-				user.upvotes_count = (await redis.keysAsync(`bots:${bot.id}:upvotes:${user.id}:*`)).length;
-			}));
-		}
-	},
-
 	generateToken: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {discord_id: ctx.params.id}

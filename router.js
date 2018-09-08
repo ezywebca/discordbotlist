@@ -36,7 +36,6 @@ module.exports = () => {
 	router.put('/api/bots/:id', throttle(), protect(), checkDBLock, BotController.edit);
 	router.delete('/api/bots/:id', throttle(), protect(), checkDBLock, BotController.delete);
 	router.get('/api/bots/:id/token', throttle(), protect(), checkDBLock, BotController.generateToken);
-	router.get('/api/bots/:id/upvotes', throttle(), BotController.getUpvotes);
 	router.post('/api/bots/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, BotController.refresh);
 	router.post('/api/bots/:id/upvotes', throttle(), protect(), checkDBLock, BotController.upvote);
 
