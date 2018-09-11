@@ -6,6 +6,7 @@ const path = require('path');
 const handler = require('./middleware/handler');
 const loggerMiddleware = require('./middleware/logger');
 
+const koaRange = require('koa-range');
 const koaConditional = require('koa-conditional-get');
 const koaEtag = require('koa-etag');
 const koaStatic = require('koa-static');
@@ -39,6 +40,7 @@ async function renderAvatar(bot) {
 }
 
 app.use(handler);
+app.use(koaRange);
 app.use(koaCompress({
 	threshold: 2048,
 	flush: require('zlib').Z_SYNC_FLUSH
