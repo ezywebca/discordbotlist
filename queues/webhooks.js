@@ -1,8 +1,11 @@
 const redis = require('../redis');
 const Queue = require('bee-queue');
 const logger = require('../logger');
-const axios = require('axios');
+const request = require('request-promise-native');
 const models = require('../models');
+
+const shttps = require('socks5-https-client/lib/Agent');
+const shttp = require('socks5-http-client/lib/Agent');
 
 const queue = new Queue('webhooks', {
 	redis,
@@ -11,11 +14,24 @@ const queue = new Queue('webhooks', {
 
 queue.process(4, async job => {
 	logger.info(`Webhook delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
-	return axios.post(job.data.url, models.user.transform(job.data.user), {
+	
+	const agent = job.data.url.startsWith('https://') ? shttps : shttp;
+	
+	return request.post(job.data.url, {
 		headers: {
 			'X-DBL-Signature': `${job.data.secret} ${Date.now()}`,
 		},
-	}).then(() => {}); // bee-queue stringifies circular response for some reason, also don't need it.
+
+		form: models.user.transform(job.data.user),
+		agentClass: agent,
+		
+		agentOptions: {
+			socksHost: process.env.SOCKS5_HOST,
+			socksPort: process.env.SOCKS5_PORT,
+			socksUsername: process.env.SOCKS5_USER,
+			socksPassword: process.env.SOCKS5_PASS,
+		}
+	});
 });
 
 queue.on('succeeded', (job, result) => {
