@@ -281,13 +281,14 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-
-		if ((await redis.keysAsync(`bots:${bot.id}:upvotes:${ctx.state.user.id}:*`)).length >= 7)
-			throw {status: 422, message: 'You can only vote up to 7 times per week'};
-
+		const lockKey = `bots:${bot.id}:upvote-locks:${ctx.state.user.id}`;
 		const voteKey = `bots:${bot.id}:upvotes:${ctx.state.user.id}:${generateRandomString(4)}`;
 
+		if (await redis.getAsync(lockKey))
+			throw {status: 422, message: 'You can upvote once per 24 hours'};
+
 		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
+		await redis.setAsync(lockKey, 1, 'EX', 3600 * 24); // a day
 
 		ctx.status = 204;
 	},

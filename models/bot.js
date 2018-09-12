@@ -96,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
 			server_invite: bot.server_invite,
 			verified: !!bot.verified,
 			upvotes: bot.upvotes,
-			my_upvotes: bot.my_upvotes,
+			upvote_lock: bot.upvote_lock,
 			is_upvoted: bot.is_upvoted,
 			created_at: bot.created_at,
 			updated_at: bot.updated_at,

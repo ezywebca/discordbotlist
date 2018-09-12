@@ -48,8 +48,8 @@
 				<p class="mt-3">{{bot.short_description}}</p>
 				<p class="links">
 					<span>
-						<a href="javascript:undefined" :class="{disabled: bot.my_upvotes >= 7}" @click="upvote">
-							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.my_upvotes >= 7 ? 'd' : ''}} ({{bot.upvotes}})
+						<a href="javascript:undefined" :class="{disabled: bot.upvote_lock}" @click="upvote">
+							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.upvote_lock ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
 						<router-link :to="{name: 'upvote-bot', params: {id: bot.id}}" class="ml-1 text-muted">
 							<em>// voting page</em>
@@ -121,8 +121,8 @@
 				<p class="mt-3">{{bot.short_description}}</p>
 				<p class="links">
 					<span>
-						<a href="javascript:undefined" :class="{disabled: bot.my_upvotes >= 7}" @click="upvote">
-							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.my_upvotes >= 7 ? 'd' : ''}} ({{bot.upvotes}})
+						<a href="javascript:undefined" :class="{disabled: bot.upvote_lock}" @click="upvote">
+							<span class="mr-1 fas fa-chevron-up"/> Upvote{{bot.upvote_lock ? 'd' : ''}} ({{bot.upvotes}})
 						</a>
 						<router-link :to="{name: 'upvote-bot', params: {id: bot.id}}" class="ml-1 text-muted">
 							<em>// upvoting page</em>
