@@ -115,7 +115,11 @@ async function attachBotStats(bot) {
 }
 
 async function attachBotUpvotes(bot, user) {
-	bot.upvote_lock = !!(await redis.getAsync(`bots:${bot.id}:upvote-locks:${user.id}`));
+	if (user)
+		bot.upvote_lock = !!(await redis.getAsync(`bots:${bot.id}:upvote-locks:${user.id}`));
+	else
+		bot.upvote_lock = false;
+		
 	bot.upvotes = (await redis.keysAsync(`bots:${bot.id}:upvotes:*`)).length;
 }
 
