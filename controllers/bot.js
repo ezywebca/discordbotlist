@@ -129,7 +129,7 @@ const controller = {
 		await attachBotStats(bot);
 		await attachBotUpvotes(bot, ctx.state.user);
 
-		ctx.body = models.bot.transform(bot, {includeWebhooks: ctx.state.user ? ctx.state.user.id === bot.user_id : false || ctx.state.user.admin});
+		ctx.body = models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
 	},
 
 	index: async (ctx, next) => {
@@ -194,7 +194,7 @@ const controller = {
 				return 1;
 			else
 				return 0;
-		}).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? ctx.state.user.id === bot.user_id : false || ctx.state.user.admin}));
+		}).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
 	},
 
 	search: async (ctx, next) => {
@@ -228,7 +228,7 @@ const controller = {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
-		}))).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? ctx.state.user.id === bot.user_id : false || ctx.state.user.admin}));
+		}))).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
 	},
 
 	delete: async (ctx, next) => {
@@ -523,7 +523,7 @@ const controller = {
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? ctx.state.user.id === bot.user_id : false || ctx.state.user.admin});
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
 		}));
 	},
 
@@ -566,7 +566,7 @@ const controller = {
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? ctx.state.user.id === bot.user_id : false || ctx.state.user.admin});
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
 		}));
 	}
 };
