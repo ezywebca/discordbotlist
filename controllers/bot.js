@@ -291,7 +291,7 @@ const controller = {
 		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
 		await redis.setAsync(lockKey, 1, 'EX', 3600 * 24); // a day
 
-		if (bot.webhook_url)
+		if (bot.webhook_url) {
 			webhooksQueue.createJob({
 				url: bot.webhook_url,
 				secret: bot.webhook_secret,
@@ -300,8 +300,12 @@ const controller = {
 			}).timeout(2000)
 				.retries(5)
 				.backoff('exponential', 500)
-				.save();
+				.save()
+				.then(job => {
+					logger.info(`Webhook delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
+				});
 
+		}
 		ctx.status = 204;
 	},
 

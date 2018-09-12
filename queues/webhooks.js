@@ -13,8 +13,6 @@ const queue = new Queue('webhooks', {
 });
 
 queue.process(4, async job => {
-	logger.info(`Webhook delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
-	
 	const agent = job.data.url.startsWith('https://') ? shttps : shttp;
 	
 	return request.post(job.data.url, {
