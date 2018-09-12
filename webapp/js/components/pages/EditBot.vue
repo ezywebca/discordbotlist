@@ -44,6 +44,28 @@
 						placeholder="Official guild invitation (you have one, right? otherwise that's LAME)">
 				</div>
 			</div>
+
+			<h5 class="mt-5">Upvote Webhook (optional)</h5>
+			<p class="mt-3">
+				This webhook is fired whenever a user upvotes your bot, if set up.
+				See <router-link :to="{name: 'api-docs'}" target="_blank">API docs</router-link> for more information.
+			</p>
+			<div class="form-group row mt-3">
+				<label for="server-invite" class="col-sm-2 col-form-label">Webhook URL</label>
+				<div class="col-sm-10">
+					<input type="url" id="server-invite" class="form-control" v-model="webhookURL" maxlength="191"
+						placeholder="We'll be POSTing there!">
+				</div>
+			</div>
+
+			<div class="form-group row mt-3">
+				<label for="server-invite" class="col-sm-2 col-form-label">Webhook secret</label>
+				<div class="col-sm-10">
+					<input type="text" id="server-invite" class="form-control" v-model="webhookSecret" maxlength="191"
+						placeholder="This is mandatory if you want to use webhooks">
+				</div>
+			</div>
+
 			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="editButton">Save</button>
 		</form>
 	</div>
@@ -77,6 +99,8 @@
 				website: '',
 				botInvite: '',
 				serverInvite: '',
+				webhookURL: '',
+				webhookSecret: '',
 				saved: false,
 			};
 		},
@@ -88,6 +112,8 @@
 			this.website = this.bot.website;
 			this.botInvite = this.bot.bot_invite;
 			this.serverInvite = this.bot.server_invite;
+			this.webhookURL = this.bot.webhook_url;
+			this.webhookSecret = this.bot.webhook_secret;
 		},
 
 		computed: {
@@ -111,6 +137,8 @@
 					website: this.website,
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
+					webhook_url: this.webhookURL,
+					webhook_secret: this.webhookSecret,
 				}).then(response => {
 					this.saved = true;
 					this.$router.push({name: 'view-bot', params: {id: this.bot.id}});

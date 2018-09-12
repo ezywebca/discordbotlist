@@ -54,6 +54,14 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING(191),
 			allowNull: true,
 		},
+		webhook_url: {
+			type: DataTypes.STRING(191),
+			allowNull: true,
+		},
+		webhook_secret: {
+			type: DataTypes.STRING(191),
+			allowNull: true,
+		},
 		verified: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
@@ -82,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
 		bot.belongsTo(models.user, {foreignKey: 'owner_id'});
 	};
 
-	bot.transform = bot => {
+	bot.transform = (bot, options) => {
 		const result = {
 			id: bot.discord_id,
 			username: bot.username,
@@ -100,6 +108,11 @@ module.exports = (sequelize, DataTypes) => {
 			is_upvoted: bot.is_upvoted,
 			created_at: bot.created_at,
 			updated_at: bot.updated_at,
+
+			...options.includeWebhooks ? {
+				webhook_url: bot.webhook_url,
+				webhook_secret: bot.webhook_secret,
+			} : {},
 		};
 
 		if (bot.user)

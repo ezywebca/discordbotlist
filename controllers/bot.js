@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const cryptojs = require('crypto-js');
 const {attachBotStats, attachBotUpvotes, generateRandomString} = require('../helpers');
 const serviceBot = require('../bot');
+const webhooksQueue = require('../queues/webhooks');
 
 const controller = {
 	add: async (ctx, next) => {
@@ -111,7 +112,7 @@ const controller = {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
-		}))).map(bot => models.bot.transform(bot));
+		}))).map(bot => models.bot.transform(bot, {includeWebhooks: true}));
 	},
 
 	get: async (ctx, next) => {
@@ -128,7 +129,7 @@ const controller = {
 		await attachBotStats(bot);
 		await attachBotUpvotes(bot, ctx.state.user);
 
-		ctx.body = models.bot.transform(bot);
+		ctx.body = models.bot.transform(bot, {includeWebhooks: ctx.state.user.id === bot.user_id || ctx.state.user.admin});
 	},
 
 	index: async (ctx, next) => {
@@ -193,7 +194,7 @@ const controller = {
 				return 1;
 			else
 				return 0;
-		}).map(models.bot.transform);
+		}).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user.id === bot.user_id || ctx.state.user.admin}));
 	},
 
 	search: async (ctx, next) => {
@@ -227,7 +228,7 @@ const controller = {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
-		}))).map(models.bot.transform);
+		}))).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user.id === bot.user_id || ctx.state.user.admin}));
 	},
 
 	delete: async (ctx, next) => {
@@ -290,6 +291,17 @@ const controller = {
 		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
 		await redis.setAsync(lockKey, 1, 'EX', 3600 * 24); // a day
 
+		if (bot.webhook_url)
+			webhooksQueue.createJob({
+				url: bot.webhook_url,
+				secret: bot.webhook_secret,
+				user: ctx.state.user,
+				bot,
+			}).timeout(2000)
+				.retries(5)
+				.backoff('exponential', 500)
+				.save();
+
 		ctx.status = 204;
 	},
 
@@ -300,9 +312,10 @@ const controller = {
 			prefix,
 			website,
 			bot_invite,
-			server_invite
+			server_invite,
+			webhook_url,
+			webhook_secret,
 		} = ctx.request.body;
-
 		
 		const bot = await models.bot.findOne({
 			where: {discord_id: ctx.params.id},
@@ -315,6 +328,12 @@ const controller = {
 			throw {status: 403, message: 'Access denied'};
 		
 		verifyBotInfo(ctx.request.body);
+
+		if (webhook_url)
+			if (!isURL(webhook_url))
+				throw {status: 422, message: 'Invalid webhook URL'};
+			else if (!webhook_secret)
+				throw {status: 422, message: 'You can\'t assign a webhook without a secret'};
 
 		let description = `
 • Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
@@ -334,6 +353,10 @@ const controller = {
 			description += `\n• New server: [link](${server_invite})`;
 		if (website !== bot.website)
 			description += `\n• New website: ${website ? `[link](${website})` : 'None'}`;
+		if (webhook_url)
+			description += `\n• New webhook URL: [link](${webhook_url})`;
+		if (webhook_secret)
+			description += '\n• New webhook secret';
 
 		await bot.update({
 			short_description,
@@ -341,9 +364,10 @@ const controller = {
 			prefix,
 			website,
 			bot_invite,
-			server_invite
+			server_invite,
+			webhook_url: webhook_url ? webhook_url : null,
+			webhook_secret: webhook_secret ? webhook_secret : null,
 		});
-
 
 		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
 			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
@@ -499,7 +523,7 @@ const controller = {
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot);
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user.id === bot.user_id || ctx.state.user.admin});
 		}));
 	},
 
@@ -542,7 +566,7 @@ const controller = {
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot);
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user.id === bot.user_id || ctx.state.user.admin});
 		}));
 	}
 };

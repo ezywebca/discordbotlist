@@ -63,10 +63,34 @@
 		<h3 class="mt-3">Online stats</h3>
 		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
 
-		<h3>Bot verification</h3>
+		<h3 class="mt-3">Bot verification</h3>
 		<p>
 			If you want your bot to have a fancy golden star that assures the user the bot is not spam, then
 			<router-link :to="{name: 'contact'}">contact us thru Discord.</router-link>
+		</p>
+
+		<h3 class="mt-3">Upvote Webhooks</h3>
+		<p>
+			Upvote webhooks are webhooks that are fired whenever a user upvotes your bot. Configuring it requires:
+			<ul>
+				<li>A webhook URL. A URL that we will <code>POST</code> to.</li>
+				<li>A webhook secret. Used to verify the webhook at your end.</li>
+			</ul>
+
+			Whenever the webhook is triggered, it will <code>POST</code> to the specified URL a
+			<a href="https://github.com/discordbots/botlister/wiki/User-Object" target="_blank">user object.</a>
+			It will also include a custom <code>X-DBL-Signature</code> HTTP header. The header will contain
+			two fields:
+
+			<ul>
+				<li>The first field is the secret that you provided when setting up the webhook</li>
+				<li>The second one is the number of milliseconds since epoch</li>
+			</ul>
+
+			<strong>To verify webhook,</strong> first check the secret. If it's correct, check the provided timestamp,
+			if it's within something like 2 minutes, accept it, otherwise, reject it.
+			<br>
+			<strong>The timestamp verification is important</strong> in order to prevent replay attacks.
 		</p>
 	</div>
 </template>
