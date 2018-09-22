@@ -66,7 +66,11 @@
 				</div>
 			</div>
 
-			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="editButton">Save</button>
+			<button type="button" class="btn btn-primary" @click="testWebhook" ref="webhookTestButton">Test webhook</button>
+
+			<br>
+
+			<button type="submit" class="btn btn-primary mt-4 mb-5" ref="editButton">Save</button>
 		</form>
 	</div>
 </template>
@@ -145,6 +149,23 @@
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));	
 					this.$refs.editButton.disabled = false;
+				});
+			},
+
+			testWebhook() {
+				this.$refs.webhookTestButton.disabled = true;
+
+				axios.post(`/api/bots/${this.$route.params.id}/upvotes/webhook-test`, {
+					webhook_url: this.webhookURL,
+					webhook_secret: this.webhookSecret,
+				}).then(() => {
+					this.$vueOnToast.pop('success', 'Delivery job dispatched!', 'Webhook should be delivered within few seconds');
+					setTimeout(() => {
+						this.$refs.webhookTestButton.disabled = false;
+					}, 1000);
+				}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));	
+					this.$refs.webhookTestButton.disabled = false;
 				});
 			}
 		},

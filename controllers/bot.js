@@ -309,6 +309,39 @@ const controller = {
 		ctx.status = 204;
 	},
 
+	testWebhook: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: ctx.params.id
+			},
+			include: [models.user]
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		if (!ctx.request.body.webhook_url)
+			throw {status: 422, message: 'Missing webhook URL'};
+
+		if (!ctx.request.body.webhook_secret)
+			throw {status: 422, message: 'Missing webhook secret'};
+
+		webhooksQueue.createJob({
+			url: ctx.request.body.webhook_url,
+			secret: ctx.request.body.webhook_secret,
+			user: ctx.state.user,
+			bot,
+		}).timeout(2000)
+			.retries(5)
+			.backoff('exponential', 500)
+			.save()
+			.then(job => {
+				logger.info(`Webhook test delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
+			});
+
+		ctx.status = 204;
+	},
+
 	edit: async (ctx, next) => {
 		const {
 			short_description,

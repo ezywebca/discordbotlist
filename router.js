@@ -39,6 +39,8 @@ module.exports = () => {
 	router.post('/api/bots/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, BotController.refresh);
 	router.post('/api/bots/:id/upvotes', throttle(), protect(), checkDBLock, BotController.upvote);
 
+	router.post('/api/bots/:id/upvotes/webhook-test', throttle(10, 60), protect(), checkDBLock, BotController.testWebhook);
+
 	router.post('/api/bots/:id/verification', throttle(), protect(), checkDBLock, adminOnly, BotController.verify);
 	router.delete('/api/bots/:id/verification', throttle(), protect(), checkDBLock, adminOnly, BotController.unverify);
 
