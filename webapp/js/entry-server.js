@@ -1,5 +1,5 @@
 import root from 'window-or-global';
-const isDev = process.env.NODE_ENV !== 'production';
+import {createApp} from './app';
 
 module.exports = context => {
 	root.location = {
@@ -10,15 +10,9 @@ module.exports = context => {
 	root.serverRendering = true;
 	root.apiHost = context.apiHost;
 
-	const {createApp} = require('./app');
 
 	return new Promise(async (resolve, reject) => {
-		const s = isDev && Date.now();
-		const {
-			app,
-			router,
-			store
-		} = createApp();
+		const {app, router, store} = createApp();
 
 		store.commit('auth/SET_DISCORD_OAUTH_URL', {
 			discordId: context.discordId,
@@ -40,12 +34,8 @@ module.exports = context => {
 			}
 		}
 
-		const {
-			url
-		} = context;
-		const {
-			fullPath
-		} = router.resolve(url).route;
+		const {url} = context;
+		const {fullPath} = router.resolve(url).route;
 
 		if (fullPath !== url)
 			return reject({
@@ -68,7 +58,6 @@ module.exports = context => {
 				store,
 				router.currentRoute
 			))).then(() => {
-				isDev && console.log(`SSR data prefetch: ${Date.now() - s}ms`);
 				context.state = store.state;
 				resolve(app);
 			}).catch(reject);

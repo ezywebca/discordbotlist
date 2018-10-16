@@ -5,12 +5,15 @@ const path = require('path');
 
 const handler = require('./middleware/handler');
 const loggerMiddleware = require('./middleware/logger');
+const logger = require('./logger');
 
 const koaRange = require('koa-range');
 const koaConditional = require('koa-conditional-get');
 const koaEtag = require('koa-etag');
 const koaStatic = require('koa-static');
 const koaCompress = require('koa-compress');
+
+const LRU = require('lru-cache');
 
 const ejs = require('ejs');
 const models = require('./models');
@@ -23,6 +26,7 @@ const {isCrawler, getIP, getAvatar} = require('./helpers');
 
 const util = require('util');
 const i2b = util.promisify(require('imageurl-base64'));
+const debounce = require('lodash.debounce');
 
 async function renderAvatar(bot) {
 	const url = getAvatar(bot);
@@ -39,6 +43,40 @@ async function renderAvatar(bot) {
 	return b64;
 }
 
+function createAppRenderer() {
+	const template = fs.readFileSync(path.join(__dirname, 'build', 'index.html'), 'utf8');
+	const ssrManifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'build', 'vue-ssr-server-bundle.json'), 'utf8'));
+	return createBundleRenderer(ssrManifest, {
+		runInNewContext: false,
+		template,
+		cache: LRU({
+			max: 100,
+			maxAge: 1000,
+		}),
+	});
+}
+
+let renderer = createAppRenderer();
+
+const refreshRenderer = debounce(() => {
+	renderer = createAppRenderer();
+	logger.info('Refreshed app renderer');
+}, 500);
+
+fs.watch(path.join(__dirname, 'build', 'index.html'), refreshRenderer);
+fs.watch(path.join(__dirname, 'build', 'vue-ssr-server-bundle.json'), refreshRenderer);
+
+async function renderApp(ctx) {
+	const context = {
+		url: ctx.url.endsWith('?') ? ctx.url.slice(0, -1) : ctx.url, // It crashes otherwise
+		authCookie: ctx.cookies.get('auth'),
+		discordRedirect: process.env.OAUTH_DISCORD_REDIRECT,
+		discordId: process.env.OAUTH_DISCORD_ID,
+	};
+
+	return await renderer.renderToStream(context);
+}
+
 app.use(handler);
 app.use(koaRange);
 app.use(koaCompress({
@@ -50,25 +88,6 @@ app.use(koaConditional());
 app.use(koaEtag());
 
 app.use(loggerMiddleware);
-
-async function renderApp(ctx) {
-	const template = await fs.readFile(path.join(__dirname, 'build', 'index.html'), 'utf8');
-	const ssrManifest = JSON.parse(await fs.readFile(path.join(__dirname, 'build', 'vue-ssr-server-bundle.json'), 'utf8'));
-
-	const renderer = createBundleRenderer(ssrManifest, {
-		runInNewContext: true,
-		template
-	});
-
-	const context = {
-		url: ctx.url.endsWith('?') ? ctx.url.slice(0, -1) : ctx.url, // It crashes otherwise
-		authCookie: ctx.cookies.get('auth'),
-		discordRedirect: process.env.OAUTH_DISCORD_REDIRECT,
-		discordId: process.env.OAUTH_DISCORD_ID,
-	};
-
-	return await renderer.renderToStream(context);
-}
 
 app.use(koaStatic('./public', {
 	maxage: 1000 * 60 * 60 * 24 * 30,
