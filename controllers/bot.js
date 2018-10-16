@@ -596,6 +596,38 @@ const controller = {
 		ctx.status = 204;
 	},
 
+	setNSFW: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: ctx.params.id,
+			}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		bot.nsfw = true;
+		await bot.save();
+
+		ctx.status = 204;
+	},
+
+	unsetNSFW: async (ctx, next) => {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: ctx.params.id,
+			}
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		bot.nsfw = false;
+		await bot.save();
+
+		ctx.status = 204;
+	},
+
 	getUninvited: async (ctx, next) => {
 		const bots = await models.bot.findAll();
 		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));

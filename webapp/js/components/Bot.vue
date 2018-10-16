@@ -1,13 +1,16 @@
 <template>
 	<div class="card">
 		<router-link :to="{name: 'view-bot', params: {id: bot.id}}">
-			<img class="card-img-top" :alt="bot.username"
-				:src="getAvatar(bot)">
+			<div class="bot-image-container">
+				<img class="card-img-top bot-image" :class="{nsfw: bot.nsfw}"
+					:alt="bot.username" :src="getAvatar(bot)">
+			</div>
 		</router-link>
 		<div class="card-body">
 			<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="nostyle">
 				<h5 class="card-title">
 					{{bot.username}}
+					<span class="badge badge-danger ml-2" v-if="bot.nsfw">NSFW</span>
 					<span :class="{
 						'fas': true,
 						'fa-circle': true,
@@ -54,6 +57,19 @@
 
 	.online {
 		color: #43b581;
+	}
+	.bot-image-container {
+		overflow: hidden;
+	}
+
+	.bot-image.nsfw {
+		filter: grayscale(1) blur(15px);
+		transition: filter 0.5s;
+	}
+
+	.bot-image.nsfw:hover {
+		filter: none;
+		transition: filter 1.25s;
 	}
 </style>
 

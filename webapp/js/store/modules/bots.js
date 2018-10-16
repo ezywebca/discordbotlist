@@ -77,6 +77,18 @@ const actions = {
 		});
 	},
 
+	setNSFW: ({commit}, {id}) => {
+		return axios.post(`/api/bots/${id}/nsfw-mark`).then(response => {
+			commit(types.SET_BOT_NSFW, id);
+		});
+	},
+
+	unsetNSFW: ({commit}, {id}) => {
+		return axios.delete(`/api/bots/${id}/nsfw-mark`).then(response => {
+			commit(types.UNSET_BOT_NSFW, id);
+		});
+	},
+
 	delete: ({commit}, {id}) => {
 		return axios.delete(`/api/bots/${id}`).then(response => {
 			commit(types.DELETE_BOT, id);	
@@ -131,6 +143,20 @@ const mutations = {
 		state.bots = unionState(state.bots, [{
 			...state.bots.find(bot => bot.id === id),
 			verified: false,
+		}], 'id', 'id');
+	},
+
+	[types.SET_BOT_NSFW](state, id) {
+		state.bots = unionState(state.bots, [{
+			...state.bots.find(bot => bot.id === id),
+			nsfw: true,
+		}], 'id', 'id');
+	},
+
+	[types.UNSET_BOT_NSFW](state, id) {
+		state.bots = unionState(state.bots, [{
+			...state.bots.find(bot => bot.id === id),
+			nsfw: false,
 		}], 'id', 'id');
 	},
 

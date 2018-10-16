@@ -38,6 +38,9 @@ module.exports = () => {
 	router.get('/api/bots/:id/token', throttle(), protect(), checkDBLock, BotController.generateToken);
 	router.post('/api/bots/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, BotController.refresh);
 	router.post('/api/bots/:id/upvotes', throttle(), protect(), checkDBLock, BotController.upvote);
+	
+	router.post('/api/bots/:id/nsfw-mark', throttle(), protect(), checkDBLock, BotController.setNSFW);
+	router.delete('/api/bots/:id/nsfw-mark', throttle(), protect(), checkDBLock, BotController.unsetNSFW);
 
 	router.post('/api/bots/:id/upvotes/webhook-test', throttle(10, 60), protect(), checkDBLock, BotController.testWebhook);
 
@@ -50,6 +53,7 @@ module.exports = () => {
 	router.get('/api/users/:id', throttle(), UserController.get);
 	router.post('/api/users/:id/ban', throttle(), protect(), checkDBLock, adminOnly, UserController.ban);
 	router.delete('/api/users/:id/ban', throttle(), protect(), checkDBLock, adminOnly, UserController.unban);
+	router.post('/api/users/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, UserController.refresh);
 	router.post('/api/users/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, UserController.refresh);
 
 	router.get('/api/dbl/configurations', throttle(), protect(), adminOnly, DBLController.getConfig);

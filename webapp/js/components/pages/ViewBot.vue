@@ -2,12 +2,15 @@
 	<div class="container">
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex">
 			<div class="col-4">
-				<img :src="getAvatar(bot)" class="bot-image">
+				<div class="bot-image-container">
+					<img :src="getAvatar(bot)" class="bot-image" :class="{nsfw: bot.nsfw}">
+				</div>
 			</div>
 			<div class="col-8">
 				<h1 class="username">
 					<strong>{{bot.username}}</strong>
 					<span class="text-muted">#{{bot.discriminator}}</span>
+					<span class="badge badge-danger ml-2" v-if="bot.nsfw">NSFW</span>
 					<span :class="{
 						'fas': true,
 						'fa-circle': true,
@@ -72,6 +75,9 @@
 					<a href="javascript:undefined" @click="() => (bot.verified ? unverifyBot : verifyBot)()" v-if="isAdmin">
 						<span class="mr-1 fas fa-star" /> {{bot.verified ? 'Un-verify bot' : 'Verify bot'}}
 					</a>
+					<a href="javascript:undefined" @click="() => (bot.nsfw ? unsetNSFW : setNSFW)()" v-if="isAdmin">
+						<span class="mr-1 fas fa-exclamation-triangle" /> {{bot.nsfw ? 'Unset NSFW' : 'Set NSFW'}}
+					</a>
 					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
@@ -85,8 +91,9 @@
 		<!-- Collapsed (Mobile) -->
 		<div class="collapsed row d-md-none d-lg-none d-xl-none">
 			<div class="text-center">
-				<img :src="getAvatar(bot)" class="bot-image center-block">
-
+				<div class="bot-image-container">
+					<img :src="getAvatar(bot)" class="bot-image center-block" :class="{nsfw: bot.nsfw}">
+				</div>
 				<h1 class="username mt-3">
 					<strong itemprop="additionalName">{{bot.username}}</strong>
 					<span class="text-muted">#{{bot.discriminator}}</span>
@@ -99,6 +106,8 @@
 						'online': bot.stats.online,
 					}" :title="bot.stats.online ? 'Online' : 'Offline'" />
 					<span class=" fas fa-star ml-1 mb-2 verification-badge" title="Verified" v-if="bot.verified" />
+					<br>
+					<span class="badge badge-danger ml-2" v-if="bot.nsfw">NSFW</span>
 				</h1>
 				<h6 class="text-muted">
 					Added: {{moment(bot.created_at).fromNow()}} <br>
@@ -145,6 +154,9 @@
 					<a href="javascript:undefined" @click="() => (bot.verified ? unverifyBot : verifyBot)()" v-if="isAdmin">
 						<span class="mr-1 fas fa-star" /> {{bot.verified ? 'Un-verify bot' : 'Verify bot'}}
 					</a>
+					<a href="javascript:undefined" @click="() => (bot.nsfw ? unsetNSFW : setNSFW)()" v-if="isAdmin">
+						<span class="mr-1 fas fa-exclamation-triangle" /> {{bot.nsfw ? 'Unset NSFW' : 'Set NSFW'}}
+					</a>
 					<router-link :to="{name: 'edit-bot', params: {id: bot.id}}" v-if="isAdmin || bot.owner.id === currentUserId">
 						<span class="mr-1 fas fa-pencil" /> Edit bot info
 					</router-link>
@@ -160,10 +172,24 @@
 </template>
 
 <style scoped>
+	.bot-image-container {
+		overflow: hidden;
+	}
+
 	.bot-image {
 		width: 100%;
 		border-radius: 5px;
 		background: #202225;
+	}
+
+	.bot-image.nsfw {
+		filter: grayscale(1) blur(15px);
+		transition: filter 0.5s;
+	}
+
+	.bot-image.nsfw:hover {
+		filter: none;
+		transition: filter 1.25s;
 	}
 
 	.links > * {
@@ -267,6 +293,18 @@
 
 			unverifyBot: function() {
 				this.$store.dispatch('bots/unverify', {id: this.$route.params.id}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));
+				});
+			},
+
+			setNSFW: function() {
+				this.$store.dispatch('bots/setNSFW', {id: this.$route.params.id}).catch(e => {
+					this.$vueOnToast.pop('error', extractError(e));
+				});
+			},
+
+			unsetNSFW: function() {
+				this.$store.dispatch('bots/unsetNSFW', {id: this.$route.params.id}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));
 				});
 			},

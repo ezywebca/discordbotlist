@@ -1,9 +1,12 @@
 <template>
 	<div class="container text-center">
-		<img :src="getAvatar(bot)" class="bot-image center-block">
+		<div class="d-inline-block bot-image-container">
+			<img :src="getAvatar(bot)" class="bot-image center-block" :class="{nsfw: bot.nsfw}">
+		</div>
 		<h2 class="mt-3">
 			<strong>{{bot.username}}</strong>
 			<span class="text-muted">#{{bot.discriminator}}</span>
+			<span class="badge badge-danger ml-2" v-if="bot.nsfw">NSFW</span>
 		</h2>
 		<button class="btn btn-primary btn-lg mt-4" :disabled="bot.upvote_lock" @click="upvote">
 			Upvote{{bot.upvote_lock ? 'd' : ''}} ({{bot.upvotes}})
@@ -16,10 +19,24 @@
 </template>
 
 <style scoped>
+	.bot-image-container {
+		overflow: hidden;
+	}
+
 	.bot-image {
 		width: 100%;
 		max-width: 280px;
 		border-radius: 5px;
+	}
+
+	.bot-image.nsfw {
+		filter: grayscale(1) blur(15px);
+		transition: filter 0.5s;
+	}
+
+	.bot-image.nsfw:hover {
+		filter: none;
+		transition: filter 1.25s;
 	}
 
 	#view-bot-link {

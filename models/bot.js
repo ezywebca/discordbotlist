@@ -67,6 +67,11 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			defaultValue: false,
 		},
+		nsfw: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
 		deleted_at: {
 			type: TIMESTAMP,
 			defaultValue: null,
@@ -103,6 +108,7 @@ module.exports = (sequelize, DataTypes) => {
 			bot_invite: bot.bot_invite,
 			server_invite: bot.server_invite,
 			verified: !!bot.verified,
+			nsfw: !!bot.nsfw,
 			upvotes: bot.upvotes,
 			upvote_lock: bot.upvote_lock,
 			is_upvoted: bot.is_upvoted,
