@@ -10,8 +10,6 @@ const state = {
 	uninvited: [],
 };
 
-
-
 const actions = {
 	fetchMine: ({commit}) => {
 		return axios.get('/api/bots/mine').then(response => {

@@ -2,6 +2,7 @@ import root from 'window-or-global';
 import {createApp} from './app';
 
 module.exports = context => {
+	console.log('a');
 	root.location = {
 		protocol: context.protocol + ':',
 		hostname: context.hostname,

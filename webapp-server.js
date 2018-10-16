@@ -47,7 +47,7 @@ function createAppRenderer() {
 	const template = fs.readFileSync(path.join(__dirname, 'build', 'index.html'), 'utf8');
 	const ssrManifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'build', 'vue-ssr-server-bundle.json'), 'utf8'));
 	return createBundleRenderer(ssrManifest, {
-		runInNewContext: false,
+		runInNewContext: true,
 		template,
 		cache: LRU({
 			max: 100,
