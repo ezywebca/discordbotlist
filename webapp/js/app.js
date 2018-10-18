@@ -15,18 +15,20 @@ import {createStore} from './store';
 
 root.axios = axios;
 
+Vue.use(VueMeta, {
+	keyName: 'meta',
+});
+Vue.use(VueOnToast);
+Vue.use(VueRouter);
+Vue.use(Vuex);
+
 export function createApp() {
 	if (!root.serverRendering)
 		Vue.use(require('vue-infinite-scroll'));
 		
-	Vue.use(VueMeta, {
-		keyName: 'meta',
-	});
-	Vue.use(VueOnToast);
-	Vue.use(VueRouter);
-	Vue.use(Vuex);
-
 	const store = createStore();
+
+	console.log('storeeee', store);
 
 	if (typeof (window) !== 'undefined' && window.__INITIAL_STATE__)
 		store.replaceState(window.__INITIAL_STATE__);

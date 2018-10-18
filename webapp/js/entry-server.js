@@ -2,7 +2,6 @@ import root from 'window-or-global';
 import {createApp} from './app';
 
 module.exports = context => {
-	console.log('a');
 	root.location = {
 		protocol: context.protocol + ':',
 		hostname: context.hostname,
@@ -10,7 +9,6 @@ module.exports = context => {
 
 	root.serverRendering = true;
 	root.apiHost = context.apiHost;
-
 
 	return new Promise(async (resolve, reject) => {
 		const {app, router, store} = createApp();
