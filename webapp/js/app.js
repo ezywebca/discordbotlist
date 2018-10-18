@@ -28,8 +28,6 @@ export function createApp() {
 		
 	const store = createStore();
 
-	console.log('storeeee', store);
-
 	if (typeof (window) !== 'undefined' && window.__INITIAL_STATE__)
 		store.replaceState(window.__INITIAL_STATE__);
 
