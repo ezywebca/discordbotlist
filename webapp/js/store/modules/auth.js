@@ -1,7 +1,7 @@
 import * as types from '../mutation-types';
 import root from 'window-or-global';
 
-const state = {
+const state = () => ({
 	id: '',
 	username: '',
 	admin: false,
@@ -10,7 +10,7 @@ const state = {
 	expiresIn: 0,
 	obtainedAt: 0,
 	discordOAuthURL: '',
-};
+});
 
 const actions = {
 	login: ({commit}, code) => {

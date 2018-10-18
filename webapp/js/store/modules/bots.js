@@ -1,14 +1,14 @@
 import * as types from '../mutation-types';
 import {unionState} from '../helpers';
 
-const state = {
+const state = () => ({
 	mine: [],
 	hot: [],
 	searchResults: [],
 	bots: [],
 	all: [],
 	uninvited: [],
-};
+});
 
 const actions = {
 	fetchMine: ({commit}) => {

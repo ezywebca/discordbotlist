@@ -1,9 +1,9 @@
 import * as types from '../mutation-types';
 import {unionState} from '../helpers';
 
-const state = {
+const state = () => ({
 	users: [],
-};
+});
 
 const actions = {
 	fetch: ({commit}, {id}) => {
