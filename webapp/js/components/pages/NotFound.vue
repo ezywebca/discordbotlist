@@ -16,5 +16,5 @@
 				{name: 'robots', content: 'noindex'},
 			],
 		},
-	}
+	};
 </script>
