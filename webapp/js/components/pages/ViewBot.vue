@@ -341,6 +341,7 @@
 
 		mounted: function() {
 			highlightCode();
+			document.querySelectorAll('.description table').forEach(table => table.classList.add('table'));
 		},
 
 		meta: function() {
