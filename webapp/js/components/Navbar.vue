@@ -20,6 +20,9 @@
 					<router-link :to="{name: 'partners'}" tag="li" class="nav-item">
 						<a class="nav-link">Partners</a>
 					</router-link>
+					<li class="nav-item">
+						<a class="nav-link" href="https://medium.com/@DiscordBots" target="_blank">Blog</a>
+					</li>
 					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
 						<a class="nav-link">API</a>
 					</router-link>
@@ -74,6 +77,9 @@
 					<router-link :to="{name: 'partners'}" tag="li" class="nav-item">
 						<a class="nav-link">Partners</a>
 					</router-link>
+					<li class="nav-item">
+						<a class="nav-link" href="https://medium.com/@DiscordBots" target="_blank">Blog</a>
+					</li>
 					<router-link :to="{name: 'api-docs'}" tag="li" class="nav-item">
 						<a class="nav-link">API</a>
 					</router-link>
