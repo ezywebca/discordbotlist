@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 import VueMeta from 'vue-meta';
-import VueOnToast from 'vue-on-toast-with-absolutely-no-memory-leak';
+import VueOnToast from 'vue-on-toast';
 import VueAnalytics from 'vue-analytics';
 import App from './components/App';
 import axios from 'axios';
