@@ -147,7 +147,14 @@
 
 			signIn: function() {
 				const state = generateRandomString(32);
+
 				localStorage.setItem('discord_oauth_state', state);
+				localStorage.setItem('auth_return_url', JSON.stringify({
+					name: this.$route.name,
+					params: this.$route.params,
+					query: this.$route.query,
+				}));
+
 				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
 			},
 

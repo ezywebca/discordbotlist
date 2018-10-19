@@ -28,7 +28,11 @@
 
 					this.$store.dispatch('auth/login', code)
 						.then(() => {
-							this.$router.push({name: 'home'});
+							try {
+								this.$router.push(JSON.parse(localStorage.getItem('auth_return_url')));
+							} catch (e) {
+								this.$router.push({name: 'home'});
+							}
 						}).catch(error => {
 							this.status = extractError(error);
 					});
