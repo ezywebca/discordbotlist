@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development env-cmd ./.env node ./index.js",
-	"prod": "cross-env NODE_ENV=production env-cmd ./.env node ./index.js",
+    "prod": "cross-env NODE_ENV=production env-cmd ./.env node ./index.js",
     "webapp:dev": "cross-env NODE_ENV=development webpack --progress --hide-modules --watch",
     "webapp:prod": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "webapp:clean": "rm -f ./public/css/app-*.css && rm -f ./public/js/app-*.js ./public/webpack-manifest.json ./build/*json ./public/fonts/*"
@@ -34,7 +34,7 @@
     "cross-env": "^5.2.0",
     "crypto-js": "^3.1.9-1",
     "css-loader": "^1.0.0",
-    "discord.js": "^11.4.0",
+    "discord.js": "^11.4.2",
     "dotenv": "^6.0.0",
     "ejs": "^2.6.1",
     "env-cmd": "^8.0.2",
