@@ -151,6 +151,8 @@ const controller = {
 				order: [['created_at', 'DESC']]
 			});
 
+			bots = bots.filter(bot => serviceBot.isInGuild(bot.discord_id));
+
 			bots = await Promise.all(bots.map(async bot => {
 				await attachBotUpvotes(bot, ctx.state.user);
 				return bot;
@@ -194,7 +196,8 @@ const controller = {
 				return 1;
 			else
 				return 0;
-		}).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
+		}).filter(bot => serviceBot.isInGuild(bot.discord_id))
+			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
 	},
 
 	search: async (ctx, next) => {
@@ -228,7 +231,8 @@ const controller = {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
-		}))).map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
+		}))).filter(bot => serviceBot.isInGuild(bot.discord_id))
+			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
 	},
 
 	delete: async (ctx, next) => {
@@ -555,6 +559,7 @@ const controller = {
 		const bots = await models.bot.findAll({
 			order: [['updated_at', 'DESC']],
 			limit: skip + 20,
+			include: [models.user],
 		});
 
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
@@ -628,7 +633,7 @@ const controller = {
 		ctx.status = 204;
 	},
 
-	getUninvited: async (ctx, next) => {
+	getDisapproved: async (ctx, next) => {
 		const bots = await models.bot.findAll();
 		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));
 

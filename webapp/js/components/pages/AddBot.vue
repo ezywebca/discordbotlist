@@ -113,6 +113,7 @@
 					server_invite: this.serverInvite,
 				}).then(response => {
 					this.added = true;
+					this.$vueOnToast.pop('error', 'Queued for approval!');	
 					this.$router.push({name: 'view-bot', params: {id: this.botId}});
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));	

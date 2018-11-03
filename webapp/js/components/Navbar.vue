@@ -142,8 +142,8 @@
 				case 'my-bots':
 					this.$router.push({name: 'my-bots'});
 					break;
-				case 'uninvited-bots':
-					this.$router.push({name: 'uninvited-bots'});
+				case 'approval-queue':
+					this.$router.push({name: 'approval-queue'});
 					break;
 				case 'dbl-configurations':
 					this.$router.push({name: 'dbl-configurations'});
@@ -191,7 +191,7 @@
 			dropdownItems: function() {
 				return [
 					{label: 'My bots', key: 'my-bots'},
-					...(this.user && this.user.admin ? [{label: 'Uninvited bots', key: 'uninvited-bots'}] : []),
+					...(this.user && this.user.admin ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
 					...(this.user && this.user.admin ? [{label: 'DBL Config', key: 'dbl-configurations'}] : []),
 					{label: 'Sign out', key: 'sign-out'},
 				];

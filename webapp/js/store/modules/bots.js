@@ -7,7 +7,7 @@ const state = () => ({
 	searchResults: [],
 	bots: [],
 	all: [],
-	uninvited: [],
+	disapproved: [],
 });
 
 const actions = {
@@ -27,9 +27,9 @@ const actions = {
 		});
 	},
 
-	fetchUninvited: ({commit}) => {
-		return axios.get('/api/bots/uninvited').then(response => {
-			commit(types.STORE_UNINVITED_BOTS, response.data);
+	fetchDisapproved: ({commit}) => {
+		return axios.get('/api/bots/disapproved').then(response => {
+			commit(types.STORE_DISAPPROVED_BOTS, response.data);
 			return response;
 		});
 	},
@@ -167,8 +167,8 @@ const mutations = {
 		state.all = state.all.filter(item => item !== id);
 	},
 
-	[types.STORE_UNINVITED_BOTS](state, bots) {
-		state.uninvited = [...new Set([
+	[types.STORE_DISAPPROVED_BOTS](state, bots) {
+		state.disapproved = [...new Set([
 			...state.all,
 			...bots.map(bot => bot.id)
 		])];
@@ -178,7 +178,7 @@ const mutations = {
 
 const getters = {
 	mine: state => state.mine.map(id => state.bots.find(bot => bot.id === id)),
-	uninvited: state => state.uninvited.map(id => state.bots.find(bot => bot.id === id)),
+	disapproved: state => state.disapproved.map(id => state.bots.find(bot => bot.id === id)),
 	hot: state => state.hot.map(id => state.bots.find(bot => bot.id === id)),
 	searchResults: state => state.searchResults.map(id => state.bots.find(bot => bot.id === id)),
 	getBotById: state => id => state.bots.find(bot => bot.id === id),

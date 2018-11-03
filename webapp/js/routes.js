@@ -11,7 +11,7 @@ import ViewUser from './components/pages/ViewUser';
 import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
 import Bots from './components/pages/Bots';
-import UninvitedBots from './components/pages/UninvitedBots';
+import ApprovalQueue from './components/pages/ApprovalQueue';
 import DBLConfigurations from './components/pages/DBLConfigurations';
 
 export default [
@@ -43,9 +43,9 @@ export default [
 			requiresAuth: true,
 		}
 	}, {
-		name: 'uninvited-bots',
-		path: '/bots/uninvited',
-		component: UninvitedBots,
+		name: 'approval-queue',
+		path: '/bots/disapproved',
+		component: ApprovalQueue,
 		meta: {
 			requiresAuth: true,
 			requiresAdmin: true,

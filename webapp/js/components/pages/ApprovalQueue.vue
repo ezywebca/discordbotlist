@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<h1>Uninvited bots</h1>
+		<h1>Approval Queue</h1>
 		<div class="mt-4">
 			<div class="card-columns">
 				<div v-for="bot in bots" :key="bot.id">
@@ -18,22 +18,22 @@
 
 	export default {
 		asyncData: function(store, route) {
-			return store.dispatch('bots/fetchUninvited');
+			return store.dispatch('bots/fetchDisapproved');
 		},
 
 		computed:{
 			...mapGetters({
-				bots: 'bots/uninvited',
+				bots: 'bots/disapproved',
 			})
 		},
 
 		meta: {
-			title: 'Uninvited bots',
+			title: 'Approval Queue',
 
 			meta: [
-				{name: 'description', content: 'Manage uninvited bots on Discord Bot List'},
-				{property: 'og:title', content: 'Uninvited bots / Discord Bot List'},
-				{property: 'og:description', content: 'Manage uninvited bots on Discord Bot List'},
+				{name: 'description', content: 'Manage bots approval queue on Discord Bot List'},
+				{property: 'og:title', content: 'Approval Queue / Discord Bot List'},
+				{property: 'og:description', content: 'Manage bots approval queue on Discord Bot List'},
 				{name: 'robots', content: 'noindex'},
 			],
 		},
