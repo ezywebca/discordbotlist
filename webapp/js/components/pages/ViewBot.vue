@@ -29,7 +29,7 @@
 
 							<template v-if="bot.stats.guilds">
 								<br>
-								Guilds: {{formatNumber(bot.stats.guilds)}}
+								Servers: {{formatNumber(bot.stats.guilds)}}
 							</template>
 
 							<template v-if="bot.stats.voice_connections">
@@ -116,7 +116,7 @@
 					Prefix: <code>{{bot.prefix}}</code>
 					<template v-if="bot.stats.guilds">
 						<br>
-						Guilds: {{formatNumber(bot.stats.guilds)}}
+						Servers: {{formatNumber(bot.stats.guilds)}}
 					</template>
 					<template v-if="bot.stats.users">
 						<br>
