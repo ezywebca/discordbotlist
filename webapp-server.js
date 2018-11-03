@@ -130,7 +130,7 @@ app.use(async (ctx, next) => {
 			items.push(`${formatNumber(bot.upvotes)} upvotes`);
 
 			if (bot.stats.guilds)
-				items.push(`${formatNumber(bot.stats.guilds)} guilds`);
+				items.push(`${formatNumber(bot.stats.guilds)} servers`);
 			if (bot.stats.users)
 				items.push(`${formatNumber(bot.stats.users)} users`);
 			if (bot.stats.voice_connections)
