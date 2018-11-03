@@ -158,13 +158,13 @@ const controller = {
 
 
 			// We're retrieving a bit extra because we remove duplicates later, so we consistently provide 20 bots
-			const newest = bots.slice(0, 10);
-			const mostUpvoted = bots.sort((a,b) => a.upvotes > b.upvotes ? -1 : (a.upvotes < b.upvotes ? 1 : 0)).slice(0, 25);
+			const newest = bots.slice(0, 6);
+			const mostUpvoted = bots.sort((a,b) => a.upvotes > b.upvotes ? -1 : (a.upvotes < b.upvotes ? 1 : 0)).slice(0, 10);
 
 			const mix = _.shuffle(_.uniqBy([
 				...newest,
 				...mostUpvoted
-			], 'id').slice(0, 20));
+			], 'id'));
 
 			hotIds = mix.map(bot => bot.id);
 
