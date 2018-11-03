@@ -1,3 +1,9 @@
+<!--
+	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
+	This document is proprietary and confidential.
+	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
+-->
+
 <template>
 	<div>
 		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
