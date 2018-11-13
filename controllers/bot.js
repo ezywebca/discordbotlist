@@ -11,12 +11,22 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
-const {attachBotStats, attachBotUpvotes, generateRandomString} = require('../helpers');
+const {attachBotStats, attachBotUpvotes, generateRandomString, sanitize, sanitizeBag} = require('../helpers');
 const serviceBot = require('../bot');
 const webhooksQueue = require('../queues/webhooks');
 
 const controller = {
 	add: async (ctx, next) => {
+		const sanitizedInput = sanitizeBag(ctx.request.body, {
+			id: 'string',
+			short_description: 'string',
+			long_description: 'string',
+			prefix: 'string',
+			website: 'string',
+			bot_invite: 'string',
+			server_invite: 'string',
+		});
+
 		const {
 			id,
 			short_description,
@@ -25,7 +35,7 @@ const controller = {
 			website,
 			bot_invite,
 			server_invite,
-		} = ctx.request.body;
+		} = sanitizedInput;
 
 		if (!id)
 			throw {status: 422, message: 'Bot ID is missing'};
@@ -33,7 +43,7 @@ const controller = {
 		if (!serviceBot.isInGuild(ctx.state.user.discord_id))
 			throw {status: 422, message: 'Where are you in the official guild???'};
 		
-		verifyBotInfo(ctx.request.body);
+		verifyBotInfo(sanitizedInput);
 
 		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(id), {
 			headers: {
@@ -123,7 +133,7 @@ const controller = {
 	get: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -283,7 +293,7 @@ const controller = {
 	upvote: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -319,9 +329,17 @@ const controller = {
 	},
 
 	testWebhook: async (ctx, next) => {
+		const {
+			webhook_url,
+			webhook_secret,
+		} = sanitizeBag(ctx.request.body, {
+			webhook_url: 'string',
+			webhook_secret: 'string',
+		});
+
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -329,15 +347,15 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		if (!ctx.request.body.webhook_url)
+		if (!webhook_url)
 			throw {status: 422, message: 'Missing webhook URL'};
 
-		if (!ctx.request.body.webhook_secret)
+		if (!webhook_secret)
 			throw {status: 422, message: 'Missing webhook secret'};
 
 		webhooksQueue.createJob({
-			url: ctx.request.body.webhook_url,
-			secret: ctx.request.body.webhook_secret,
+			url: webhook_url,
+			secret: webhook_secret,
 			user: ctx.state.user,
 			bot,
 		}).timeout(2000)
@@ -352,6 +370,17 @@ const controller = {
 	},
 
 	edit: async (ctx, next) => {
+		const sanitizedInput = sanitizeBag(ctx.request.body, {
+			short_description: 'string',
+			long_description: 'string',
+			prefix: 'string',
+			website: 'string',
+			bot_invite: 'string',
+			server_invite: 'string',
+			webhook_url: 'string',
+			webhook_secret: 'string',
+		});
+
 		const {
 			short_description,
 			long_description,
@@ -361,10 +390,12 @@ const controller = {
 			server_invite,
 			webhook_url,
 			webhook_secret,
-		} = ctx.request.body;
+		} = sanitizedInput;
 		
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id},
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			},
 			include: [models.user],
 		});
 
@@ -373,7 +404,7 @@ const controller = {
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
 		
-		verifyBotInfo(ctx.request.body);
+		verifyBotInfo(sanitizedInput);
 
 		if (webhook_url)
 			if (!isURL(webhook_url))
@@ -433,7 +464,9 @@ const controller = {
 
 	refresh: async (ctx, next) => {
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			}
 		});
 
 		if (!bot)
@@ -444,7 +477,9 @@ const controller = {
 
 	generateToken: async (ctx, next) => {
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			}
 		});
 
 		if (!bot)
@@ -470,7 +505,9 @@ const controller = {
 			throw {status: 401, message: 'Bad token'};
 
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			}
 		});
 
 		if (!bot)
@@ -482,7 +519,17 @@ const controller = {
 		if (!hashedToken || cryptojs.SHA256(token).toString() !== hashedToken)
 			throw {status: 401, message: 'Bad token'};
 
-		const {shard_id, guilds, users, voice_connections} = ctx.request.body;
+		const {
+			shard_id,
+			guilds,
+			users,
+			voice_connections
+		} = sanitizeBag(ctx.request.body, {
+			shard_id: 'number',
+			guilds: 'number',
+			users: 'number',
+			voice_connections: 'number',
+		});
 
 		if (shard_id && !isInt(shard_id))
 			throw {status: 422, message: 'The \'shard_id\' parameter must be a number'};
@@ -538,7 +585,9 @@ const controller = {
 			throw {status: 401, message: 'Bad token'};
 
 		const bot = await models.bot.findOne({
-			where: {discord_id: ctx.params.id}
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			}
 		});
 
 		if (!bot)
@@ -577,7 +626,7 @@ const controller = {
 	verify: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id,
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -593,7 +642,7 @@ const controller = {
 	unverify: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id,
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -609,7 +658,7 @@ const controller = {
 	setNSFW: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id,
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -625,7 +674,7 @@ const controller = {
 	unsetNSFW: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id,
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 

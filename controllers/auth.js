@@ -4,6 +4,7 @@
  */
 
 const models = require('../models');
+const {sanitize} = require('../helpers');
 const axios = require('axios');
 
 const jwt = require('jsonwebtoken');
@@ -13,7 +14,7 @@ const _ = require('lodash');
 
 module.exports = {
 	login: async (ctx, next) => {
-		const code = ctx.request.body.code;
+		const code = sanitize(ctx.request.body.code);
 
 		if (!code)
 			throw {status: 422, message: 'Invalid authorization code!'};

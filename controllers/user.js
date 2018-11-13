@@ -4,14 +4,14 @@
  */
 
 const models = require('../models');
-const {attachBotStats} = require('../helpers');
+const {attachBotStats, sanitize, sanitizeBag} = require('../helpers');
 const redis = require('../redis');
 
 module.exports = {
 	get: async (ctx, next) => {
 		const user = await models.user.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.bot]
 		});
@@ -33,7 +33,7 @@ module.exports = {
 	ban: async (ctx, next) => {
 		const user = await models.user.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -52,7 +52,7 @@ module.exports = {
 	unban: async (ctx, next) => {
 		const user = await models.user.findOne({
 			where: {
-				discord_id: ctx.params.id
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -70,7 +70,7 @@ module.exports = {
 	refresh: async (ctx, next) => {
 		const user = await models.user.findOne({
 			where: {
-				discord_id: ctx.params.id,
+				discord_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 

@@ -174,6 +174,34 @@ function generateRandomString(length) {
 	return text;
 }
 
+function sanitize(thing, type = 'string') {
+	if (typeof(thing) === 'undefined')
+		return undefined;
+	else if (thing === null)
+		return null;
+	
+	if (type === 'string') {
+		return String(thing).trim();
+	} else if (type === 'number') {
+		return Number(thing);
+	} else if (type === 'boolean') {
+		if (typeof(thing) === 'boolean')
+			return thing;
+		else if (typeof(thing) === 'string')
+			return thing === 'true';
+		else Boolean(thing);
+	} else return undefined;
+}
+
+function sanitizeBag(bag, schema) {
+	const sanitizedBag = {};
+
+	for (let key of Object.keys(schema))
+		sanitizedBag[key] = sanitize(bag[key], schema[key]);
+
+	return sanitizedBag;
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -187,4 +215,6 @@ module.exports = {
 	checkDBLock,
 	getAvatar,
 	generateRandomString,
+	sanitize,
+	sanitizeBag,
 };
