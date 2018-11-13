@@ -144,7 +144,7 @@ const controller = {
 		await attachBotStats(bot);
 		await attachBotUpvotes(bot, ctx.state.user);
 
-		ctx.body = models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
+		ctx.body = models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 	},
 
 	index: async (ctx, next) => {
@@ -212,7 +212,7 @@ const controller = {
 			else
 				return 0;
 		}).filter(bot => serviceBot.isInGuild(bot.discord_id))
-			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
+			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false}));
 	},
 
 	search: async (ctx, next) => {
@@ -247,7 +247,7 @@ const controller = {
 			await attachBotStats(bot);
 			return bot;
 		}))).filter(bot => serviceBot.isInGuild(bot.discord_id))
-			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false}));
+			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false}));
 	},
 
 	delete: async (ctx, next) => {
@@ -619,7 +619,7 @@ const controller = {
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
 	},
 
@@ -694,7 +694,7 @@ const controller = {
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
-			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.user_id || ctx.state.user.admin) : false});
+			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
 	}
 };
