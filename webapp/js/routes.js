@@ -75,7 +75,7 @@ export default [
 		}
 	}, {
 		name: 'tag',
-		path: '/tag/:name',
+		path: '/tags/:name',
 		component: Tag,
 	}, {
 		name: 'add-bot',
