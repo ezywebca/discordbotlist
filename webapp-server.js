@@ -106,6 +106,7 @@ app.use(async (ctx, next) => {
 			ctx.body = ejs.render(template, {
 				bots: await models.bot.findAll(),
 				users: await models.user.findAll(),
+				tags: await models.tags.findAll(),
 				absolute: relative => ctx.origin + relative,
 			});
 		} else {

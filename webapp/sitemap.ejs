@@ -30,4 +30,11 @@
 		<lastmod><%= user.updated_at.toISOString() %></lastmod>
 	</url>
 	<% } %>
+
+	<% for (let tag of tags) { %>
+	<url>
+		<loc><%= absolute(`/tags/${tag.name}`) %></loc>
+		<lastmod><%= tag.updated_at.toISOString() %></lastmod>
+	</url>
+	<% } %>
 </urlset> 
