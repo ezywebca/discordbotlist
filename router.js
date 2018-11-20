@@ -17,6 +17,7 @@ const checkDBLock = require('./middleware/check-db-lock');
 const AuthController = require('./controllers/auth');
 const BotController = require('./controllers/bot');
 const UserController = require('./controllers/user');
+const TagController = require('./controllers/tag');
 const DBLController = require('./controllers/dbl');
 
 const protect = (passthrough = false) => {
@@ -64,6 +65,12 @@ module.exports = () => {
 	router.get('/api/dbl/configurations', throttle(), protect(), adminOnly, DBLController.getConfig);
 	router.post('/api/dbl/db-lock', throttle(), protect(), adminOnly, DBLController.lockDB);
 	router.delete('/api/dbl/db-lock', throttle(), protect(), adminOnly, DBLController.unlockDB);
+
+	router.get('/api/tags', throttle(), TagController.getAll);
+	router.post('/api/tags', throttle(), protect(), checkDBLock, adminOnly, TagController.create);
+	router.get('/api/tags/:name', throttle(), TagController.get);
+	router.delete('/api/tags/:name', throttle(), protect(), checkDBLock, adminOnly, TagController.delete);
+	router.get('/api/tags/:name/bots', throttle(), protect(true), TagController.getBots);
 
 	return router;
 };

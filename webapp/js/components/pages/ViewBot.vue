@@ -173,7 +173,13 @@
 			</div>
 		</div>
 
-		<div class="mt-5 description" v-html="marked(bot.long_description, {sanitize: true})" />
+		<h5 class="tags-bar text-center text-md-left mt-4">
+			<router-link :to="{name: 'tag', params: {name: tag.name}}" class="badge badge-primary mr-2" v-for="tag in bot.tags" :key="tag.name">
+				{{ tag.name }}
+			</router-link>
+		</h5>
+
+		<div class="mt-3 description" v-html="marked(bot.long_description, {sanitize: true})" />
 	</div>
 </template>
 
@@ -357,7 +363,7 @@
 				meta: [
 					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
-					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bot List'},
+					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bots'},
 					{property: 'og:description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
 				],
 			};

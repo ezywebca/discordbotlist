@@ -8,6 +8,7 @@ import Vuex from 'vuex';
 import auth from './modules/auth';
 import bots from './modules/bots';
 import users from './modules/users';
+import tags from './modules/tags';
 import dbl from './modules/dbl';
 
 const debugging = process.env.NODE_ENV !== 'production';
@@ -19,6 +20,7 @@ export function createStore() {
 			auth,
 			bots,
 			users,
+			tags,
 			dbl,
 		},
 		strict: debugging

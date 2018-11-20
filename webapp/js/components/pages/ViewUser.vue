@@ -195,7 +195,7 @@
 				meta: [
 					{name: 'og:image', content: getAvatar(this.user), vmid: 'og:image'},
 					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
-					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / Discord Bot List'},
+					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / Discord Bots'},
 					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
 				],
 			};

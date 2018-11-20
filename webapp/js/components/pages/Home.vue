@@ -90,7 +90,7 @@
 
 			meta: [
 				{name: 'description', content: 'Find new interesting Discord bots, play with them, and get yours listed!'},
-				{property: 'og:title', content: 'Home / Discord Bot List'},
+				{property: 'og:title', content: 'Home / Discord Bots'},
 				{property: 'og:description', content: 'Find new interesting Discord bots, play with them, and get yours listed!'},
 			],
 		},

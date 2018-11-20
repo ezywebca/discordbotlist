@@ -38,7 +38,7 @@
 
 			meta: [
 				{name: 'description', content: 'Manage bots approval queue on Discord Bot List'},
-				{property: 'og:title', content: 'Approval Queue / Discord Bot List'},
+				{property: 'og:title', content: 'Approval Queue / Discord Bots'},
 				{property: 'og:description', content: 'Manage bots approval queue on Discord Bot List'},
 				{name: 'robots', content: 'noindex'},
 			],

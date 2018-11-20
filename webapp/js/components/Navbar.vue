@@ -145,6 +145,9 @@
 					if (this.$route.meta.requiresAuth)
 						this.$router.push({name: 'home'});
 					break;
+				case 'tags':
+					this.$router.push({name: 'tags'});
+					break;
 				case 'my-bots':
 					this.$router.push({name: 'my-bots'});
 					break;
@@ -197,6 +200,7 @@
 			dropdownItems: function() {
 				return [
 					{label: 'My bots', key: 'my-bots'},
+					...(this.user && this.user.admin ? [{label: 'Tags', key: 'tags'}] : []),
 					...(this.user && this.user.admin ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
 					...(this.user && this.user.admin ? [{label: 'DBL Config', key: 'dbl-configurations'}] : []),
 					{label: 'Sign out', key: 'sign-out'},

@@ -50,6 +50,18 @@
 						placeholder="Official guild invitation (you have one, right? otherwise that's LAME)">
 				</div>
 			</div>
+			<div class="form-group row mt-3">
+				<label for="tags" class="col-sm-2 col-form-label">Tags</label>
+				<div class="col-sm-10">
+					<tags-input element-id="tags"
+						v-model="tags"
+						:existing-tags="availableTags"
+						:typeahead="true"
+						input-class="form-control"
+						only-existing-tags />
+				</div>
+			</div>
+
 
 			<h5 class="mt-5">Upvote Webhook (optional)</h5>
 			<p class="mt-3">
@@ -94,11 +106,13 @@
 
 <script>
 	import {extractError, getAvatar} from '../../helpers';
-	import {mapGetters} from 'vuex';
+	import {mapGetters, mapState} from 'vuex';
+	import TagsInput from '@voerro/vue-tagsinput';
 
 	export default {
-		asyncData: (store, route) => {
-			return store.dispatch('bots/fetch', {id: route.params.id});
+		asyncData: async (store, route) => {
+			await store.dispatch('bots/fetch', {id: route.params.id});
+			await store.dispatch('tags/fetchAll');
 		},
 
 		data: function() {
@@ -109,6 +123,7 @@
 				website: '',
 				botInvite: '',
 				serverInvite: '',
+				tags: [],
 				webhookURL: '',
 				webhookSecret: '',
 				saved: false,
@@ -122,11 +137,16 @@
 			this.website = this.bot.website;
 			this.botInvite = this.bot.bot_invite;
 			this.serverInvite = this.bot.server_invite;
+			this.tags = this.bot.tags.map(tag => tag.name).join(',');
 			this.webhookURL = this.bot.webhook_url;
 			this.webhookSecret = this.bot.webhook_secret;
 		},
 
 		computed: {
+			...mapState('tags', {
+				availableTags: state => state.tags.reduce((object, tag) => ({...object, [tag.name]: tag.name}), {}),
+			}),
+
 			...mapGetters({
 				getBotById: 'bots/getBotById',
 			}),
@@ -147,6 +167,7 @@
 					website: this.website,
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
+					tags: this.tags.join(','),
 					webhook_url: this.webhookURL,
 					webhook_secret: this.webhookSecret,
 				}).then(response => {
@@ -190,10 +211,14 @@
 				meta: [
 					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
-					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / Discord Bot List'},
+					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / Discord Bots'},
 					{property: 'og:description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
 				],
 			};
 		},
-	}
+
+		components: {
+			'tags-input': TagsInput
+		},
+	};
 </script>

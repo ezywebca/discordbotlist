@@ -33,7 +33,7 @@
 
 			meta: [
 				{name: 'description', content: 'We have partners. We like our partners.'},
-				{property: 'og:title', content: 'Partners / Discord Bot List'},
+				{property: 'og:title', content: 'Partners / Discord Bots'},
 				{property: 'og:description', content: 'We have partners. We like our partners.'},
 			],
 		},

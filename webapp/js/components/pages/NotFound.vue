@@ -17,7 +17,7 @@
 
 			meta: [
 				{name: 'description', content: 'You\'re in nowhere'},
-				{property: 'og:title', content: '404 / Discord Bot List'},
+				{property: 'og:title', content: '404 / Discord Bots'},
 				{property: 'og:description', content: 'You\'re in nowhere'},
 				{name: 'robots', content: 'noindex'},
 			],

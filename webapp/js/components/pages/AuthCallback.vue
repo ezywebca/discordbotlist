@@ -53,7 +53,7 @@
 
 			meta: [
 				{name: 'description', content: 'Who is linking to this page? Please report.'},
-				{property: 'og:title', content: 'Completing Authentication / Discord Bot List'},
+				{property: 'og:title', content: 'Completing Authentication / Discord Bots'},
 				{property: 'og:description', content: 'Who is linkng to this page? Please report.'},
 				{name: 'robots', content: 'noindex'},
 			],

@@ -202,6 +202,25 @@ function sanitizeBag(bag, schema) {
 	return sanitizedBag;
 }
 
+function isInt(value) {
+	let x;
+	if (isNaN(value))
+		return false;
+	x = parseFloat(value);
+	return (x | 0) === x;
+}
+
+function isURL(url) {
+	try {
+		const obj = new URL(url);
+		if (!obj.protocol.startsWith('http') && !obj.protocol.startsWith('https'))
+			return false;
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -217,4 +236,6 @@ module.exports = {
 	generateRandomString,
 	sanitize,
 	sanitizeBag,
+	isInt,
+	isURL,
 };

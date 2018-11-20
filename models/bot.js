@@ -98,6 +98,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	bot.associate = models => {
 		bot.belongsTo(models.user, {foreignKey: 'owner_id'});
+		bot.belongsToMany(models.tag, {through: models.botTag});
 	};
 
 	bot.transform = (bot, options) => {
@@ -120,6 +121,7 @@ module.exports = (sequelize, DataTypes) => {
 			created_at: bot.created_at,
 			updated_at: bot.updated_at,
 
+
 			...options.includeWebhooks ? {
 				webhook_url: bot.webhook_url,
 				webhook_secret: bot.webhook_secret,
@@ -131,6 +133,9 @@ module.exports = (sequelize, DataTypes) => {
 
 		if (bot.stats)
 			result.stats = bot.stats;
+
+		if (bot.tags)
+			result.tags = bot.tags.map(sequelize.models.tag.transform);
 
 		return result;
 	};

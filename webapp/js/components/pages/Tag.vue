@@ -6,7 +6,8 @@
 
 <template>
 	<div class="container" id="header">
-		<div class="card-columns"
+		<h1>Discord {{ $route.params.name }} bots</h1>
+		<div class="card-columns mt-4"
 			v-infinite-scroll="loadMore" infinite-scroll-disabled="disableScroll" infinite-scroll-distance="10">
 			<bot :bot="bot" v-for="bot in bots" :key="bot.id" />
 		</div>
@@ -31,8 +32,15 @@
 			};
 		},
 
-		asyncData: function(store) {
-			return store.dispatch('bots/fetchAll', {skip: 0});
+		asyncData: async function(store, route) {
+			await store.dispatch('tags/fetch', {
+				name: route.params.name,
+			});
+
+			await store.dispatch('tags/fetchBots', {
+				name: route.params.name,
+				skip: 0
+			});
 		},
 
 		methods: {
@@ -40,7 +48,10 @@
 				this.loading = true;
 				this.disableScroll = true;
 
-				this.$store.dispatch('bots/fetchAll', {skip: this.bots.length}).then(response => {
+				this.$store.dispatch('tags/fetchBots', {
+					name: this.$route.params.name,
+					skip: this.bots.length
+				}).then(response => {
 					if (response.data && response.data.length < 1)
 						this.end = true;
 					else
@@ -53,18 +64,24 @@
 
 		computed: {
 			...mapGetters({
-				bots: 'bots/all',
+				getTagBots: 'tags/getTagBots',
 			}),
+
+			bots: function() {
+				return this.getTagBots(this.$route.params.name);
+			}
 		},
 
-		meta: {
-			title: 'Bots',
+		meta: function() {
+			return {
+				title: `Discord ${this.$route.params.name} bots`,
 
-			meta: [
-				{name: 'description', content: 'All the bots on Discord Bot List!'},
-				{property: 'og:title', content: 'Bots / Discord Bots'},
-				{property: 'og:description', content: 'All the bots on Discord Bot List!'},
-			],
+				meta: [
+					{name: 'description', content: `Let's find some interesting Discord ${this.$route.params.name} bots on Discord Bot List`},
+					{property: 'og:title', content: `Discord ${this.$route.params.name} bots / Discord bots`},
+					{property: 'og:description', content: `Let's find some interesting Discord ${this.$route.params.name} bots on Discord Bot List`},
+				],
+			};
 		},
 
 		components: {

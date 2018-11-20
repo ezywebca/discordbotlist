@@ -45,7 +45,7 @@
 
 			meta: [
 				{name: 'description', content: 'Manage your bots on Discord Bot List'},
-				{property: 'og:title', content: 'My bots / Discord Bot List'},
+				{property: 'og:title', content: 'My bots / Discord Bots'},
 				{property: 'og:description', content: 'Manage your bots on Discord Bot List'},
 				{name: 'robots', content: 'noindex'},
 			],

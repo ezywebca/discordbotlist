@@ -106,7 +106,7 @@
 				meta: [
 					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
 					{name: 'description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
-					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bot List'},
+					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bots'},
 					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
 					{name: 'robots', content: 'noindex'},
 				],

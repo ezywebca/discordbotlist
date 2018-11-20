@@ -21,3 +21,7 @@ export const DELETE_BOT = 'DELETE_BOT';
 export const STORE_DISAPPROVED_BOTS = 'STORE_DISAPPROVED_BOTS';
 export const STORE_DBL_CONFIG = 'FETCH_DBL_CONFIG';
 export const STORE_DBL_DB_LOCK = 'STORE_DBL_DB_LOCK';
+export const STORE_TAGS = 'STORE_TAGS';
+export const STORE_TAG = 'STORE_TAG';
+export const DELETE_TAG = 'DELETE_TAG';
+export const STORE_TAG_BOTS = 'STORE_TAG_BOTS';

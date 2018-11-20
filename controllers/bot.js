@@ -11,7 +11,7 @@ const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
-const {attachBotStats, attachBotUpvotes, generateRandomString, sanitize, sanitizeBag} = require('../helpers');
+const {attachBotStats, attachBotUpvotes, generateRandomString, sanitize, sanitizeBag, isInt, isURL} = require('../helpers');
 const serviceBot = require('../bot');
 const webhooksQueue = require('../queues/webhooks');
 
@@ -23,6 +23,7 @@ const controller = {
 			long_description: 'string',
 			prefix: 'string',
 			website: 'string',
+			tags: 'string',
 			bot_invite: 'string',
 			server_invite: 'string',
 		});
@@ -36,6 +37,26 @@ const controller = {
 			bot_invite,
 			server_invite,
 		} = sanitizedInput;
+	
+		const tags = sanitizedInput.tags.split(',');
+
+		if (tags.length > 10)
+			throw {status: 422, message: 'Too many tags (>10)'};
+
+		const tagModels = [];
+
+		for (let tag of tags) {
+			const model = await models.tag.findOne({
+				where: {
+					name: tag
+				}
+			});
+
+			if (!model)
+				throw {status: 422, message: `Tag '${tag}' is invalid`};
+			else
+				tagModels.push(model);
+		}
 
 		if (!id)
 			throw {status: 422, message: 'Bot ID is missing'};
@@ -88,6 +109,8 @@ const controller = {
 			discriminator: botInfo.discriminator,
 			avatar: botInfo.avatar,
 		});
+		
+		await bot.setTags(tagModels);
 
 		const avatarUrl = botInfo.avatar ? `https://cdn.discordapp.com/avatars/${id}/${botInfo.avatar}.png?size=512`
 			: `https://cdn.discordapp.com/embed/avatars/${botInfo.discriminator % 5}.png`;
@@ -115,7 +138,7 @@ const controller = {
 
 	getMine: async (ctx, next) => {
 		const bots = await ctx.state.user.getBots({
-			include: [models.user]
+			include: [models.user, models.tag]
 		});
 
 		if (bots.length > 0)
@@ -135,7 +158,7 @@ const controller = {
 			where: {
 				discord_id: sanitize(ctx.params.id, 'string'),
 			},
-			include: [models.user]
+			include: [models.user, models.tag]
 		});
 
 		if (!bot)
@@ -197,7 +220,7 @@ const controller = {
 				}
 			},
 
-			include: [models.user]
+			include: [models.user, models.tag]
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
@@ -239,7 +262,7 @@ const controller = {
 				]
 			},
 			limit: 20,
-			include: [models.user]
+			include: [models.user, models.tag]
 		});
 
 		ctx.body = (await Promise.all(bots.map(async bot => {
@@ -377,6 +400,7 @@ const controller = {
 			website: 'string',
 			bot_invite: 'string',
 			server_invite: 'string',
+			tags: 'string',
 			webhook_url: 'string',
 			webhook_secret: 'string',
 		});
@@ -391,12 +415,32 @@ const controller = {
 			webhook_url,
 			webhook_secret,
 		} = sanitizedInput;
-		
+	
+		const tags = sanitizedInput.tags.split(',');
+
+		if (tags.length > 10)
+			throw {status: 422, message: 'Too many tags (>10)'};
+			
+		const tagModels = [];
+
+		for (let tag of tags) {
+			const model = await models.tag.findOne({
+				where: {
+					name: tag
+				}
+			});
+
+			if (!model)
+				throw {status: 422, message: `Tag '${tag}' is invalid`};
+			else
+				tagModels.push(model);
+		}
+
 		const bot = await models.bot.findOne({
 			where: {
 				discord_id: sanitize(ctx.params.id, 'string'),
 			},
-			include: [models.user],
+			include: [models.user, models.tag],
 		});
 
 		if (!bot)
@@ -434,6 +478,8 @@ const controller = {
 			description += `\n• New webhook URL: [link](${webhook_url})`;
 		if (webhook_secret)
 			description += '\n• New webhook secret';
+		if (!bot.tags.map(tag => tag.name).join(',') !== tags)
+			description += `\n• New tags: ${tags}`;
 
 		await bot.update({
 			short_description,
@@ -445,6 +491,8 @@ const controller = {
 			webhook_url: webhook_url ? webhook_url : null,
 			webhook_secret: webhook_secret ? webhook_secret : null,
 		});
+
+		await bot.setTags(tagModels);
 
 		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
 			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
@@ -698,25 +746,6 @@ const controller = {
 		}));
 	}
 };
-
-function isInt(value) {
-	let x;
-	if (isNaN(value))
-		return false;
-	x = parseFloat(value);
-	return (x | 0) === x;
-}
-
-function isURL(url) {
-	try {
-		const obj = new URL(url);
-		if (!obj.protocol.startsWith('http') && !obj.protocol.startsWith('https'))
-			return false;
-		return true;
-	} catch (e) {
-		return false;
-	}
-}
 
 function verifyBotInfo({
 	short_description,

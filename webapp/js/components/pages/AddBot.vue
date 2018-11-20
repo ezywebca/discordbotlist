@@ -71,6 +71,17 @@
 						placeholder="Official guild invitation (you have one, right? otherwise that's LAME)">
 				</div>
 			</div>
+			<div class="form-group row mt-3">
+				<label for="tags" class="col-sm-2 col-form-label">Tags</label>
+				<div class="col-sm-10">
+					<tags-input element-id="tags"
+						v-model="tags"
+						:existing-tags="availableTags"
+						:typeahead="true"
+						input-class="form-control"
+						only-existing-tags />
+				</div>
+			</div>
 			<p class="mt-4">We'll use Bot ID to pull more information.</p>
 			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="addButton">Add</button>
 		</form>
@@ -89,7 +100,9 @@
 
 
 <script>
+	import {mapState} from 'vuex';
 	import {extractError} from '../../helpers';
+	import TagsInput from '@voerro/vue-tagsinput';
 
 	export default {
 		data: function() {
@@ -101,8 +114,19 @@
 				website: '',
 				botInvite: '',
 				serverInvite: '',
+				tags: [],
 				added: false,
 			};
+		},
+
+		computed: {
+			...mapState('tags', {
+				availableTags: state => state.tags.reduce((object, tag) => ({...object, [tag.name]: tag.name}), {}),
+			}),
+		},
+
+		asyncData: async(store, route) => {
+			await store.dispatch('tags/fetchAll');
 		},
 
 		methods: {
@@ -115,6 +139,7 @@
 					long_description: this.longDescription,
 					prefix: this.prefix,
 					website: this.website,
+					tags: this.tags.join(','),
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
 				}).then(response => {
@@ -140,10 +165,14 @@
 
 			meta: [
 				{name: 'description', content: 'Add new bot to Discord Bot List\'s database'},
-				{property: 'og:title', content: 'Add new bot / Discord Bot List'},
+				{property: 'og:title', content: 'Add new bot / Discord Bots'},
 				{property: 'og:description', content: 'Add new bot to Discord Bot List\'s database'},
 				{name: 'robots', content: 'noindex'},
 			],
+		},
+
+		components: {
+			'tags-input': TagsInput,
 		}
-	}
+	};
 </script>

@@ -17,6 +17,8 @@ import APIDocs from './components/pages/APIDocs';
 import NotFound from './components/pages/NotFound';
 import Bots from './components/pages/Bots';
 import ApprovalQueue from './components/pages/ApprovalQueue';
+import Tags from './components/pages/Tags';
+import Tag from './components/pages/Tag';
 import DBLConfigurations from './components/pages/DBLConfigurations';
 
 export default [
@@ -63,6 +65,18 @@ export default [
 			requiresAuth: true,
 			requiresAdmin: true,
 		}
+	}, {
+		name: 'tags',
+		path: '/tags',
+		component: Tags,
+		meta: {
+			requiresAuth: true,
+			requiresAdmin: true,
+		}
+	}, {
+		name: 'tag',
+		path: '/tag/:name',
+		component: Tag,
 	}, {
 		name: 'add-bot',
 		path: '/my-bots/add',
