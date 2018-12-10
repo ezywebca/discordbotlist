@@ -10,6 +10,7 @@ const koaBody = require('koa-body');
 
 const koaConditional = require('koa-conditional-get');
 const koaEtag = require('koa-etag');
+const cors = require('koa2-cors');
 const koaCompress = require('koa-compress');
 
 const app = new Koa();
@@ -24,6 +25,16 @@ app
 	}))
 	.use(koaConditional())
 	.use(koaEtag())
+	.use((ctx, next) => {
+		if (ctx.path.startsWith('/api/bots'))
+			return cors({
+				origin: '*',
+				maxAge: 864000, // 10d
+				allowHeaders: ['Authorization', 'Accept', 'Content-Type'],
+			})(ctx, next);
+		else
+			return next();
+	})
 	.use(koaBody({
 		multipart: true,
 	}))
