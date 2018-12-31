@@ -712,6 +712,8 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
+		else if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
+			throw {status: 403, message: 'Access denied'};
 
 		bot.nsfw = true;
 		await bot.save();
@@ -728,6 +730,8 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
+		else if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
+			throw {status: 403, message: 'Access denied'};
 
 		bot.nsfw = false;
 		await bot.save();
