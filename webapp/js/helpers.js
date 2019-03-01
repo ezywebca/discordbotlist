@@ -69,3 +69,22 @@ export function highlightCode() {
 		hljs.highlightBlock(b);
 	});
 }
+
+export function kindaEquals(a, b) {
+	const lowercase = {
+		a: a.toLowerCase(),
+		b: b.toLowerCase(),
+	};
+
+	return lowercase.a === lowercase.b
+		|| lowercase.a.replace(/-/g, ' ') === lowercase.b
+		|| lowercase.b.replace(/-/g, ' ') === lowercase.a;
+}
+
+export function desanitizeTag(tag) {
+	return tag.replace(/-/g, ' ');
+}
+
+export function sanitizeTag(tag) {
+	return tag.replace(/\s/g, '-').toLowerCase();
+}

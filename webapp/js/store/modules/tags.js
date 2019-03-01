@@ -5,6 +5,7 @@
 
 import * as types from '../mutation-types';
 import {unionState} from '../helpers';
+import {kindaEquals} from '../../helpers';
 
 const state = () => ({
 	tags: [],
@@ -61,19 +62,19 @@ const mutations = {
 	},
 
 	[types.DELETE_TAG](state, name) {
-		state.tags = state.tags.filter(tag => tag.name !== name);
+		state.tags = state.tags.filter(tag => tag.name.toLowerCase() !== name.toLowerCase());
 	},
 
 	[types.STORE_TAG_BOTS](state, {name, bots}) {
-		const tag = state.tags.find(tag => tag.name === name);
+		const tag = state.tags.find(tag => kindaEquals(tag.name, name));
 		tag.bots = unionState(tag.bots || [], bots);
 	}
 };
 
 const getters = {
-	getTagByName: state => name => state.tags.find(tag => tag.name === name),
+	getTagByName: state => name => state.tags.find(tag => kindaEquals(tag.name, name)),
 	getTagBots: state => name => {
-		const tag = state.tags.find(tag => tag.name === name);
+		const tag = state.tags.find(tag => kindaEquals(tag.name, name));
 		return (tag && tag.bots) || [];
 	},
 };

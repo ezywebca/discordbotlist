@@ -13,7 +13,7 @@
 		<hr>
 		<ul>
 			<li v-for="tag in tags" :key="tag.id">
-				<router-link :to="{name: 'tag', params: {name: tag.name}}">{{ tag.name }}</router-link>
+				<router-link :to="{name: 'tag', params: {name: sanitizeTag(tag.name)}}">{{ tag.name }}</router-link>
 				(<a href="javascript:undefined" @click="deleteTag(tag.name)">remove</a>)
 			</li>
 		</ul>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import {extractError} from '../../helpers';
+	import {extractError, sanitizeTag} from '../../helpers';
 	import {mapState} from 'vuex';
 
 	export default {
@@ -57,6 +57,8 @@
 					this.$vueOnToast.pop('error', extractError(e));	
 				});
 			},
+
+			sanitizeTag,
 		},
 
 		asyncData: function(store) {

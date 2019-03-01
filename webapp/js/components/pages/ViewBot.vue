@@ -174,7 +174,7 @@
 		</div>
 
 		<h5 class="tags-bar text-center text-md-left mt-4">
-			<router-link :to="{name: 'tag', params: {name: tag.name}}" class="badge badge-primary mr-2" v-for="tag in bot.tags" :key="tag.name">
+			<router-link :to="{name: 'tag', params: {name: sanitizeTag(tag.name)}}" class="badge badge-primary mr-2" v-for="tag in bot.tags" :key="tag.name">
 				{{ tag.name }}
 			</router-link>
 		</h5>
@@ -239,7 +239,7 @@
 	import moment from 'moment-mini';
 	import marked from 'marked';
 	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString, formatNumber, getAvatar, highlightCode} from '../../helpers';
+	import {extractError, generateRandomString, formatNumber, getAvatar, highlightCode, sanitizeTag} from '../../helpers';
 
 	export default {
 		asyncData: (store, route) => {
@@ -332,6 +332,7 @@
 			marked,
 			formatNumber,
 			getAvatar,
+			sanitizeTag,
 		},
 
 		computed: {

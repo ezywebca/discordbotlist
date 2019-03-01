@@ -6,7 +6,7 @@
 
 <template>
 	<div class="container" id="header">
-		<h1>Discord {{ $route.params.name }} bots</h1>
+		<h1>Discord {{ tag.name }} bots</h1>
 		<div class="card-columns mt-4"
 			v-infinite-scroll="loadMore" infinite-scroll-disabled="disableScroll" infinite-scroll-distance="10">
 			<bot :bot="bot" v-for="bot in bots" :key="bot.id" />
@@ -22,6 +22,7 @@
 	import debounce from 'lodash.debounce';
 	import {mapGetters} from 'vuex';
 	import Bot from '../Bot';
+	import {desanitizeTag} from '../../helpers';
 
 	export default {
 		data: function() {
@@ -34,11 +35,11 @@
 
 		asyncData: async function(store, route) {
 			await store.dispatch('tags/fetch', {
-				name: route.params.name,
+				name: desanitizeTag(route.params.name),
 			});
 
 			await store.dispatch('tags/fetchBots', {
-				name: route.params.name,
+				name: desanitizeTag(route.params.name),
 				skip: 0
 			});
 		},
@@ -49,7 +50,7 @@
 				this.disableScroll = true;
 
 				this.$store.dispatch('tags/fetchBots', {
-					name: this.$route.params.name,
+					name: desanitizeTag(this.$route.params.name),
 					skip: this.bots.length
 				}).then(response => {
 					if (response.data && response.data.length < 1)
@@ -65,21 +66,26 @@
 		computed: {
 			...mapGetters({
 				getTagBots: 'tags/getTagBots',
+				getTagByName: 'tags/getTagByName',
 			}),
 
-			bots: function() {
-				return this.getTagBots(this.$route.params.name);
+			tag() {
+				return this.getTagByName(desanitizeTag(this.$route.params.name));
+			},
+
+			bots() {
+				return this.getTagBots(desanitizeTag(this.$route.params.name));
 			}
 		},
 
 		meta: function() {
 			return {
-				title: `Discord ${this.$route.params.name} bots`,
+				title: `Discord ${this.tag.name} bots`,
 
 				meta: [
-					{name: 'description', content: `Let's find some interesting Discord ${this.$route.params.name} bots on Discord Bot List`},
-					{property: 'og:title', content: `Discord ${this.$route.params.name} bots / Discord bots`},
-					{property: 'og:description', content: `Let's find some interesting Discord ${this.$route.params.name} bots on Discord Bot List`},
+					{name: 'description', content: `Let's find some interesting Discord ${this.tag.name} bots on Discord Bot List`},
+					{property: 'og:title', content: `Discord ${this.tag.name} bots / Discord bots`},
+					{property: 'og:description', content: `Let's find some interesting Discord ${this.tag.name} bots on Discord Bot List`},
 				],
 			};
 		},
