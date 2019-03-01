@@ -189,7 +189,7 @@ const controller = {
 				order: [['created_at', 'DESC']]
 			});
 
-			bots = bots.filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.discord_id));
+			bots = bots.filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.discord_id));
 
 			bots = await Promise.all(bots.map(async bot => {
 				await attachBotUpvotes(bot, ctx.state.user);
@@ -234,7 +234,7 @@ const controller = {
 				return 1;
 			else
 				return 0;
-		}).filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.discord_id))
+		}).filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.discord_id))
 			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false}));
 	},
 
