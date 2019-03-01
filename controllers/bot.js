@@ -241,7 +241,7 @@ const controller = {
 	search: async (ctx, next) => {
 		const keywords = ctx.query.keywords;
 		
-		const bots = await models.bot.findAll({
+		let bots = await models.bot.findAll({
 			where: {
 				[Sequelize.Op.or]: [
 					{
@@ -658,11 +658,13 @@ const controller = {
 
 		const skip = parseInt(ctx.query.skip) || 0;
 
-		const bots = await models.bot.findAll({
+		let bots = await models.bot.findAll({
 			order: [['updated_at', 'DESC']],
 			limit: skip + 20,
 			include: [models.user],
 		});
+
+		bots = bots.filter(bot => serviceBot.isInGuild(bot.discord_id));
 
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);

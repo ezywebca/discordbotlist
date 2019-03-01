@@ -5,6 +5,7 @@
 
 const models = require('../models');
 const {sanitizeBag, attachBotUpvotes, attachBotStats, isInt} = require('../helpers');
+const serviceBot = require('../bot');
 
 module.exports = {
 	getAll: async ctx => {
@@ -76,11 +77,13 @@ module.exports = {
 		if (!tag)
 			throw {status: 404, message: 'Not found'};
 
-		const bots = await Promise.all(tag.bots.slice(skip, skip + 20).map(async bot => {
+		let bots = await Promise.all(tag.bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
+
+		bots = bots.filter(bot => serviceBot.isInGuild(bot.id));
 
 		ctx.body = bots.sort((a, b) => b.upvotes - a.upvotes);
 	}
