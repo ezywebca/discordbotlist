@@ -83,7 +83,7 @@ module.exports = {
 			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
 
-		bots = bots.filter(bot => serviceBot.isInGuild(bot.id));
+		bots = bots.filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.id));
 
 		ctx.body = bots.sort((a, b) => b.upvotes - a.upvotes);
 	}
