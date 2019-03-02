@@ -64,7 +64,7 @@ module.exports = {
 			return logger.warn(`Unable to ensure Bot Developer role for non-existing user: ${id}`);
 		
 		if (!member.roles.get(process.env.BOT_DEV_ROLE_ID))
-			return member.addRole(process.env.BOT_DEV_ROLE_ID, 'User has a bot on website').catch(e => {
+			return member.roles.add(process.env.BOT_DEV_ROLE_ID, 'User has a bot on website').catch(e => {
 				logger.warn(`Can't set Bot Developer role for user: ${id}`);
 				logger.warn(e);	
 			});
