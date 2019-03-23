@@ -95,7 +95,7 @@ module.exports = {
 			return;
 		}
 
-		const embed = new Discord.RichEmbed();
+		const embed = new Discord.MessageEmbed();
 
 		if (title)
 			embed.setTitle(title);
