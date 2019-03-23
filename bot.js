@@ -79,7 +79,7 @@ module.exports = {
 			return logger.warn(`Unable to ensure not having Bot Developer role for non-existing user: ${id}`);
 
 		if (member.roles.get(process.env.BOT_DEV_ROLE_ID))
-			return member.removeRole(process.env.BOT_DEV_ROLE_ID, 'User no longer has a bot on website').catch(e => {
+			return member.roles.remove(process.env.BOT_DEV_ROLE_ID, 'User no longer has a bot on website').catch(e => {
 				logger.err(`Can't remove Bot Developer role for user: ${id}`);
 				logger.err(e);
 			});
@@ -95,7 +95,7 @@ module.exports = {
 			return;
 		}
 
-		const embed = new Discord.MessageEmbed();
+		const embed = new Discord.RichEmbed();
 
 		if (title)
 			embed.setTitle(title);
