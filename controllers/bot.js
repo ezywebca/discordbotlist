@@ -92,7 +92,7 @@ const controller = {
 
 		if (existingBot)
 			if (existingBot.deleted_at)
-				throw {status: 422, message: 'Contact a DBL administrator'};
+				throw {status: 422, message: 'Contact a DBL administrator (OverCoder#3696)'};
 			else 
 				throw {status: 422, message: 'Bot is already added!'};
 			
