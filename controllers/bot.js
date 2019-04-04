@@ -520,6 +520,18 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
+		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.discord_id), {
+			headers: {
+				'Authorization': `Bot ${process.env.BOT_TOKEN}`,
+			},
+		});
+
+		await bot.update({
+			username: botInfo.username,
+			discriminator: botInfo.discriminator,
+			avatar: botInfo.avatar,
+		});
+
 		ctx.status = 204;
 	},
 
