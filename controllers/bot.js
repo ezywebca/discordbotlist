@@ -524,7 +524,7 @@ const controller = {
 			headers: {
 				'Authorization': `Bot ${process.env.BOT_TOKEN}`,
 			},
-		});
+		}).then(response => response.data);
 
 		await bot.update({
 			username: botInfo.username,
