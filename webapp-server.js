@@ -105,9 +105,9 @@ app.use(async (ctx, next) => {
 			ctx.type = 'application/xml; charset=utf-8';
 			ctx.body = ejs.render(template, {
 				bots: await models.bot.findAll(),
-				users: await models.user.findAll(),
 				tags: await models.tag.findAll(),
 				absolute: relative => ctx.origin + relative,
+				sanitizeTag: tag => tag.replace(/\s/g, '-').toLowerCase(),
 			});
 		} else {
 			ctx.status = 403;

@@ -19,16 +19,9 @@
 	</url>
 	<% } %>
 
-	<% for (let user of users) { %>
-	<url>
-		<loc><%= absolute(`/users/${user.discord_id}`) %></loc>
-		<lastmod><%= user.updated_at.toISOString() %></lastmod>
-	</url>
-	<% } %>
-
 	<% for (let tag of tags) { %>
 	<url>
-		<loc><%= absolute(`/tags/${tag.name}`) %></loc>
+		<loc><%= absolute(`/tags/${sanitizeTag(tag.name)}`) %></loc>
 		<lastmod><%= tag.updated_at.toISOString() %></lastmod>
 	</url>
 	<% } %>
