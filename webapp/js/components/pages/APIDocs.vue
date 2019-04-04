@@ -65,10 +65,7 @@
 		<a href="/bots/460847447602757633">
 			<img width="380" height="140" src="/bots/460847447602757633/widget" alt="Lithium stats on Discord Bot List">
 		</a>
-
-		<h3 class="mt-3">Online stats</h3>
-		<p>For the bot to appear online, you need to make it join DBL's official guild.</p>
-
+		
 		<h3 class="mt-3">Bot verification</h3>
 		<p>
 			If you want your bot to have a fancy golden star that assures the user the bot is not spam, then
