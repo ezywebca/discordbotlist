@@ -91,8 +91,8 @@
 
 		<h3 class="mt-5 mb-3">{{user.username}} owns {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}}:</h3>
 		
-		<div class="card-columns">
-			<div v-for="bot in user.bots" :key="bot.id">
+		<div class="row">
+			<div class="col-12 col-sm-6 col-md-4 col-xl-3" v-for="bot in user.bots" :key="bot.id">
 				<bot :bot="bot"/>
 			</div>
 		</div>
