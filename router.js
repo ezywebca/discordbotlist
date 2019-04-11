@@ -36,6 +36,9 @@ module.exports = () => {
 
 	router.get('/api/bots', throttle(), protect(true), BotController.index);
 	router.get('/api/bots/disapproved', throttle(), protect(), adminOnly, BotController.getDisapproved);
+	router.post('/api/bots/disapproved/:id/approve', throttle(), protect(), adminOnly, BotController.approve);
+	router.post('/api/bots/disapproved/:id/deny', throttle(), protect(), adminOnly, BotController.deny);
+
 	router.post('/api/bots', throttle(2, 900, true), protect(), checkDBLock, BotController.add);
 	router.get('/api/bots/mine', throttle(), protect(), BotController.getMine);
 	router.get('/api/bots/:id', throttle(), protect(true), BotController.get);

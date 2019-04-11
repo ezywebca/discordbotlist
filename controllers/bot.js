@@ -132,6 +132,9 @@ const controller = {
 		});
 
 		await serviceBot.ensureDevRole(ctx.state.user.discord_id);
+		await serviceBot.dm(ctx.state.user.discord_id, `Your bot ${botInfo.username}#${botInfo.discriminator} (ID: ${id}) has been queued for approval.`
+			+ ' Please be patient while we review your bot.'
+			+ ' We will send you a notification when the bot gets approved or denied.');
 
 		ctx.status = 204;
 	},
@@ -760,8 +763,62 @@ const controller = {
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
+
+			bot.in_testing_guild = await serviceBot.isInTestingGuild(bot.discord_id);
+
 			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
+	},
+
+	async deny(ctx, next) {
+		const {
+			reason,
+		} = sanitizeBag(ctx.request.body, {
+			reason: 'string',
+		});
+
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			},
+			include: [models.user]
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		if (!reason)
+			throw {status: 422, message: 'Missing denial reason'};
+
+		await bot.destroy();
+
+		await serviceBot.kickFromTesting(bot.discord_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
+
+		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) has been denied`
+			+ ` with the following reason: ${reason}`
+			+ `\n\nIf you believe there is an error or mistake, please reach out the responsible moderator: <@${ctx.state.user.discord_id}>`);
+
+		ctx.status = 204;
+	},
+
+	async approve(ctx, next) {
+		const bot = await models.bot.findOne({
+			where: {
+				discord_id: sanitize(ctx.params.id, 'string'),
+			},
+			include: [models.user]
+		});
+
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		await serviceBot.kickFromTesting(bot.discord_id, `Bot has been approved by <@${ctx.state.user.discord_id}>`);
+
+		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) is being approved.`
+			+ ' Expect it to be added to the main DiscordBotList server anytime very soon.'
+			+ `\n\nIf you believe there is an error or mistake, please reach out the responsible moderator: <@${ctx.state.user.discord_id}>`);
+
+		ctx.status = 204;
 	}
 };
 

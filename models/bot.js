@@ -137,6 +137,9 @@ module.exports = (sequelize, DataTypes) => {
 		if (bot.tags)
 			result.tags = bot.tags.map(sequelize.models.tag.transform);
 
+		if (typeof bot.in_testing_guild === 'boolean')
+			result.in_testing_guild = bot.in_testing_guild;
+
 		return result;
 	};
 

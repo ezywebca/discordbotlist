@@ -43,7 +43,7 @@ bot.on('userUpdate', async (oldUser, newUser) => {
 
 
 module.exports = {
-	isOnline: id => {
+	isOnline(id) {
 		return bot.guilds.some(guild => {
 			const member = guild.members.find(member => member.id === id);
 			if (member)
@@ -51,11 +51,15 @@ module.exports = {
 		});
 	},
 
-	isInGuild: id => {
+	isInGuild(id) {
 		return !!bot.guilds.get(process.env.GUILD_ID).members.some(member => member.id === id);
 	},
 
-	ensureDevRole: async id => {
+	isInTestingGuild(id) {
+		return !!bot.guilds.get(process.env.TESTING_GUILD_ID).members.some(member => member.id === id);
+	},
+
+	async ensureDevRole(id) {
 		if (!process.env.BOT_DEV_ROLE_ID)
 			return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
 		const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
@@ -70,7 +74,7 @@ module.exports = {
 			});
 	},
 
-	ensureWithoutDevRole: async id => {
+	async ensureWithoutDevRole(id) {
 		if (!process.env.BOT_DEV_ROLE_ID)
 			return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
 		const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
@@ -85,7 +89,7 @@ module.exports = {
 			});
 	},
 
-	log: ({title, description, color, url, image}) => {
+	log({title, description, color, url, image}) {
 		if (discordLoggingDisabled)
 			return;
 
@@ -115,11 +119,24 @@ module.exports = {
 				logger.err('Cannot deliver log message to Discord');
 			});
 	},
-	
-	kick: (id, reason) => {
+
+	kick(id, reason) {
 		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick(reason)
 			.catch(e => {
 				logger.err(`Cannot kick member: ${e}`);
 			});
 	},
+
+	kickFromTesting(id, reason) {
+		return bot.guilds.get(process.env.TESTING_GUILD_ID).members.get(id).kick(reason)
+			.catch(e => {
+				logger.err(`Cannot kick member from testing guild: ${e}`);
+			});
+	},
+
+	dm(id, message) {
+		return bot.guilds.get(process.env.GUILD_ID).members.get(id).send(message).catch(e => {
+			logger.err(`Could not deliver to user ${id} message '${message}' due to error: ${e}`);
+		});
+	}
 };
