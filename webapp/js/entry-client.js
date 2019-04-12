@@ -25,6 +25,9 @@ if (authCookie) {
 		const auth = JSON.parse(authCookie);
 
 		if (auth.token && auth.obtainedAt + auth.expiresIn > Date.now()) {
+			if (!auth.roles)
+				auth.roles = [];
+
 			store.commit('auth/LOGIN', auth);
 			root.axios.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
 		} else {
