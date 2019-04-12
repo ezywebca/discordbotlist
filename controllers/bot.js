@@ -797,7 +797,8 @@ const controller = {
 
 		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) has been denied`
 			+ ` with the following reason: ${reason}`
-			+ `\n\nIf you believe there is an error or mistake, please reach out the responsible moderator: <@${ctx.state.user.discord_id}>`);
+			+ '\n\nIf you believe there is an error or mistake, please reach out the responsible moderator:'
+			+ ` ${ctx.state.user.username}#${ctx.state.user.discriminator} (ID: ${ctx.state.user.discord_id})`);
 
 		ctx.status = 204;
 	},
@@ -817,7 +818,8 @@ const controller = {
 
 		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) is being approved.`
 			+ ' Expect it to be added to the main DiscordBotList server anytime very soon.'
-			+ `\n\nIf you believe there is an error or mistake, please reach out the responsible moderator: <@${ctx.state.user.discord_id}>`);
+			+ '\n\nIf you believe there is an error or mistake, please reach out the responsible moderator:'
+			+ ` ${ctx.state.user.username}#${ctx.state.user.discriminator} (ID: ${ctx.state.user.discord_id})`);
 
 		ctx.status = 204;
 	}
