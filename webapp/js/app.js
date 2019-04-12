@@ -62,7 +62,7 @@ export function createApp() {
 				accessDenied = true;
 			else if (to.meta.requiresAdmin && !store.state.auth.admin)
 				accessDenied = true;
-			else if (to.meta.requiresRoles && !to.meta.requiresRoles.map(store.getters['auth/hasRole']).every(b => b === true))
+			else if (to.meta.requiresRoles && !store.state.auth.admin && !to.meta.requiresRoles.map(store.getters['auth/hasRole']).every(b => b === true))
 				accessDenied = true;
 		}
 
