@@ -52,6 +52,7 @@ module.exports = {
 	},
 
 	isInGuild(id) {
+		return true;
 		return !!bot.guilds.get(process.env.GUILD_ID).members.some(member => member.id === id);
 	},
 

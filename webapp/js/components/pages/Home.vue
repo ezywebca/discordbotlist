@@ -9,8 +9,8 @@
 		<input class="form-control" v-model="keywords" placeholder="Search bots">
 		<div class="mt-4">
 			<div class="row">
-				<div class="col-12 col-sm-6 col-md-4 col-xl-3" v-for="bot in bots" :key="bot.id">
-					<bot :bot="bot"/>
+				<div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-4" v-for="bot in bots" :key="bot.id">
+					<bot :bot="bot" class="h-100"/>
 				</div>
 			</div>
 			<p v-if="!loading && bots.length < 1">There's none.</p>

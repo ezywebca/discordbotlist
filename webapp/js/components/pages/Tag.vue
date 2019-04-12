@@ -9,8 +9,8 @@
 		<h1>Discord {{ tag.name }} bots</h1>
 		<div class="row mt-4"
 			v-infinite-scroll="loadMore" infinite-scroll-disabled="disableScroll" infinite-scroll-distance="10">
-			<div class="col-12 col-sm-6 col-md-4 col-xl-3">
-				<bot :bot="bot" v-for="bot in bots" :key="bot.id" />
+			<div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-4" v-for="bot in bots" :key="bot.id">
+				<bot :bot="bot" class="h-100" />
 			</div>
 		</div>
 		<p v-if="!loading && bots.length < 1">There's none.</p>

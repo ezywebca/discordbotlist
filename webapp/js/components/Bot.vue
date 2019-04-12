@@ -9,10 +9,10 @@
 		<router-link :to="{name: 'view-bot', params: {id: bot.id}}">
 			<div class="bot-image-container">
 				<img class="card-img-top bot-image" :class="{nsfw: bot.nsfw}"
-					:alt="bot.username" :src="getAvatar(bot)">
+					:alt="`${bot.username} - Broken image. Report this to moderators please.`" :src="getAvatar(bot)">
 			</div>
 		</router-link>
-		<div class="card-body">
+		<div class="card-body d-flex flex-column">
 			<router-link :to="{name: 'view-bot', params: {id: bot.id}}" class="nostyle">
 				<h5 class="card-title">
 					{{bot.username}}
@@ -35,25 +35,27 @@
 				</template>
 			</h6>
 			<p class="card-text">{{bot.short_description}}</p>
-			<template v-if="overrideInvitation">
-				<a href="javascript:undefined" class="card-link" @click="approve"
-					:class="{disabled: (!bot.in_testing_guild && !addedToTesting) || approving || approved || denying || denied}">
-					{{ approving ? 'Approving…' : (approved ? 'Approved' : 'Approve') }}
-				</a>
-				<a href="javascript:undefined" class="card-link" @click="deny"
-					:class="{disabled: approving || approved || denying || denied}">
-					{{ denying ? 'Denying…' : (denied ? 'Denied' : 'Deny') }}
-				</a>
-				<a href="javascript:undefined" class="card-link" @click="test"
-					:class="{disabled: bot.in_testing_guild || addedToTesting || approving || approved || denying || denied}">
-					{{ bot.in_testing_guild || addedToTesting ? 'In testing' : 'Test' }}
-				</a>
-			</template>
-			<template v-else>
-				<a :href="bot.bot_invite" class="card-link" target="_blank">Add</a>
-				<a :href="bot.server_invite" class="card-link" target="_blank" v-if="bot.server_invite">Join server</a>
-				<a :href="bot.website" class="card-link" target="_blank" v-if="!bot.server_invite && bot.website">See website</a>
-			</template>
+			<div class="mt-auto">
+				<template v-if="overrideInvitation">
+					<a href="javascript:undefined" class="card-link" @click="approve"
+						:class="{disabled: (!bot.in_testing_guild && !addedToTesting) || approving || approved || denying || denied}">
+						{{ approving ? 'Approving…' : (approved ? 'Approved' : 'Approve') }}
+					</a>
+					<a href="javascript:undefined" class="card-link" @click="deny"
+						:class="{disabled: approving || approved || denying || denied}">
+						{{ denying ? 'Denying…' : (denied ? 'Denied' : 'Deny') }}
+					</a>
+					<a href="javascript:undefined" class="card-link" @click="test"
+						:class="{disabled: bot.in_testing_guild || addedToTesting || approving || approved || denying || denied}">
+						{{ bot.in_testing_guild || addedToTesting ? 'In testing' : 'Test' }}
+					</a>
+				</template>
+				<template v-else>
+					<a :href="bot.bot_invite" class="card-link" target="_blank">Add</a>
+					<a :href="bot.server_invite" class="card-link" target="_blank" v-if="bot.server_invite">Join server</a>
+					<a :href="bot.website" class="card-link" target="_blank" v-if="!bot.server_invite && bot.website">See website</a>
+				</template>
+			</div>
 		</div>
 	</div>
 </template>
@@ -75,8 +77,19 @@
 	.online {
 		color: #43b581;
 	}
+
 	.bot-image-container {
 		overflow: hidden;
+		padding-bottom: 100%;
+		position: relative;
+	}
+		
+	.bot-image-container img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
 	}
 
 	.bot-image.nsfw {
