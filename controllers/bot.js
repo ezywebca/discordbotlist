@@ -792,7 +792,8 @@ const controller = {
 
 		await bot.destroy();
 
-		await serviceBot.kickFromTesting(bot.discord_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
+		if (serviceBot.isInTestingGuild(bot.discord_id))
+			await serviceBot.kickFromTesting(bot.discord_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
 
 		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) has been denied`
 			+ ` with the following reason: ${reason}`
