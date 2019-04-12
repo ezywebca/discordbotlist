@@ -55,6 +55,17 @@ export function createApp() {
 	});
 
 	router.beforeEach((to, from, next) => {
+		let accessDenied = false;
+
+		if (to.meta.requiresAdmin || to.meta.requiresRoles) {
+			if (!store.getters['auth/isAuthenticated'])
+				accessDenied = true;
+			else if (to.meta.requiresAdmin && !store.state.auth.admin)
+				accessDenied = true;
+			else if (to.meta.requiresRoles && !to.meta.requiresRoles.map(store.getters['auth/hasRole']).every(b => b === true))
+				accessDenied = true;
+		}
+
 		if (to.meta.requiresAuth && !store.getters['auth/isAuthenticated']) {
 			if (from.name) {
 				VueOnToast.ToastService.pop('error', 'Sign in first!');
@@ -63,7 +74,7 @@ export function createApp() {
 					name: 'home'
 				});
 			}
-		} else if (to.meta.requiresAdmin && (!store.getters['auth/isAuthenticated'] || !store.state.auth.admin)) {
+		} else if (accessDenied) {
 			VueOnToast.ToastService.pop('error', 'How about no');
 			next({
 				name: 'home'

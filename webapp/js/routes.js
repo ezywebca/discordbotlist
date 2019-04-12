@@ -55,7 +55,7 @@ export default [
 		component: ApprovalQueue,
 		meta: {
 			requiresAuth: true,
-			requiresAdmin: true,
+			requiresRoles: ['approval'],
 		}
 	}, {
 		name: 'dbl-configurations',

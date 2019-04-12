@@ -4,6 +4,7 @@
  */
 
 const models = require('../models');
+const serviceBot = require('../bot');
 const {sanitize} = require('../helpers');
 const axios = require('axios');
 
@@ -68,6 +69,7 @@ module.exports = {
 					id: user.discord_id,
 					username: user.username,
 					admin: user.admin,
+					roles: getMemberRoles(user.discord_id),
 					avatar: user.avatar,
 					expiresIn: 84600 * 90,
 					tokenType: 'Bearer',
@@ -95,6 +97,7 @@ module.exports = {
 				id: user.discord_id,
 				username: user.username,
 				admin: user.admin,
+				roles: getMemberRoles(user.discord_id),
 				avatar: user.avatar,
 				expiresIn: 84600 * 90,
 				tokenType: 'Bearer',
@@ -109,6 +112,17 @@ module.exports = {
 	},
 };
 
+
+function getMemberRoles(memberId) {
+	const roles = process.env.ROLES.split(',').map(r => r.split(':'));
+	const result = [];
+
+	for (let role of roles)
+		if (serviceBot.hasRole(memberId, role[1]))
+			result.push(role[0]);
+	
+	return result;
+}
 
 async function getDiscordUser(token) {
 	return axios.get('https://discordapp.com/api/v6/users/@me', {

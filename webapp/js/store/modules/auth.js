@@ -10,6 +10,7 @@ const state = () => ({
 	id: '',
 	username: '',
 	admin: false,
+	roles: [],
 	avatar: '',
 	accessToken: null,
 	expiresIn: 0,
@@ -26,6 +27,7 @@ const actions = {
 				id: response.data.id,
 				username: response.data.username,
 				admin: response.data.admin,
+				roles: response.data.roles,
 				avatar: response.data.avatar,
 				token: response.data.token,
 				expiresIn: response.data.expiresIn * 1000,
@@ -51,6 +53,7 @@ const mutations = {
 		state.id = payload.id;
 		state.username = payload.username;
 		state.admin = payload.admin;
+		state.roles = payload.roles;
 		state.avatar = payload.avatar;
 		state.accessToken = payload.token;
 		state.expiresIn = payload.expiresIn;
@@ -61,6 +64,7 @@ const mutations = {
 		state.id = '';
 		state.username = '';
 		state.admin = false;
+		state.roles = [];
 		state.avatar = '';
 		state.accessToken = null;
 		state.expiresIn = 0;
@@ -82,6 +86,7 @@ const getters = {
 	isAuthenticated: state => state.accessToken ? ((state.obtainedAt + state.expiresIn > Date.now()) ?
 		true :
 	false) : false,
+	hasRole: state => role => state.roles.includes(role),
 };
 
 export default {

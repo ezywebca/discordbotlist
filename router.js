@@ -13,6 +13,7 @@ const throttle = require('./middleware/throttle');
 const denyBanned = require('./middleware/deny-banned');
 const adminOnly = require('./middleware/admin-only');
 const checkDBLock = require('./middleware/check-db-lock');
+const hasRole = require('./middleware/has-role');
 
 const AuthController = require('./controllers/auth');
 const BotController = require('./controllers/bot');
@@ -35,9 +36,9 @@ module.exports = () => {
 	router.post('/api/auth/login', throttle(5, 120), AuthController.login);
 
 	router.get('/api/bots', throttle(), protect(true), BotController.index);
-	router.get('/api/bots/disapproved', throttle(), protect(), adminOnly, BotController.getDisapproved);
-	router.post('/api/bots/disapproved/:id/approve', throttle(), protect(), adminOnly, BotController.approve);
-	router.post('/api/bots/disapproved/:id/deny', throttle(), protect(), adminOnly, BotController.deny);
+	router.get('/api/bots/disapproved', throttle(), protect(), hasRole('approval'), BotController.getDisapproved);
+	router.post('/api/bots/disapproved/:id/approve', throttle(), protect(), hasRole('approval'), BotController.approve);
+	router.post('/api/bots/disapproved/:id/deny', throttle(), protect(), hasRole('approval'), BotController.deny);
 
 	router.post('/api/bots', throttle(2, 900, true), protect(), checkDBLock, BotController.add);
 	router.get('/api/bots/mine', throttle(), protect(), BotController.getMine);

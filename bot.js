@@ -59,6 +59,12 @@ module.exports = {
 		return !!bot.guilds.get(process.env.TESTING_GUILD_ID).members.some(member => member.id === id);
 	},
 
+	hasRole(memberId, roleId) {
+		const member = bot.guilds.get(process.env.GUILD_ID).members.get(memberId);
+
+		return member && member.roles.has(roleId);
+	},
+
 	async ensureDevRole(id) {
 		if (!process.env.BOT_DEV_ROLE_ID)
 			return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');

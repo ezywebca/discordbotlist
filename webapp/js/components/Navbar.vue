@@ -190,18 +190,20 @@
 					username: state.username,
 					avatar: state.avatar,
 					admin: state.admin,
+					roles: state.roles,
 				})
 			}),
 
 			...mapGetters({
 				isAuthenticated: 'auth/isAuthenticated',
+				hasRole: 'auth/hasRole',
 			}),
 
 			dropdownItems: function() {
 				return [
 					{label: 'My bots', key: 'my-bots'},
 					...(this.user && this.user.admin ? [{label: 'Tags', key: 'tags'}] : []),
-					...(this.user && this.user.admin ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
+					...(this.user && this.user.roles.includes('approval') ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
 					...(this.user && this.user.admin ? [{label: 'DBL Config', key: 'dbl-configurations'}] : []),
 					{label: 'Sign out', key: 'sign-out'},
 				];
