@@ -790,7 +790,7 @@ const controller = {
 		if (!reason)
 			throw {status: 422, message: 'Missing denial reason'};
 
-		await bot.destroy();
+		await bot.destroy({force: true});
 
 		if (serviceBot.isInTestingGuild(bot.discord_id))
 			await serviceBot.kickFromTesting(bot.discord_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
