@@ -27,6 +27,9 @@ module.exports = context => {
 			try {
 				const auth = JSON.parse(context.authCookie);
 				if (auth.obtainedAt + auth.expiresIn > Date.now()) {
+					if (!auth.roles)
+						auth.roles = [];
+						
 					root.document = {
 						cookie: `auth=${context.authCookie}`
 					};
