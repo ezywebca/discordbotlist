@@ -170,7 +170,7 @@
 					query: this.$route.query,
 				}));
 
-				setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
+				setTimeout(() => {window.location = `${this.discordOAuthURL}&state=${state}&prompt=none`;}, 150);
 			},
 
 			getAvatar,
