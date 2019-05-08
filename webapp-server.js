@@ -75,6 +75,7 @@ async function renderApp(ctx) {
 	const context = {
 		url: ctx.url.endsWith('?') ? ctx.url.slice(0, -1) : ctx.url, // It crashes otherwise
 		authCookie: ctx.cookies.get('auth'),
+		dataSaverCookie: ctx.cookies.get('data-saver'),
 		discordRedirect: process.env.OAUTH_DISCORD_REDIRECT,
 		discordId: process.env.OAUTH_DISCORD_ID,
 	};

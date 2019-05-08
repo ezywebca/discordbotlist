@@ -4,10 +4,11 @@
  */
 
 import hljs from './hljs';
+import {getStore} from './store';
 
 // https://codebottle.io/s/4e85668754
 export function getURLParameter(param) {
-	if (window.location.href.endsWith("#"))
+	if (window.location.href.endsWith('#'))
 		window.location.href = window.location.href.substr(0, window.location.href.length - 1);
 	var vars = {};
 	window.location.href.replace(location.hash, '').replace(
@@ -56,8 +57,10 @@ export function formatNumber(num) {
 }
 
 export function getAvatar(entity) {
+	const dataSaving = getStore().state.preferences.dataSaverOn;
+
 	if (entity.avatar)
-		return `https://cdn.discordapp.com/avatars/${entity.id}/${entity.avatar}.png?size=512`;
+		return `https://cdn.discordapp.com/avatars/${entity.id}/${entity.avatar}.png?size=${dataSaving ? 128 : 512}`;
 	else
 		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
 }
@@ -87,4 +90,10 @@ export function desanitizeTag(tag) {
 
 export function sanitizeTag(tag) {
 	return tag.replace(/\s/g, '-').toLowerCase();
+}
+
+export function getCookie(name) {
+	var value = '; ' + document.cookie;
+	var parts = value.split('; ' + name + '=');
+	if (parts.length == 2) return parts.pop().split(';').shift();
 }

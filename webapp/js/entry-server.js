@@ -41,6 +41,9 @@ module.exports = context => {
 			}
 		}
 
+		if (context.dataSaverCookie === '1')
+			store.dispatch('preferences/toggleDataSaver', true);
+
 		const {url} = context;
 		const {fullPath} = router.resolve(url).route;
 

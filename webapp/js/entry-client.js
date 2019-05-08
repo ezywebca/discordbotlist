@@ -5,6 +5,7 @@
 
 import {createApp} from './app';
 import root from 'window-or-global';
+import {getCookie} from './helpers';
 
 const {
 	app,
@@ -12,13 +13,8 @@ const {
 	store
 } = createApp();
 
-function getCookie(name) {
-	var value = '; ' + document.cookie;
-	var parts = value.split('; ' + name + '=');
-	if (parts.length == 2) return parts.pop().split(';').shift();
-}
-
 const authCookie = getCookie('auth');
+const dataSaverCookie = getCookie('data-saver');
 
 if (authCookie) {
 	try {
@@ -38,6 +34,9 @@ if (authCookie) {
 		console.error('Invalid auth cookie!');
 	}
 }
+
+if (dataSaverCookie == '1')
+	store.dispatch('preferences/toggleDataSaver', true);
 
 router.onReady(() => {
 	router.beforeResolve((to, from, next) => {

@@ -157,6 +157,9 @@
 				case 'dbl-configurations':
 					this.$router.push({name: 'dbl-configurations'});
 					break;
+				case 'toggle-data-saver':
+					this.$store.dispatch('preferences/toggleDataSaver', !this.dataSaverOn);
+					break;
 				}
 			},
 
@@ -191,7 +194,11 @@
 					avatar: state.avatar,
 					admin: state.admin,
 					roles: state.roles,
-				})
+				}),
+			}),
+
+			...mapState('preferences', {
+				dataSaverOn: state => state.dataSaverOn,
 			}),
 
 			...mapGetters({
@@ -202,6 +209,7 @@
 			dropdownItems: function() {
 				return [
 					{label: 'My bots', key: 'my-bots'},
+					{label: `Data saver: ${this.dataSaverOn ? 'On' : 'Off'}`, key: 'toggle-data-saver'},
 					...(this.user && this.user.admin ? [{label: 'Tags', key: 'tags'}] : []),
 					...(this.user && (this.user.admin || this.user.roles.includes('approval')) ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
 					...(this.user && this.user.admin ? [{label: 'DBL Config', key: 'dbl-configurations'}] : []),

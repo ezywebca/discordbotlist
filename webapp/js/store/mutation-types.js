@@ -25,3 +25,5 @@ export const STORE_TAGS = 'STORE_TAGS';
 export const STORE_TAG = 'STORE_TAG';
 export const DELETE_TAG = 'DELETE_TAG';
 export const STORE_TAG_BOTS = 'STORE_TAG_BOTS';
+
+export const TOGGLE_DATA_SAVER = 'TOGGLE_DATA_SAVER';
