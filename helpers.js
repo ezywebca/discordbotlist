@@ -88,7 +88,7 @@ async function attachBotStats(bot) {
 	const stats = JSON.parse(await redis.getAsync(`bots:${bot.id}:stats`));
 
 	bot.stats = {
-		online: serviceBot.isOnline(bot.discord_id),
+		online: serviceBot.isOnline(bot.bot_id),
 	};
 
 	if (!stats || stats.length < 1)
@@ -160,7 +160,7 @@ async function checkDBLock() {
 
 function getAvatar(entity) {
 	if (entity.avatar)
-		return `https://cdn.discordapp.com/avatars/${entity.discord_id}/${entity.avatar}.png?size=512`;
+		return `https://cdn.discordapp.com/avatars/${entity.bot_id}/${entity.avatar}.png?size=512`;
 	else
 		return `https://cdn.discordapp.com/embed/avatars/${entity.discriminator % 5}.png`;
 }

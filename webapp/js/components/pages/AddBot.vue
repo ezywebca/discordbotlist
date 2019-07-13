@@ -14,7 +14,7 @@
 				<li>Do <strong>not</strong> force people to promote your bot in order to use it</li>
 				<li>Do <strong>not</strong> add wrong information</li>
 			</ul>
-			<span>Violation of any of these can result in <strong>permanent ban.</strong> (that doesn't make us uncool, dare you!)</span>
+			<span>Violation of any of these can result in <strong>permanent ban.</strong> (heh, yes.)</span>
 		</div>
 		<div class="mt-4 alert alert-success">
 			<span>
@@ -27,6 +27,12 @@
 				<label for="bot-id" class="col-sm-2 col-form-label">Bot ID</label>
 				<div class="col-sm-10">
 					<input type="text" id="bot-id" class="form-control" v-model="botId" placeholder="Right click bot ⇒ Copy ID" maxlength="32" required>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="bot-id" class="col-sm-2 col-form-label">Client ID</label>
+				<div class="col-sm-10">
+					<input type="text" id="bot-id" class="form-control" v-model="clientId" placeholder="New bots have this identical to bot ID" maxlength="32" required>
 				</div>
 			</div>
 			<div class="form-group row mt-3">
@@ -82,7 +88,7 @@
 						only-existing-tags />
 				</div>
 			</div>
-			<p class="mt-4">We'll use Bot ID to pull more information.</p>
+			<p class="mt-4">We'll use Bot ID to pull more information about your bot.</p>
 			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="addButton">Add</button>
 		</form>
 	</div>
@@ -98,16 +104,16 @@
 	}
 </style>
 
-
 <script>
-	import {mapState} from 'vuex';
-	import {extractError} from '../../helpers';
+	import { mapState } from 'vuex';
+	import { extractError } from '../../helpers';
 	import TagsInput from '@voerro/vue-tagsinput';
 
 	export default {
 		data: function() {
 			return {
 				botId: '',
+				clientId: '',
 				shortDescription: '',
 				longDescription: '',
 				prefix: '',
@@ -115,17 +121,17 @@
 				botInvite: '',
 				serverInvite: '',
 				tags: [],
-				added: false,
+				added: false
 			};
 		},
 
 		computed: {
 			...mapState('tags', {
-				availableTags: state => state.tags.reduce((object, tag) => ({...object, [tag.name]: tag.name}), {}),
-			}),
+				availableTags: state => state.tags.reduce((object, tag) => ({ ...object, [tag.name]: tag.name }), {}),
+			})
 		},
 
-		asyncData: async(store, route) => {
+		asyncData: async (store, route) => {
 			await store.dispatch('tags/fetchAll');
 		},
 
@@ -135,6 +141,7 @@
 
 				axios.post('/api/bots', {
 					id: this.botId,
+					client_id: this.clientId,
 					short_description: this.shortDescription,
 					long_description: this.longDescription,
 					prefix: this.prefix,
@@ -144,20 +151,18 @@
 					server_invite: this.serverInvite,
 				}).then(response => {
 					this.added = true;
-					this.$vueOnToast.pop('error', 'Queued for approval!');	
+					this.$vueOnToast.pop('error', 'Queued for approval!');
 					this.$router.push({name: 'view-bot', params: {id: this.botId}});
 				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));	
+					this.$vueOnToast.pop('error', extractError(e));
 					this.$refs.addButton.disabled = false;
 				});
 			}
 		},
 
 		beforeRouteLeave(to, from, next) {
-			if (this.added || confirm('You have unsaved changes tho!'))
-				next();
-			else
-				next(false);
+			if (this.added || confirm('You have unsaved changes tho!')) next();
+			else next(false);
 		},
 
 		meta: {
@@ -168,7 +173,7 @@
 				{property: 'og:title', content: 'Add new bot / Discord Bots'},
 				{property: 'og:description', content: 'Add new bot to Discord Bot List\'s database'},
 				{name: 'robots', content: 'noindex'},
-			],
+			]
 		},
 
 		components: {

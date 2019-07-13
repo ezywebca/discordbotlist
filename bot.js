@@ -23,7 +23,7 @@ bot.on('userUpdate', async (oldUser, newUser) => {
 
 	if (bot)
 		entity = await models.bot.findOne({
-			where: {discord_id: oldUser.id},
+			where: {bot_id: oldUser.id},
 		});
 	else
 		entity = await models.user.findOne({
@@ -31,7 +31,7 @@ bot.on('userUpdate', async (oldUser, newUser) => {
 		});
 	
 	if (!entity)
-		return logger.warn(`Error refreshing non-existant bot ${oldUser.id}`);
+		return logger.warn(`Error refreshing non-existant bot/user ${oldUser.id}`);
 	
 	entity.username = newUser.username;
 	entity.discriminator = newUser.discriminator;

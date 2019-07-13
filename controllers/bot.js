@@ -19,6 +19,7 @@ const controller = {
 	add: async (ctx, next) => {
 		const sanitizedInput = sanitizeBag(ctx.request.body, {
 			id: 'string',
+			client_id: 'string',
 			short_description: 'string',
 			long_description: 'string',
 			prefix: 'string',
@@ -30,6 +31,7 @@ const controller = {
 
 		const {
 			id,
+			client_id,
 			short_description,
 			long_description,
 			prefix,
@@ -60,9 +62,12 @@ const controller = {
 
 		if (!id)
 			throw {status: 422, message: 'Bot ID is missing'};
+		
+		if (!client_id)
+			throw {status: 422, message: 'Client ID is missing'};
 
 		if (!serviceBot.isInGuild(ctx.state.user.discord_id))
-			throw {status: 422, message: 'Where are you in the official guild???'};
+			throw {status: 422, message: 'Please join Discord Bot List official server'};
 		
 		verifyBotInfo(sanitizedInput);
 
@@ -73,7 +78,7 @@ const controller = {
 		}).then(response => response.data).catch(e => {
 			if (e.response) {
 				if (e.response.status === 400)
-					throw {status: 422, message: 'Invalid Client ID'};
+					throw {status: 422, message: 'Invalid Bot ID'};
 				if (e.response.status === 404)
 					throw {status: 422, message: 'Bot with such Client ID doesn\'t exist'};
 			}
@@ -83,10 +88,10 @@ const controller = {
 		});
 
 		if (!botInfo.bot)
-			throw {status: 422, message: 'Specified Client ID doesn\'t belong to a bot'};
+			throw {status: 422, message: 'Specified Bot ID doesn\'t belong to a bot'};
 
 		const existingBot = await models.bot.findOne({
-			where: {discord_id: id},
+			where: {bot_id: id},
 			paranoid: false,
 		});
 
@@ -98,7 +103,8 @@ const controller = {
 			
 		const bot = await models.bot.create({
 			owner_id: ctx.state.user.id,
-			discord_id: id,
+			bot_id: id,
+			client_id,
 			short_description,
 			long_description,
 			prefix,
@@ -121,7 +127,7 @@ const controller = {
 			image: avatarUrl,
 			color: '#43b581',
 			description: `
-• Bot: **${botInfo.username}#${botInfo.discriminator}** (ID: **${id}**)		
+• Bot: **${botInfo.username}#${botInfo.discriminator}** (Bot ID: **${id}**) (Client ID: **${client_id}**)		
 • Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 • Short description: **${short_description}**
 • Prefix: **${prefix}**
@@ -159,7 +165,7 @@ const controller = {
 	get: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user, models.tag]
 		});
@@ -192,7 +198,7 @@ const controller = {
 				order: [['created_at', 'DESC']]
 			});
 
-			bots = bots.filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.discord_id));
+			bots = bots.filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.bot_id));
 
 			bots = await Promise.all(bots.map(async bot => {
 				await attachBotUpvotes(bot, ctx.state.user);
@@ -237,7 +243,7 @@ const controller = {
 				return 1;
 			else
 				return 0;
-		}).filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.discord_id))
+		}).filter(bot => bot.verified && !bot.nsfw && serviceBot.isInGuild(bot.bot_id))
 			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false}));
 	},
 
@@ -272,14 +278,14 @@ const controller = {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 			return bot;
-		}))).filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.discord_id))
+		}))).filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.bot_id))
 			.map(bot => models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false}));
 	},
 
 	delete: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: ctx.params.id
+				bot_id: ctx.params.id
 			},
 			include: [models.user]
 		});
@@ -296,7 +302,7 @@ const controller = {
 
 		await bot.destroy();
 
-		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
+		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.bot_id}/${bot.avatar}.png?size=512` :
 			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
 
 		serviceBot.log({
@@ -304,14 +310,14 @@ const controller = {
 			image: avatarUrl,
 			color: '#f04747',
 			description: `
-• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
+• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)	
 • Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
 • Deleted by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 `,
 		});
 
-		if (serviceBot.isInGuild(bot.discord_id))
-			await serviceBot.kick(bot.discord_id, 'Deleted on bot list');
+		if (serviceBot.isInGuild(bot.bot_id))
+			await serviceBot.kick(bot.bot_id, 'Deleted on bot list');
 
 		ctx.status = 204;
 	},
@@ -319,7 +325,7 @@ const controller = {
 	upvote: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -365,7 +371,7 @@ const controller = {
 
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -441,7 +447,7 @@ const controller = {
 
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user, models.tag],
 		});
@@ -460,7 +466,7 @@ const controller = {
 				throw {status: 422, message: 'You can\'t assign a webhook without a secret'};
 
 		let description = `
-• Bot: **${bot.username}#${bot.discriminator}** (ID: **${bot.discord_id}**)		
+• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.discord_id}**) (Client ID: **${bot.client_id}**)	
 • Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
 • Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 `;
@@ -497,12 +503,12 @@ const controller = {
 
 		await bot.setTags(tagModels);
 
-		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.discord_id}/${bot.avatar}.png?size=512` :
+		const avatarUrl = bot.avatar ? `https://cdn.discordapp.com/avatars/${bot.bot_id}/${bot.avatar}.png?size=512` :
 			`https://cdn.discordapp.com/embed/avatars/${bot.discriminator % 5}.png`;
 
 		serviceBot.log({
 			title: 'Bot edited',
-			url: `${ctx.origin}/bots/${bot.discord_id}`,
+			url: `${ctx.origin}/bots/${bot.bot_id}`,
 			image: avatarUrl,
 			color: '#e0cf37',
 			description,
@@ -516,14 +522,14 @@ const controller = {
 	refresh: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.discord_id), {
+		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(bot.bot_id), {
 			headers: {
 				'Authorization': `Bot ${process.env.BOT_TOKEN}`,
 			},
@@ -541,7 +547,7 @@ const controller = {
 	generateToken: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -569,7 +575,7 @@ const controller = {
 
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -649,7 +655,7 @@ const controller = {
 
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -679,7 +685,7 @@ const controller = {
 			include: [models.user],
 		});
 
-		bots = bots.filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.discord_id));
+		bots = bots.filter(bot => !bot.nsfw && serviceBot.isInGuild(bot.bot_id));
 
 		ctx.body = await Promise.all(bots.slice(skip, skip + 20).map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
@@ -691,7 +697,7 @@ const controller = {
 	verify: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -707,7 +713,7 @@ const controller = {
 	unverify: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -723,7 +729,7 @@ const controller = {
 	setNSFW: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -741,7 +747,7 @@ const controller = {
 	unsetNSFW: async (ctx, next) => {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			}
 		});
 
@@ -758,13 +764,13 @@ const controller = {
 
 	getDisapproved: async (ctx, next) => {
 		const bots = await models.bot.findAll();
-		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.discord_id));
+		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.bot_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {
 			await attachBotUpvotes(bot, ctx.state.user);
 			await attachBotStats(bot);
 
-			bot.in_testing_guild = await serviceBot.isInTestingGuild(bot.discord_id);
+			bot.in_testing_guild = await serviceBot.isInTestingGuild(bot.bot_id);
 
 			return models.bot.transform(bot, {includeWebhooks: ctx.state.user ? (ctx.state.user.id === bot.owner_id || ctx.state.user.admin) : false});
 		}));
@@ -779,7 +785,7 @@ const controller = {
 
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -792,10 +798,10 @@ const controller = {
 
 		await bot.destroy({force: true});
 
-		if (serviceBot.isInTestingGuild(bot.discord_id))
-			await serviceBot.kickFromTesting(bot.discord_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
+		if (serviceBot.isInTestingGuild(bot.bot_id))
+			await serviceBot.kickFromTesting(bot.bot_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
 
-		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) has been denied`
+		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.bot_id}) has been denied`
 			+ ` with the following reason: ${reason}`
 			+ '\n\nIf you believe there is an error or mistake, please reach out the responsible moderator:'
 			+ ` ${ctx.state.user.username}#${ctx.state.user.discriminator} (ID: ${ctx.state.user.discord_id})`);
@@ -806,7 +812,7 @@ const controller = {
 	async approve(ctx, next) {
 		const bot = await models.bot.findOne({
 			where: {
-				discord_id: sanitize(ctx.params.id, 'string'),
+				bot_id: sanitize(ctx.params.id, 'string'),
 			},
 			include: [models.user]
 		});
@@ -814,10 +820,10 @@ const controller = {
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
 
-		if (serviceBot.isInTestingGuild(bot.discord_id))
-			await serviceBot.kickFromTesting(bot.discord_id, `Bot has been approved by <@${ctx.state.user.discord_id}>`);
+		if (serviceBot.isInTestingGuild(bot.bot_id))
+			await serviceBot.kickFromTesting(bot.bot_id, `Bot has been approved by <@${ctx.state.user.discord_id}>`);
 
-		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.discord_id}) is being approved.`
+		await serviceBot.dm(bot.user.discord_id, `Your bot ${bot.username}#${bot.discriminator} (ID: ${bot.bot_id}) is being approved.`
 			+ ' Expect it to be added to the main DiscordBotList server anytime very soon.'
 			+ '\n\nIf you believe there is an error or mistake, please reach out the responsible moderator:'
 			+ ` ${ctx.state.user.username}#${ctx.state.user.discriminator} (ID: ${ctx.state.user.discord_id})`);

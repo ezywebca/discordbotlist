@@ -117,7 +117,7 @@ app.use(async (ctx, next) => {
 	} else if (ctx.path.match('/bots/\\d+/widget/*')) {
 		const discordId = ctx.path.substring(6).split('/')[0];
 		const bot = await models.bot.findOne({
-			where: {discord_id: discordId},
+			where: {bot_id: discordId},
 			include: [models.user],
 		});
 
@@ -154,7 +154,7 @@ app.use(async (ctx, next) => {
 				avatar: await renderAvatar(bot),
 				online: bot.stats.online,
 				verified: bot.verified,
-				link: `https://discordbotlist.com/bots/${bot.discord_id}`,
+				link: `https://discordbotlist.com/bots/${bot.bot_id}`,
 			});
 		}
 	} else {

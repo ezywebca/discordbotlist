@@ -136,7 +136,7 @@
 
 		methods: {
 			approve() {
-				axios.post(`/api/bots/disapproved/${this.bot.id}/approve`).then(response => {
+				axios.post(`/api/bots/disapproved/${this.bot.client_id}/approve`).then(response => {
 					this.approved = true;
 					this.approving = false;
 				}).catch(e => {
@@ -144,7 +144,7 @@
 					this.approving = false;
 				});
 
-				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.id}&scope=bot&guild_id=450100127256936458`);
+				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.client_id}&scope=bot&guild_id=450100127256936458`);
 			},
 
 			deny() {
@@ -170,7 +170,7 @@
 			},
 
 			test() {
-				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.id}&scope=bot&guild_id=530821081485803571`);
+				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.client_id}&scope=bot&guild_id=530821081485803571`);
 				this.addedToTesting = true;
 			},
 			

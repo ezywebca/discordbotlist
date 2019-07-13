@@ -14,7 +14,7 @@
 
 	<% for (let bot of bots) { %>
 	<url>
-		<loc><%= absolute(`/bots/${bot.discord_id}`) %></loc>
+		<loc><%= absolute(`/bots/${bot.bot_id}`) %></loc>
 		<lastmod><%= bot.updated_at.toISOString() %></lastmod>
 	</url>
 	<% } %>

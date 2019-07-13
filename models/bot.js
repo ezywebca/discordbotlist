@@ -18,9 +18,14 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false
 		},
-		discord_id: {
+		bot_id: {
 			type: DataTypes.STRING(32),
 			allowNull: false,
+			unique: true,
+		},
+		client_id: {
+			type: DataTypes.STRING(32),
+			allowNull: true,
 			unique: true,
 		},
 		username: {
@@ -103,7 +108,8 @@ module.exports = (sequelize, DataTypes) => {
 
 	bot.transform = (bot, options) => {
 		const result = {
-			id: bot.discord_id,
+			id: bot.bot_id,
+			client_id: bot.client_id,
 			username: bot.username,
 			discriminator: bot.discriminator,
 			avatar: bot.avatar,
