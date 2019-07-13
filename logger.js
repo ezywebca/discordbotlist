@@ -63,7 +63,8 @@ function log(type, message) {
 
 	const trace = stackTrace.get();
 	const root = path.dirname(__dirname);
-	const caller = `.${trace[2].getFileName().substring(root.length)}:${trace[2].getLineNumber()}`;
+
+	const caller = `.${(trace[2] || trace[1]).getFileName().substring(root.length)}:${(trace[2] || trace[1]).getLineNumber()}`;
 
 	switch (type) {
 	case 'info':
