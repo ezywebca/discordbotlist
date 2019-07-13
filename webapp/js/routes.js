@@ -8,6 +8,7 @@ import Contact from './components/pages/Contact';
 import Partners from './components/pages/Partners';
 import AuthCallback from './components/pages/AuthCallback';
 import MyBots from './components/pages/MyBots';
+import Queued from './components/pages/Queued';
 import AddBot from './components/pages/AddBot';
 import ViewBot from './components/pages/ViewBot';
 import EditBot from './components/pages/EditBot';
@@ -81,6 +82,13 @@ export default [
 		name: 'add-bot',
 		path: '/my-bots/add',
 		component: AddBot,
+		meta: {
+			requiresAuth: true,
+		}
+	}, {
+		name: 'queued',
+		path: '/my-bots/queued',
+		component: Queued,
 		meta: {
 			requiresAuth: true,
 		}

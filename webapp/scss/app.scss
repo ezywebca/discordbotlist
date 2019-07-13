@@ -75,6 +75,12 @@ body {
 	border-color: darken(#521717, 2%);
 }
 
+.alert-warning {
+	background: #474000;
+	color: $light;
+	border-color: darken(#474000, 2%);
+}
+
 .alert-success {
 	background: #2c5c2e;
 	color: $light;

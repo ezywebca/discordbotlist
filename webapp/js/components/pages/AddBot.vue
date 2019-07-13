@@ -10,11 +10,26 @@
 		<div class="mt-4 alert alert-danger">
 			<strong>Important notes:</strong>
 			<ul>
-				<li>Do <strong>not</strong> add bots you do not own</li>
-				<li>Do <strong>not</strong> force people to promote your bot in order to use it</li>
-				<li>Do <strong>not</strong> add wrong information</li>
+				<li>Do <strong>not</strong> add bots you do not own.</li>
+				<li>Do <strong>not</strong> force people to promote your bot in order to use it.</li>
+				<li>Do <strong>not</strong> add wrong information.</li>
 			</ul>
 			<span>Violation of any of these can result in <strong>permanent ban.</strong> (heh, yes.)</span>
+		</div>
+		<div class="mt-4 alert alert-warning">
+			<strong>Quick approval checklist:</strong>
+			<ul>
+				<li>Must be online 24/7 practically. Bots hosted on Glitch and stuff are big no.</li>
+				<li>Must have <code>help</code> command (or equivalent if not English).</li>
+				<li>Must not be a clone of an existing bot.</li>
+				<li>Must not respond to other bots.</li>
+				<li>~3 seconds is the maximum time we wait for a command to respond before we start flipping tables.</li>
+				<li>Short description must explain what the bot does.</li>
+				<li>Long description must explain bot features beyond just saying "games, etc. lol".</li>
+				<li>No mention of NSFW things in descriptions.</li>
+				<li>If bot is NSFW, let us know after you add your bot.</li>
+			</ul>
+			<span>Your bot much tick all above to be approved (unless you have an excellent reason).</span>
 		</div>
 		<div class="mt-4 alert alert-success">
 			<span>
@@ -46,7 +61,7 @@
 				<label for="long-description" class="col-sm-2 col-form-label">Long description</label>
 				<div class="col-sm-10">
 					<textarea id="long-description" class="form-control" v-model="longDescription" maxlength="16384"
-						placeholder="This is like GitHub's README.md or whatever, you can make it long and include everything. (Markdown supported) (Optional)" />
+						placeholder="This is like GitHub's README.md or whatever, you can make it long and include everything. (Markdown only, no custom HTML)" />
 				</div>
 			</div>
 			<div class="form-group row mt-3">
@@ -88,7 +103,11 @@
 						only-existing-tags />
 				</div>
 			</div>
-			<p class="mt-4">We'll use Bot ID to pull more information about your bot.</p>
+			<p class="mt-4">
+				<strong>Make sure you have DMs enabled to receive approval updates.</strong>
+				<br>
+				<small>We'll use Bot ID to pull more information about your bot.</small>
+			</p>
 			<button type="submit" class="btn btn-primary mt-2 mb-5" ref="addButton">Add</button>
 		</form>
 	</div>
@@ -152,7 +171,7 @@
 				}).then(response => {
 					this.added = true;
 					this.$vueOnToast.pop('error', 'Queued for approval!');
-					this.$router.push({name: 'view-bot', params: {id: this.botId}});
+					this.$router.push({name: 'queued'}});
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));
 					this.$refs.addButton.disabled = false;
@@ -161,7 +180,7 @@
 		},
 
 		beforeRouteLeave(to, from, next) {
-			if (this.added || confirm('You have unsaved changes tho!')) next();
+			if (this.added || confirm('You have unsaved changes!')) next();
 			else next(false);
 		},
 
