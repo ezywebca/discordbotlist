@@ -39,6 +39,9 @@ const controller = {
 			bot_invite,
 			server_invite,
 		} = sanitizedInput;
+
+		if (!sanitizedInput.tags)
+			throw {status: 422, message: 'Add some tags'};
 	
 		const tags = sanitizedInput.tags.split(',');
 
@@ -425,6 +428,9 @@ const controller = {
 			webhook_secret,
 		} = sanitizedInput;
 	
+		if (!sanitizedInput.tags)
+			throw {status: 422, message: 'Add some tags'};
+		
 		const tags = sanitizedInput.tags.split(',');
 
 		if (tags.length > 10)

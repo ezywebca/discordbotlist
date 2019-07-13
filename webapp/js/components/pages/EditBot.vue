@@ -57,6 +57,8 @@
 						v-model="tags"
 						:existing-tags="availableTags"
 						:typeahead="true"
+						:typeahead-max-results="10"
+						:typeahead-activation-threshold="0"
 						input-class="form-control"
 						only-existing-tags />
 				</div>
