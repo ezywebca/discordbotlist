@@ -63,6 +63,7 @@
     "mini-css-extract-plugin": "^0.4.1",
     "moment-mini": "^2.22.1",
     "mysql2": "^1.6.1",
+    "node-cleanup": "^2.1.2",
     "node-sass": "^4.9.2",
     "pace": "0.0.4",
     "pace-progress": "^1.0.2",

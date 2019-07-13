@@ -6,6 +6,53 @@
 const colors = require('colors/safe');
 const stackTrace = require('stack-trace');
 const path = require('path');
+const fs = require('pn/fs');
+const debounce = require('lodash.debounce');
+const nodeCleanup = require('node-cleanup');
+
+// This is used for logs that occur before the log file has initialized.
+// This gets flushed to the log file once it has initialized.
+let tempLog = [];
+
+let diskLogger;
+
+fs.mkdir(path.join(__dirname, 'logs'), {
+	recursive: true,
+}).then(async () => {
+	const filename = `${new Date().toISOString().replace(/[:.]/g, '-')}.log`;
+	const stream = await fs.createWriteStream(path.join(__dirname, 'logs', filename));
+
+	stream.cork();
+
+	const flush = debounce(() => {
+		process.nextTick(() => {
+			stream.uncork();
+			stream.cork();
+		});
+	}, 15000, { maxWait: 60000 });
+
+	const log = message => {
+		stream.write(message + '\n');
+		flush();
+	};
+
+	nodeCleanup(() => {
+		stream.uncork();
+	});
+
+	diskLogger = {log};
+
+	for (let line of tempLog)
+		diskLogger.log(line);
+
+	tempLog = false;
+}).catch(e => {
+	log('err', `Error opening disk log file: ${e.stack}`);
+
+	// important to stop tempLog from getting filled up
+	tempLog = false;
+});
+
 
 /* istanbul ignore next */
 function log(type, message) {
@@ -13,6 +60,10 @@ function log(type, message) {
 		return;
 
 	var generated = (new Date()).toISOString() + ' ';
+
+	const trace = stackTrace.get();
+	const root = path.dirname(__dirname);
+	const caller = `.${trace[2].getFileName().substring(root.length)}:${trace[2].getLineNumber()}`;
 
 	switch (type) {
 	case 'info':
@@ -35,11 +86,12 @@ function log(type, message) {
 		break;
 	}
 
-	const trace = stackTrace.get();
-	const root = path.dirname(__dirname);
-	const caller = `.${trace[2].getFileName().substring(root.length)}:${trace[2].getLineNumber()}`;
-
 	generated += ' ' + colors.italic(colors.grey(caller));
+
+	if (diskLogger)
+		diskLogger.log(generated);
+	else if (tempLog)
+		tempLog.push(generated);
 
 	console.log(generated);
 }
