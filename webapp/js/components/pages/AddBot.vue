@@ -171,7 +171,7 @@
 				}).then(response => {
 					this.added = true;
 					this.$vueOnToast.pop('error', 'Queued for approval!');
-					this.$router.push({name: 'queued'}});
+					this.$router.push({name: 'queued'});
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));
 					this.$refs.addButton.disabled = false;
