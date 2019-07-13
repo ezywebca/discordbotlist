@@ -136,7 +136,7 @@
 
 		methods: {
 			approve() {
-				axios.post(`/api/bots/disapproved/${this.bot.client_id}/approve`).then(response => {
+				axios.post(`/api/bots/disapproved/${this.bot.id}/approve`).then(response => {
 					this.approved = true;
 					this.approving = false;
 				}).catch(e => {
