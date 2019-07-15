@@ -472,7 +472,7 @@ const controller = {
 				throw {status: 422, message: 'You can\'t assign a webhook without a secret'};
 
 		let description = `
-• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.discord_id}**) (Client ID: **${bot.client_id}**)	
+• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)	
 • Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
 • Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 `;
