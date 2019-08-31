@@ -61,7 +61,7 @@
 				<label for="long-description" class="col-sm-2 col-form-label">Long description</label>
 				<div class="col-sm-10">
 					<textarea id="long-description" class="form-control" v-model="longDescription" maxlength="16384"
-						placeholder="This is like GitHub's README.md or whatever, you can make it long and include everything. (Markdown only, no custom HTML)" />
+						placeholder="This is like GitHub's README.md or whatever, you can make it long and include everything. (Markdown only, no custom HTML)" required />
 				</div>
 			</div>
 			<div class="form-group row mt-3">
