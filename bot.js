@@ -7,7 +7,10 @@ const Discord = require('discord.js');
 const logger = require('./logger');
 const models = require('./models');
 
-const bot = new Discord.Client();
+const bot = new Discord.Client({
+	fetchAllMembers: true,
+});
+
 let discordLoggingDisabled = false;
 
 bot.login(process.env.BOT_TOKEN);
@@ -29,10 +32,10 @@ bot.on('userUpdate', async (oldUser, newUser) => {
 		entity = await models.user.findOne({
 			where: {discord_id: oldUser.id},
 		});
-	
+
 	if (!entity)
 		return logger.warn(`Error refreshing non-existant bot/user ${oldUser.id}`);
-	
+
 	entity.username = newUser.username;
 	entity.discriminator = newUser.discriminator;
 	entity.avatar = newUser.avatar;
@@ -72,11 +75,11 @@ module.exports = {
 
 		if (!member)
 			return logger.warn(`Unable to ensure Bot Developer role for non-existing user: ${id}`);
-		
+
 		if (!member.roles.get(process.env.BOT_DEV_ROLE_ID))
 			return member.roles.add(process.env.BOT_DEV_ROLE_ID, 'User has a bot on website').catch(e => {
 				logger.warn(`Can't set Bot Developer role for user: ${id}`);
-				logger.warn(e);	
+				logger.warn(e);
 			});
 	},
 
