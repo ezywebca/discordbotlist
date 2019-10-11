@@ -5,14 +5,12 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var Sequelize = require('sequelize');
-var basename = path.basename(__filename);
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
 
-/* istanbul ignore next */
-var env = process.env.NODE_ENV || 'development';
-var config = {
+const config = {
 	host: process.env.DB_HOST,
 	port: process.env.DB_PORT,
 	dialect: process.env.DB_DIALECT,
@@ -32,10 +30,18 @@ var config = {
 	},
 
 	logging: false,
-};
-var db = {};
 
-var sequelize = null;
+	pool: {
+		max: 5,
+		min: 0,
+		idle: 20000,
+		acquire: 20000,
+	},
+};
+
+const db = {};
+
+let sequelize;
 
 /* istanbul ignore next */
 if (config.use_env_variable) {
@@ -51,15 +57,14 @@ fs
 		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
 	})
 	.forEach(file => {
-		var model = sequelize['import'](path.join(__dirname, file));
+		const model = sequelize['import'](path.join(__dirname, file));
 		db[model.name] = model;
 	});
 
 /* istanbul ignore next */
 Object.keys(db).forEach(modelName => {
-	if (db[modelName].associate) {
+	if (db[modelName].associate)
 		db[modelName].associate(db);
-	}
 });
 
 db.sequelize = sequelize;
