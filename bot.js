@@ -50,7 +50,7 @@ bot.on('guildMemberRemove', async member => {
 			where: { discord_id: member.user.id },
 		});
 
-		const bots = await models.bot.findOne({
+		const bots = await models.bot.findAll({
 			where: { owner_id: owner.id },
 		});
 
