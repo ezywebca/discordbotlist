@@ -44,6 +44,31 @@ bot.on('userUpdate', async (oldUser, newUser) => {
 	logger.info(`Refreshed ${bot ? 'bot' : 'user'}: ${oldUser.id}`);
 });
 
+bot.on('guildMemberRemove', async member => {
+	if (!member.user.bot) {
+		const owner = await models.user.findOne({
+			where: { discord_id: member.user.id },
+		});
+
+		const bots = await models.bot.findOne({
+			where: { owner_id: owner.id },
+		});
+
+		if (bots.length > 0) {
+			let message = `<@${process.env.MODERATORS_ROLE_ID}> The following user left server: `;
+
+			message += `**${member.user.tag}** (ID: **${member.user.id}**)\n\n`;
+			message += 'The following bots should be removed:\n';
+
+			for (const bot of bots)
+				message += `**${bot.username}#${bot.discriminator}** (ID: **${bot.bot_id}**) (<@${bot.bot_id}>)\n`;
+
+			await bot.guilds.get(process.env.GUILD_ID)
+				.channels.get(process.env.MODERATORS_CHANNEL_ID)
+				.send(message);
+		}
+	}
+});
 
 module.exports = {
 	isOnline(id) {
