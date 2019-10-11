@@ -55,13 +55,13 @@ bot.on('guildMemberRemove', async member => {
 		});
 
 		if (bots.length > 0) {
-			let message = `<@${process.env.MODERATORS_ROLE_ID}> The following user left server: `;
+			let message = `<@&${process.env.MODERATORS_ROLE_ID}> The following user left server: `;
 
 			message += `**${member.user.tag}** (ID: **${member.user.id}**)\n\n`;
 			message += 'The following bots should be removed:\n';
 
 			for (const bot of bots)
-				message += `**${bot.username}#${bot.discriminator}** (ID: **${bot.bot_id}**) (<@${bot.bot_id}>)\n`;
+				message += `**${bot.username}#${bot.discriminator}** (ID: **${bot.bot_id}**) (<@${bot.bot_id}>) (https://discordbotlist.com/bots/${bot.bot_id})\n`;
 
 			await bot.guilds.get(process.env.GUILD_ID)
 				.channels.get(process.env.MODERATORS_CHANNEL_ID)
