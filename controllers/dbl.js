@@ -27,9 +27,14 @@ module.exports = {
 
 	async getApprovalDelay(ctx) {
 		const cacheKeys = await redis.keysAsync('bots:*:approval-delay');
-		const delays = await redis.mgetAsync(cacheKeys);
 
-		const average = delays && delays.length > 0 ? median(delays) : 0;
+		let average = 0;
+
+		if (cacheKeys.length > 0) {
+			const delays = await redis.mgetAsync(cacheKeys);
+
+			average = delays && delays.length > 0 ? median(delays) : 0;
+		}
 
 		ctx.body = {
 			median: Math.round(average),
