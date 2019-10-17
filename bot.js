@@ -70,11 +70,6 @@ bot.on('guildMemberRemove', async member => {
 	}
 });
 
-bot.on('message', async msg => {
-	if (msg.content.includes('57 years'))
-		msg.channel.send('yes, it\'s 100% real 👌\nbtw see <#632494057507127305>');
-});
-
 module.exports = {
 	isOnline(id) {
 		return bot.guilds.some(guild => {
