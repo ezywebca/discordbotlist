@@ -4,6 +4,7 @@
  */
 
 const redis = require('../redis');
+const { median } = require('../helpers');
 
 module.exports = {
 	lockDB: async (ctx, next) => {
@@ -21,6 +22,17 @@ module.exports = {
 	getConfig: async (ctx, next) => {
 		ctx.body = {
 			db_locked: !!(await redis.getAsync('db-lock')),
+		};
+	},
+
+	async getApprovalDelay(ctx) {
+		const cacheKeys = await redis.keysAsync('bots:*:approval-delay');
+		const delays = await redis.mgetAsync(cacheKeys);
+
+		const average = delays && delays.length > 0 ? median(delays) : 0;
+
+		ctx.body = {
+			median: Math.round(average),
 		};
 	}
 };

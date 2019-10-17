@@ -7,7 +7,7 @@ const colors = require('colors/safe');
 const stackTrace = require('stack-trace');
 const path = require('path');
 const fs = require('pn/fs');
-const debounce = require('lodash.debounce');
+const { debounce } = require('lodash');
 const nodeCleanup = require('node-cleanup');
 
 // This is used for logs that occur before the log file has initialized.

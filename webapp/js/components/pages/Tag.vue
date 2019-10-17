@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import debounce from 'lodash.debounce';
+	import {debounce} from 'lodash';
 	import {mapGetters} from 'vuex';
 	import Bot from '../Bot';
 	import {desanitizeTag} from '../../helpers';
@@ -59,8 +59,8 @@
 						this.end = true;
 					else
 						this.disableScroll = false;
-					
-					this.loading = false;	
+
+					this.loading = false;
 				});
 			}, 300),
 		},

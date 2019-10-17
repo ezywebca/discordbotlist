@@ -31,7 +31,7 @@ const {isCrawler, getIP, getAvatar} = require('./helpers');
 
 const util = require('util');
 const i2b = util.promisify(require('imageurl-base64'));
-const debounce = require('lodash.debounce');
+const { debounce } = require('lodash');
 
 async function renderAvatar(bot) {
 	const url = getAvatar(bot);

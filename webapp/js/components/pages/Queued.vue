@@ -17,7 +17,10 @@
 		</p>
 
 		<p class="mt-4 text-muted">
-			<small>Average time for a response: 56 years 27 weeks 3 days 23 hours 3 minutes 56 seconds</small>
+			<small>
+				Average time for a response:
+				{{ approvalDelay ? duration(approvalDelay).humanize() : 'undetermined' }}
+			</small>
 		</p>
 	</div>
 </template>
@@ -37,7 +40,24 @@
 </style>
 
 <script>
+	import { mapState } from 'vuex';
+	import moment from 'moment-mini';
+
 	export default {
+		asyncData(store) {
+			return store.dispatch('dbl/fetchApprovalDelay');
+		},
+
+		computed: {
+			...mapState('dbl', {
+				approvalDelay: state => state.approvalDelay,
+			}),
+		},
+
+		methods: {
+			duration: moment.duration,
+		},
+
 		meta: {
 			title: 'Bot queued',
 
@@ -48,5 +68,5 @@
 				{name: 'robots', content: 'noindex'},
 			],
 		},
-	}
+	};
 </script>

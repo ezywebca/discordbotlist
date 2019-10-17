@@ -48,7 +48,7 @@ module.exports = () => {
 	router.get('/api/bots/:id/token', throttle(), protect(), checkDBLock, BotController.generateToken);
 	router.post('/api/bots/:id/refresh', throttle(), protect(), checkDBLock, adminOnly, BotController.refresh);
 	router.post('/api/bots/:id/upvotes', throttle(), protect(), checkDBLock, BotController.upvote);
-	
+
 	router.post('/api/bots/:id/nsfw-mark', throttle(), protect(), checkDBLock, BotController.setNSFW);
 	router.delete('/api/bots/:id/nsfw-mark', throttle(), protect(), checkDBLock, BotController.unsetNSFW);
 
@@ -59,7 +59,7 @@ module.exports = () => {
 
 	router.post('/api/bots/:id/stats', throttle(1000), checkDBLock, BotController.updateStats); // Token-based authentication inside controller
 	router.delete('/api/bots/:id/stats', throttle(), checkDBLock, BotController.resetStats); // same
-	
+
 	router.get('/api/users/:id', throttle(), UserController.get);
 	router.post('/api/users/:id/ban', throttle(), protect(), checkDBLock, adminOnly, UserController.ban);
 	router.delete('/api/users/:id/ban', throttle(), protect(), checkDBLock, adminOnly, UserController.unban);
@@ -69,6 +69,7 @@ module.exports = () => {
 	router.get('/api/dbl/configurations', throttle(), protect(), adminOnly, DBLController.getConfig);
 	router.post('/api/dbl/db-lock', throttle(), protect(), adminOnly, DBLController.lockDB);
 	router.delete('/api/dbl/db-lock', throttle(), protect(), adminOnly, DBLController.unlockDB);
+	router.get('/api/dbl/approval-delay', throttle(), DBLController.getApprovalDelay);
 
 	router.get('/api/tags', throttle(), TagController.getAll);
 	router.post('/api/tags', throttle(), protect(), checkDBLock, adminOnly, TagController.create);

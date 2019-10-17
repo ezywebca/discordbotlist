@@ -42,7 +42,7 @@ const controller = {
 
 		if (!sanitizedInput.tags)
 			throw {status: 422, message: 'Add some tags'};
-	
+
 		const tags = sanitizedInput.tags.split(',');
 
 		if (tags.length > 10)
@@ -65,13 +65,13 @@ const controller = {
 
 		if (!id)
 			throw {status: 422, message: 'Bot ID is missing'};
-		
+
 		if (!client_id)
 			throw {status: 422, message: 'Client ID is missing'};
 
 		if (!serviceBot.isInGuild(ctx.state.user.discord_id))
 			throw {status: 422, message: 'Please join Discord Bot List official server'};
-		
+
 		verifyBotInfo(sanitizedInput);
 
 		const botInfo = await axios.get('https://discordapp.com/api/v6/users/' + encodeURIComponent(id), {
@@ -101,9 +101,9 @@ const controller = {
 		if (existingBot)
 			if (existingBot.deleted_at)
 				throw {status: 422, message: 'Contact a DBL administrator (OverCoder#3696)'};
-			else 
+			else
 				throw {status: 422, message: 'Bot is already added!'};
-			
+
 		const bot = await models.bot.create({
 			owner_id: ctx.state.user.id,
 			bot_id: id,
@@ -118,7 +118,7 @@ const controller = {
 			discriminator: botInfo.discriminator,
 			avatar: botInfo.avatar,
 		});
-		
+
 		await bot.setTags(tagModels);
 
 		const avatarUrl = botInfo.avatar ? `https://cdn.discordapp.com/avatars/${id}/${botInfo.avatar}.png?size=512`
@@ -130,7 +130,7 @@ const controller = {
 			image: avatarUrl,
 			color: '#43b581',
 			description: `
-• Bot: **${botInfo.username}#${botInfo.discriminator}** (Bot ID: **${id}**) (Client ID: **${client_id}**)		
+• Bot: **${botInfo.username}#${botInfo.discriminator}** (Bot ID: **${id}**) (Client ID: **${client_id}**)
 • Owner: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 • Short description: **${short_description}**
 • Prefix: **${prefix}**
@@ -252,7 +252,7 @@ const controller = {
 
 	search: async (ctx, next) => {
 		const keywords = ctx.query.keywords;
-		
+
 		let bots = await models.bot.findAll({
 			where: {
 				[Sequelize.Op.or]: [
@@ -313,7 +313,7 @@ const controller = {
 			image: avatarUrl,
 			color: '#f04747',
 			description: `
-• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)	
+• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)
 • Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
 • Deleted by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 `,
@@ -427,15 +427,15 @@ const controller = {
 			webhook_url,
 			webhook_secret,
 		} = sanitizedInput;
-	
+
 		if (!sanitizedInput.tags)
 			throw {status: 422, message: 'Add some tags'};
-		
+
 		const tags = sanitizedInput.tags.split(',');
 
 		if (tags.length > 10)
 			throw {status: 422, message: 'Too many tags (>10)'};
-			
+
 		const tagModels = [];
 
 		for (let tag of tags) {
@@ -462,7 +462,7 @@ const controller = {
 			throw {status: 404, message: 'Not found'};
 		if (ctx.state.user.id !== bot.owner_id && !ctx.state.user.admin)
 			throw {status: 403, message: 'Access denied'};
-		
+
 		verifyBotInfo(sanitizedInput);
 
 		if (webhook_url)
@@ -472,7 +472,7 @@ const controller = {
 				throw {status: 422, message: 'You can\'t assign a webhook without a secret'};
 
 		let description = `
-• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)	
+• Bot: **${bot.username}#${bot.discriminator}** (Bot ID: **${bot.bot_id}**) (Client ID: **${bot.client_id}**)
 • Owner: **${bot.user.username}#${bot.user.discriminator}** (ID: **${bot.user.discord_id}**)
 • Edited by: **${ctx.state.user.username}#${ctx.state.user.discriminator}** (ID: **${ctx.state.user.discord_id}**)
 `;
@@ -587,7 +587,7 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
-		
+
 		const token = authorization.substring(4);
 		const hashedToken = await redis.getAsync(`bots:${bot.id}:token`);
 
@@ -667,7 +667,7 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
-		
+
 		const token = authorization.substring(4);
 		const hashedToken = await redis.getAsync(`bots:${bot.id}:token`);
 
@@ -712,7 +712,7 @@ const controller = {
 
 		bot.verified = true;
 		await bot.save();
-		
+
 		ctx.status = 204;
 	},
 
@@ -825,6 +825,9 @@ const controller = {
 
 		if (!bot)
 			throw {status: 404, message: 'Not found'};
+
+		const cacheKey = `bots:${bot.id}:approval-delay`;
+		await redis.setAsync(cacheKey, Date.now() - new Date(bot.created_at), 'EX', 3600 * 24 * 7 * 2); // 2 weeks
 
 		if (serviceBot.isInTestingGuild(bot.bot_id))
 			await serviceBot.kickFromTesting(bot.bot_id, `Bot has been approved by <@${ctx.state.user.discord_id}>`);

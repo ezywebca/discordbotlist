@@ -97,7 +97,7 @@ async function attachBotStats(bot) {
 	let showGuilds = stats.reduce((acc, item) => acc && !!item.guilds, true);
 	let showUsers = stats.reduce((acc, item) => acc && !!item.users, true);
 	let showVoiceConnections = stats.reduce((acc, item) => acc && !!item.voiceConnections, true);
-	
+
 	let guilds = 0;
 	let users = 0;
 	let voiceConnections = 0;
@@ -124,7 +124,7 @@ async function attachBotUpvotes(bot, user) {
 		bot.upvote_lock = !!(await redis.getAsync(`bots:${bot.id}:upvote-locks:${user.id}`));
 	else
 		bot.upvote_lock = false;
-		
+
 	bot.upvotes = (await redis.keysAsync(`bots:${bot.id}:upvotes:*`)).length;
 }
 
@@ -179,7 +179,7 @@ function sanitize(thing, type = 'string') {
 		return undefined;
 	else if (thing === null)
 		return null;
-	
+
 	if (type === 'string') {
 		return String(thing).trim();
 	} else if (type === 'number') {
@@ -221,6 +221,14 @@ function isURL(url) {
 	}
 }
 
+function median(array) {
+	array = array.sort();
+	if (array.length % 2 === 0) // even
+		return (array[array.length/2] + array[(array.length / 2) - 1]) / 2;
+	else
+		return array[(array.length - 1) / 2]; // odd
+}
+
 module.exports = {
 	isCrawler,
 	isGoogleBot,
@@ -238,4 +246,5 @@ module.exports = {
 	sanitizeBag,
 	isInt,
 	isURL,
+	median,
 };

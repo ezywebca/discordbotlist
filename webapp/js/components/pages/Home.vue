@@ -19,7 +19,7 @@
 </template>
 
 <script>
-	import debounce from 'lodash.debounce';
+	import {debounce} from 'lodash';
 	import {extractError} from '../../helpers';
 	import {mapGetters} from 'vuex';
 	import Bot from '../Bot';
@@ -64,7 +64,7 @@
 				this.$router.replace({name: 'home', query: {q: keywords}});
 				this.loading = true;
 				return this.$store.dispatch('bots/search', {keywords}).then(() => {
-					this.loading = false;	
+					this.loading = false;
 				}).catch(e => {
 					this.$vueOnToast.pop('error', extractError(e));
 				});
