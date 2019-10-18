@@ -31,7 +31,8 @@ module.exports = {
 		let average = 0;
 
 		if (cacheKeys.length > 0) {
-			const delays = await redis.mgetAsync(cacheKeys);
+			const delays = await redis.mgetAsync(cacheKeys)
+				.then(values => values.map(v => Number(v)));
 
 			average = delays && delays.length > 0 ? median(delays) : 0;
 		}
