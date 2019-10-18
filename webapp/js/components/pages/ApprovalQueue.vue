@@ -7,6 +7,12 @@
 <template>
 	<div class="container">
 		<h1>Approval Queue</h1>
+
+		<p>
+			Average time for a response:
+			{{ approvalDelay ? duration(approvalDelay).humanize() : 'undetermined' }}
+		</p>
+
 		<div class="mt-4">
 			<div class="row">
 				<div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-4" v-for="bot in bots" :key="bot.id">
@@ -19,18 +25,30 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex';
+	import { mapGetters, mapState } from 'vuex';
 	import Bot from '../Bot';
+	import moment from 'moment-mini';
 
 	export default {
 		asyncData: function(store, route) {
-			return store.dispatch('bots/fetchDisapproved');
+			return Promise.all([
+				store.dispatch('bots/fetchDisapproved'),
+				store.dispatch('dbl/fetchApprovalDelay'),
+			]);
 		},
 
 		computed:{
 			...mapGetters({
 				bots: 'bots/disapproved',
-			})
+			}),
+
+			...mapState('dbl', {
+				approvalDelay: state => state.approvalDelay,
+			}),
+		},
+
+		methods: {
+			duration: moment.duration,
 		},
 
 		meta: {
