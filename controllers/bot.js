@@ -271,6 +271,11 @@ const controller = {
 							[Sequelize.Op.like]: `%${keywords}%`
 						}
 					},
+					{
+						long_description: {
+							[Sequelize.Op.like]: `%${keywords}%`
+						}
+					},
 				]
 			},
 			limit: 20,
