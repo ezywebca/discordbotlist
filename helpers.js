@@ -222,7 +222,7 @@ function isURL(url) {
 }
 
 function median(array) {
-	array = array.sort();
+	array = array.sort((a, b) => a - b);
 	if (array.length % 2 === 0) // even
 		return (array[array.length/2] + array[(array.length / 2) - 1]) / 2;
 	else
