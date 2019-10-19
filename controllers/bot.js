@@ -809,6 +809,12 @@ const controller = {
 
 		await bot.destroy({force: true});
 
+		if (!bot)
+			throw {status: 404, message: 'Not found'};
+
+		const cacheKey = `bots:${bot.id}:approval-delay`;
+		await redis.setAsync(cacheKey, Date.now() - new Date(bot.created_at), 'EX', 3600 * 24 * 7 * 2); // 2 weeks
+
 		if (serviceBot.isInTestingGuild(bot.bot_id))
 			await serviceBot.kickFromTesting(bot.bot_id, `Bot has been denied by <@${ctx.state.user.discord_id}> for reason: ${reason}`);
 
