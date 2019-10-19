@@ -11,6 +11,8 @@
 		<p>
 			Average time for a response:
 			{{ approvalDelay ? duration(approvalDelay).humanize() : 'undetermined' }}
+			<br>
+			Number of queued bots: {{ bots.length }}
 		</p>
 
 		<div class="mt-4">
