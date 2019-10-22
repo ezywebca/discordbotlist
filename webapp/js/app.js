@@ -30,7 +30,7 @@ Vue.use(Vuex);
 export function createApp() {
 	if (!root.serverRendering)
 		Vue.use(require('vue-infinite-scroll'));
-		
+
 	const store = createStore();
 
 	if (typeof (window) !== 'undefined' && window.__INITIAL_STATE__)
