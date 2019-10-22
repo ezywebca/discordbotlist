@@ -144,7 +144,7 @@ const controller = {
 		await serviceBot.dm(ctx.state.user.discord_id, `Your bot ${botInfo.username}#${botInfo.discriminator} (ID: ${id}) has been queued for approval.`
 			+ ' Please be patient while we review your bot.'
 			+ ' We will send you a notification when the bot gets approved or denied.');
-		await serviceBot.sendToModerators(`New bot queued: **${bot.username}#${bot.discriminator}** (ID: **${bot.bot_id}**) (<@${bot.bot_id}>) (https://discordbotlist.com/bots/${bot.bot_id})\n`;)
+		await serviceBot.sendToModerators(`New bot queued: **${bot.username}#${bot.discriminator}** (ID: **${bot.bot_id}**) (<@${bot.bot_id}>) (https://discordbotlist.com/bots/${bot.bot_id})\n`);
 
 		ctx.status = 204;
 	},
