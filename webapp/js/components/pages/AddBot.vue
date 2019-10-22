@@ -45,9 +45,9 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="bot-id" class="col-sm-2 col-form-label">Client ID</label>
+				<label for="client-id" class="col-sm-2 col-form-label">Client ID</label>
 				<div class="col-sm-10">
-					<input type="text" id="bot-id" class="form-control" v-model="clientId" placeholder="New bots have this identical to bot ID" maxlength="32" required>
+					<input type="text" id="client-id" class="form-control" v-model="clientId" placeholder="New bots have this identical to bot ID" maxlength="32" required>
 				</div>
 			</div>
 			<div class="form-group row mt-3">
