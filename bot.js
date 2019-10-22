@@ -154,6 +154,14 @@ module.exports = {
 			});
 	},
 
+	sendToModerators(stuff, ping = false) {
+		return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.MODERATORS_CHANNEL_ID)
+			.send(`${ping ? `<@${process.env.MODERATORS_ROLE_ID}>\n` : ''}${stuff}`)
+			.catch(e => {
+				logger.err('Cannot deliver moderators notification to Discord');
+			});
+	},
+
 	kick(id, reason) {
 		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick(reason)
 			.catch(e => {
