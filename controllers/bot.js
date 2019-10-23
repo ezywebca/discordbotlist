@@ -775,7 +775,10 @@ const controller = {
 	},
 
 	getDisapproved: async (ctx, next) => {
-		const bots = await models.bot.findAll();
+		const bots = await models.bot.findAll({
+			include: [models.user],
+		});
+
 		const uninvitedBots = bots.filter(bot => !serviceBot.isInGuild(bot.bot_id));
 
 		ctx.body = await Promise.all(uninvitedBots.map(async bot => {

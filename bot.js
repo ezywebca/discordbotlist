@@ -70,115 +70,113 @@ bot.on('guildMemberRemove', async member => {
 	}
 });
 
-module.exports = {
-	isOnline(id) {
-		return bot.guilds.some(guild => {
-			const member = guild.members.find(member => member.id === id);
-			if (member)
-				return member.presence.status !== 'offline';
+module.exports.isOnline = (id) => {
+	return bot.guilds.some(guild => {
+		const member = guild.members.find(member => member.id === id);
+		if (member)
+			return member.presence.status !== 'offline';
+	});
+},
+
+module.exports.isInGuild = (id) => {
+	return !!bot.guilds.get(process.env.GUILD_ID).members.some(member => member.id === id);
+},
+
+module.exports.isInTestingGuild = (id) => {
+	return !!bot.guilds.get(process.env.TESTING_GUILD_ID).members.some(member => member.id === id);
+},
+
+module.exports.hasRole = (memberId, roleId) => {
+	const member = bot.guilds.get(process.env.GUILD_ID).members.get(memberId);
+
+	return member && member.roles.has(roleId);
+},
+
+module.exports.ensureDevRole = async (id) => {
+	if (!process.env.BOT_DEV_ROLE_ID)
+		return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
+	const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
+
+	if (!member)
+		return logger.warn(`Unable to ensure Bot Developer role for non-existing user: ${id}`);
+
+	if (!member.roles.get(process.env.BOT_DEV_ROLE_ID))
+		return member.roles.add(process.env.BOT_DEV_ROLE_ID, 'User has a bot on website').catch(e => {
+			logger.warn(`Can't set Bot Developer role for user: ${id}`);
+			logger.warn(e);
 		});
-	},
+},
 
-	isInGuild(id) {
-		return !!bot.guilds.get(process.env.GUILD_ID).members.some(member => member.id === id);
-	},
+module.exports.ensureWithoutDevRole = async (id) => {
+	if (!process.env.BOT_DEV_ROLE_ID)
+		return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
+	const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
 
-	isInTestingGuild(id) {
-		return !!bot.guilds.get(process.env.TESTING_GUILD_ID).members.some(member => member.id === id);
-	},
+	if (!member)
+		return logger.warn(`Unable to ensure not having Bot Developer role for non-existing user: ${id}`);
 
-	hasRole(memberId, roleId) {
-		const member = bot.guilds.get(process.env.GUILD_ID).members.get(memberId);
-
-		return member && member.roles.has(roleId);
-	},
-
-	async ensureDevRole(id) {
-		if (!process.env.BOT_DEV_ROLE_ID)
-			return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
-		const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
-
-		if (!member)
-			return logger.warn(`Unable to ensure Bot Developer role for non-existing user: ${id}`);
-
-		if (!member.roles.get(process.env.BOT_DEV_ROLE_ID))
-			return member.roles.add(process.env.BOT_DEV_ROLE_ID, 'User has a bot on website').catch(e => {
-				logger.warn(`Can't set Bot Developer role for user: ${id}`);
-				logger.warn(e);
-			});
-	},
-
-	async ensureWithoutDevRole(id) {
-		if (!process.env.BOT_DEV_ROLE_ID)
-			return logger.warn('Bot Developer role ID is not set; ignoring the whole thing');
-		const member = bot.guilds.get(process.env.GUILD_ID).members.get(id);
-
-		if (!member)
-			return logger.warn(`Unable to ensure not having Bot Developer role for non-existing user: ${id}`);
-
-		if (member.roles.get(process.env.BOT_DEV_ROLE_ID))
-			return member.roles.remove(process.env.BOT_DEV_ROLE_ID, 'User no longer has a bot on website').catch(e => {
-				logger.err(`Can't remove Bot Developer role for user: ${id}`);
-				logger.err(e);
-			});
-	},
-
-	log({title, description, color, url, image}) {
-		if (discordLoggingDisabled)
-			return;
-
-		if (!process.env.GUILD_ID || !process.env.LOGGING_CHANNEL_ID) {
-			logger.warn('Logging to Discord is unconfigured; thus disabled');
-			discordLoggingDisabled = true;
-			return;
-		}
-
-		const embed = new Discord.MessageEmbed();
-
-		if (title)
-			embed.setTitle(title);
-		if (description)
-			embed.setDescription(description);
-		if (color)
-			embed.setColor(color);
-		if (url)
-			embed.setURL(url);
-		if (image)
-			embed.setImage(image);
-
-		embed.setTimestamp(Date.now());
-
-		return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.LOGGING_CHANNEL_ID)
-			.send(embed).catch(e => {
-				logger.err('Cannot deliver log message to Discord');
-			});
-	},
-
-	sendToModerators(stuff, ping = false) {
-		return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.MODERATORS_CHANNEL_ID)
-			.send(`${ping ? `<@${process.env.MODERATORS_ROLE_ID}>\n` : ''}${stuff}`)
-			.catch(e => {
-				logger.err('Cannot deliver moderators notification to Discord');
-			});
-	},
-
-	kick(id, reason) {
-		return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick(reason)
-			.catch(e => {
-				logger.err(`Cannot kick member: ${e}`);
-			});
-	},
-
-	kickFromTesting(id, reason) {
-		return bot.guilds.get(process.env.TESTING_GUILD_ID).members.get(id).kick(reason)
-			.catch(e => {
-				logger.err(`Cannot kick member from testing guild: ${e}`);
-			});
-	},
-
-	dm(id, message) {
-		return bot.guilds.get(process.env.GUILD_ID).members.get(id).send(message).catch(e => {
-			logger.err(`Could not deliver to user ${id} message '${message}' due to error: ${e}`);
+	if (member.roles.get(process.env.BOT_DEV_ROLE_ID))
+		return member.roles.remove(process.env.BOT_DEV_ROLE_ID, 'User no longer has a bot on website').catch(e => {
+			logger.err(`Can't remove Bot Developer role for user: ${id}`);
+			logger.err(e);
 		});
+},
+
+module.exports.log = ({title, description, color, url, image}) => {
+	if (discordLoggingDisabled)
+		return;
+
+	if (!process.env.GUILD_ID || !process.env.LOGGING_CHANNEL_ID) {
+		logger.warn('Logging to Discord is unconfigured; thus disabled');
+		discordLoggingDisabled = true;
+		return;
 	}
+
+	const embed = new Discord.MessageEmbed();
+
+	if (title)
+		embed.setTitle(title);
+	if (description)
+		embed.setDescription(description);
+	if (color)
+		embed.setColor(color);
+	if (url)
+		embed.setURL(url);
+	if (image)
+		embed.setImage(image);
+
+	embed.setTimestamp(Date.now());
+
+	return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.LOGGING_CHANNEL_ID)
+		.send(embed).catch(e => {
+			logger.err('Cannot deliver log message to Discord');
+		});
+};
+
+module.exports.sendToModerators = (stuff, ping = false) => {
+	return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.MODERATORS_CHANNEL_ID)
+		.send(`${ping ? `<@${process.env.MODERATORS_ROLE_ID}>\n` : ''}${stuff}`)
+		.catch(e => {
+			logger.err('Cannot deliver moderators notification to Discord');
+		});
+};
+
+module.exports.kick = (id, reason) => {
+	return bot.guilds.get(process.env.GUILD_ID).members.get(id).kick(reason)
+		.catch(e => {
+			logger.err(`Cannot kick member: ${e}`);
+		});
+};
+
+module.exports.kickFromTesting = (id, reason) => {
+	return bot.guilds.get(process.env.TESTING_GUILD_ID).members.get(id).kick(reason)
+		.catch(e => {
+			logger.err(`Cannot kick member from testing guild: ${e}`);
+		});
+};
+
+module.exports.dm = (id, message) => {
+	return bot.guilds.get(process.env.GUILD_ID).members.get(id).send(message).catch(e => {
+		logger.err(`Could not deliver to user ${id} message '${message}' due to error: ${e}`);
+	});
 };

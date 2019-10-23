@@ -33,6 +33,11 @@
 				<template v-if="bot.stats.guilds">
 					• {{formatNumber(bot.stats.guilds)}} servers
 				</template>
+				<template v-if="bot.owner && !bot.owner.in_guild">
+					<span class="text-danger font-weight-bold d-block mt-2" title="ToS violation; Report to moderators">
+						Owner left server!
+					</span>
+				</template>
 			</h6>
 			<p class="card-text">{{bot.short_description}}</p>
 			<div class="mt-auto">
@@ -83,7 +88,7 @@
 		padding-bottom: 100%;
 		position: relative;
 	}
-		
+
 	.bot-image-container img {
 		position: absolute;
 		top: 0;
@@ -140,7 +145,7 @@
 					this.approved = true;
 					this.approving = false;
 				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));	
+					this.$vueOnToast.pop('error', extractError(e));
 					this.approving = false;
 				});
 
@@ -164,7 +169,7 @@
 					this.denied = true;
 					this.denying = false;
 				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));	
+					this.$vueOnToast.pop('error', extractError(e));
 					this.denying = false;
 				});
 			},
@@ -173,7 +178,7 @@
 				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.client_id}&scope=bot&guild_id=530821081485803571`);
 				this.addedToTesting = true;
 			},
-			
+
 			moment: moment.utc,
 			getAvatar,
 			formatNumber,

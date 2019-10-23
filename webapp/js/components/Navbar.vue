@@ -221,5 +221,5 @@
 		components: {
 			'navbar-dropdown': NavbarDropdown
 		}
-	}
+	};
 </script>

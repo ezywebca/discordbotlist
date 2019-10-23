@@ -4,6 +4,9 @@
  */
 
 'use strict';
+
+const serviceBot = require('../bot');
+
 module.exports = (sequelize, DataTypes) => {
 	const TIMESTAMP = require('sequelize-mysql-timestamp')(sequelize);
 
@@ -65,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
 	};
 
 	user.transform = user => {
+		debugger;
 		const result = {
 			id: user.discord_id,
 			username: user.username,
@@ -72,7 +76,8 @@ module.exports = (sequelize, DataTypes) => {
 			avatar: user.avatar,
 			admin: user.admin,
 			banned: user.banned,
-			created_at: user.created_at
+			created_at: user.created_at,
+			in_guild: serviceBot.isInGuild(user.discord_id),
 		};
 
 		if (user.bots)
