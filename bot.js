@@ -55,7 +55,7 @@ bot.on('guildMemberRemove', async member => {
 		});
 
 		if (bots.length > 0) {
-			let message = `<@&${process.env.MODERATORS_ROLE_ID}> The following user left server: `;
+			let message = 'The following user left server: ';
 
 			message += `**${member.user.tag}** (ID: **${member.user.id}**)\n\n`;
 			message += 'The following bots should be removed:\n';
