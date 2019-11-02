@@ -117,8 +117,8 @@ export default [
 	// Error handling
 
 	{
-		name: 'NotFound',
-		path: '*',
+		name: 'not-found',
+		path: '/404',
 		component: NotFound,
 	},
 ];

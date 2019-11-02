@@ -6,20 +6,21 @@
 
 <template>
 	<div class="container">
-		<h4>You're alone in a 404 page. glhf.</h4>
+		<h4>This is Area 404</h4>
+		<p class="text-muted">Please enjoy your stay.</p>
 	</div>
 </template>
 
 <script>
 	export default {
 		meta: {
-			title: '404',
+			title: 'Area 404',
 
 			meta: [
-				{name: 'description', content: 'You\'re in nowhere'},
-				{property: 'og:title', content: '404 / Discord Bots'},
-				{property: 'og:description', content: 'You\'re in nowhere'},
-				{name: 'robots', content: 'noindex'},
+				{ name: 'description', content: 'Welcome to Area 404' },
+				{ property: 'og:title', content: 'Area 404 / Discord Bots' },
+				{ property: 'og:description', content: 'Welcome to Area 404' },
+				{ name: 'robots', content: 'noindex' },
 			],
 		},
 	};

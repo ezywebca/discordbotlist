@@ -72,7 +72,7 @@ const refreshRenderer = debounce(() => {
 fs.watch(path.join(__dirname, 'build', 'index.html'), refreshRenderer);
 fs.watch(path.join(__dirname, 'build', 'vue-ssr-server-bundle.json'), refreshRenderer);
 
-async function renderApp(ctx) {
+function renderApp(ctx) {
 	const context = {
 		url: ctx.url.endsWith('?') ? ctx.url.slice(0, -1) : ctx.url, // It crashes otherwise
 		authCookie: ctx.cookies.get('auth'),
@@ -81,7 +81,7 @@ async function renderApp(ctx) {
 		discordId: process.env.OAUTH_DISCORD_ID,
 	};
 
-	return await renderer.renderToStream(context);
+	return renderer.renderToString(context);
 }
 
 app.use(handler);
@@ -160,7 +160,19 @@ app.use(async (ctx, next) => {
 		}
 	} else {
 		ctx.type = 'text/html; charset=utf-8';
-		ctx.body = await renderApp(ctx);
+
+		try {
+			if (ctx.path === '/404')
+				ctx.status = 404;
+
+			ctx.body = await renderApp(ctx);
+		} catch (error) {
+			if (error.status === 404) {
+				ctx.redirect('/404');
+			} else {
+				ctx.body = 'Internal Server Error';
+			}
+		}
 	}
 });
 

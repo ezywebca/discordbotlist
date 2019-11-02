@@ -9,8 +9,8 @@ const DBLockedError = require('../errors/db-locked-error');
 module.exports = async (ctx, next) => {
 	try {
 		await next();
-		
-		if (ctx.status === 404) {
+
+		if (ctx.status === 404 && !ctx.body) {
 			ctx.status = 404;
 			ctx.body = {
 				error: 'Not found',

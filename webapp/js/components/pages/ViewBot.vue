@@ -242,11 +242,20 @@
 	import {extractError, generateRandomString, formatNumber, getAvatar, highlightCode, sanitizeTag} from '../../helpers';
 
 	export default {
-		asyncData: (store, route) => {
-			return store.dispatch('bots/fetch', {id: route.params.id});
+		asyncData(store, route) {
+			return new Promise((resolve, reject) => {
+				store.dispatch('bots/fetch', {id: route.params.id})
+					.then(resolve)
+					.catch(error => {
+						if (error.response && error.response.status === 404)
+							reject({ status: 404 });
+						else
+							reject(error);
+				});
+			});
 		},
 
-		data: function() {
+		data() {
 			return {
 				verifyingDeletion: false,
 				verifyingTokenGeneration: false,
@@ -269,14 +278,14 @@
 			upvote: function() {
 				if (!this.isAuthenticated) {
 					const state = generateRandomString(32);
-					
+
 					localStorage.setItem('discord_oauth_state', state);
 					localStorage.setItem('auth_return_url', JSON.stringify({
 						name: this.$route.name,
 						params: this.$route.params,
 						query: this.$route.query,
 					}));
-					
+
 					setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
 				} else {
 					this.$store.dispatch('bots/upvote', {id: this.$route.params.id}).catch(e => {
@@ -296,7 +305,7 @@
 			generateToken: function() {
 				if (!this.verifyingTokenGeneration)
 					return this.verifyingTokenGeneration = true;
-				
+
 				axios.get(`/api/bots/${this.$route.params.id}/token`).then(response => {
 					this.botToken = response.data.token;
 				}).catch(e => {

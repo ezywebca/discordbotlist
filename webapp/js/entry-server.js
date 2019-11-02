@@ -29,7 +29,7 @@ module.exports = context => {
 				if (auth.obtainedAt + auth.expiresIn > Date.now()) {
 					if (!auth.roles)
 						auth.roles = [];
-						
+
 					root.document = {
 						cookie: `auth=${context.authCookie}`
 					};
@@ -49,7 +49,7 @@ module.exports = context => {
 
 		if (fullPath !== url)
 			return reject({
-				url: fullPath
+				url: fullPath,
 			});
 
 		router.push(url);
@@ -58,15 +58,15 @@ module.exports = context => {
 
 		router.onReady(() => {
 			const matchedComponents = router.getMatchedComponents();
+
 			if (!matchedComponents.length)
-				return reject({
-					code: 404
-				});
+				return reject({ status: 404 });
+
 			Promise.all(matchedComponents.map(({
 				asyncData
 			}) => asyncData && asyncData(
 				store,
-				router.currentRoute
+				router.currentRoute,
 			))).then(() => {
 				context.state = store.state;
 				resolve(app);

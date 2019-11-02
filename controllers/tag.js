@@ -19,7 +19,7 @@ module.exports = {
 
 		if (!tag)
 			throw {status: 404, message: 'Not found'};
-		
+
 		ctx.body = models.tag.transform(tag);
 	},
 
@@ -43,7 +43,7 @@ module.exports = {
 
 		// Doing an extra SELECT because Sequelize doesn't populate created_at and updated_at
 		// Upon model creation.
-		
+
 		ctx.body = models.tag.transform(await models.tag.find({where: {id: tag.id}}));
 	},
 

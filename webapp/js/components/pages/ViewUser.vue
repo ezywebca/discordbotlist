@@ -90,7 +90,7 @@
 		</div>
 
 		<h3 class="mt-5 mb-3">{{user.username}} owns {{user.bots.length}} bot{{user.bots.length !== 1 ? 's' : ''}}:</h3>
-		
+
 		<div class="row">
 			<div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-4" v-for="bot in user.bots" :key="bot.id">
 				<bot :bot="bot" class="h-100" />
@@ -126,8 +126,17 @@
 	import {extractError, getAvatar} from '../../helpers';
 
 	export default {
-		asyncData: (store, route) => {
-			return store.dispatch('users/fetch', {id: route.params.id});
+		asyncData(store, route) {
+			return new Promise((resolve, reject) => {
+				store.dispatch('users/fetch', {id: route.params.id})
+					.then(resolve)
+					.catch(error => {
+						if (error.response && error.response.status === 404)
+							reject({ status: 404 });
+						else
+							reject(error);
+				});
+			});
 		},
 
 		data: function() {
