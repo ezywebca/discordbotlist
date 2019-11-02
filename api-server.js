@@ -39,6 +39,14 @@ app
 		multipart: true,
 	}))
 	.use(router.routes())
-	.use(router.allowedMethods());
+	.use(router.allowedMethods())
+	.on('error', (error, ctx) => {
+		if (error.code === 'EPIPE')
+			logger.warn(`EPIPE: ${ctx.path}`);
+		else if (error.code === 'ERR_STREAM_DESTROYED')
+			logger.warn(`ERR_STREAM_DESTROYED: ${ctx.path}`);
+		else
+			logger.err(error);
+	});
 
 module.exports = app;
