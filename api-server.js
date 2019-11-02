@@ -5,6 +5,7 @@
 
 const Koa = require('koa');
 const handler = require('./middleware/handler');
+const errorHandler = require('./utils/error-handler');
 const logger = require('./middleware/logger');
 const koaBody = require('koa-body');
 
@@ -39,16 +40,8 @@ app
 		multipart: true,
 	}))
 	.use(router.routes())
-	.use(router.allowedMethods())
-	.on('error', (error, ctx) => {
-		if (error.code === 'EPIPE')
-			logger.warn(`EPIPE: ${ctx.path}`);
-		else if (error.code === 'ERR_STREAM_DESTROYED')
-			logger.warn(`ERR_STREAM_DESTROYED: ${ctx.path}`);
-		else if (error.status === 404 || error.expose === 404)
-			return;
-		else
-			logger.err(error);
-	});
+	.use(router.allowedMethods());
+
+app.on('error', errorHandler);
 
 module.exports = app;

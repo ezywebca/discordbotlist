@@ -9,6 +9,7 @@ const fs = require('pn/fs');
 const path = require('path');
 
 const handler = require('./middleware/handler');
+const errorHandler = require('./utils/error-handler');
 const loggerMiddleware = require('./middleware/logger');
 const logger = require('./logger');
 
@@ -163,15 +164,6 @@ app.use(async (ctx, next) => {
 	}
 });
 
-app.on('error', (error, ctx) => {
-	if (error.code === 'EPIPE')
-		logger.warn(`EPIPE: ${ctx.path}`);
-	else if (error.code === 'ERR_STREAM_DESTROYED')
-		logger.warn(`ERR_STREAM_DESTROYED: ${ctx.path}`);
-	else if (error.status === 404 || error.expose === 404)
-		return;
-	else
-		logger.err(error);
-});
+app.on('error', errorHandler);
 
 module.exports = app;
