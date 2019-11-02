@@ -45,6 +45,8 @@ app
 			logger.warn(`EPIPE: ${ctx.path}`);
 		else if (error.code === 'ERR_STREAM_DESTROYED')
 			logger.warn(`ERR_STREAM_DESTROYED: ${ctx.path}`);
+		else if (error.status === 404 || error.expose === 404)
+			return;
 		else
 			logger.err(error);
 	});
