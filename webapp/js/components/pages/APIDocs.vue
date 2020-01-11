@@ -65,7 +65,28 @@
 		<a href="/bots/460847447602757633">
 			<img width="380" height="140" src="/bots/460847447602757633/widget" alt="Lithium stats on Discord Bot List">
 		</a>
-		
+
+
+		<p class="mt-2">
+			You can also pass <code>bg</code> GET parameter like <code>bg=400</code> (hex color) to the URL in `src` to customize the background color:
+		</p>
+
+		<pre><code class="lang-html">{{coloredWidgetCode}}</code></pre>
+
+		<p>...which looks again like this:</p>
+
+		<a href="/bots/460847447602757633">
+			<img width="380" height="140" src="/bots/460847447602757633/widget?bg=400" alt="Lithium stats on Discord Bot List">
+		</a>
+
+		<p class="mt-2">
+			or make it even totally white:
+		</p>
+
+		<a href="/bots/460847447602757633">
+			<img width="380" height="140" src="/bots/460847447602757633/widget?bg=fff" alt="Lithium stats on Discord Bot List">
+		</a>
+
 		<h3 class="mt-3">Bot verification</h3>
 		<p>
 			If you want your bot to have a fancy golden star that assures the user the bot is not spam, then
@@ -105,6 +126,7 @@
 		data: function() {
 			return {
 				widgetCode: '<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
+				coloredWidgetCode: '<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget?bg=400" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
 			};
 		},
 

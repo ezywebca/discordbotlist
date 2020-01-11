@@ -149,12 +149,40 @@ app.use(async (ctx, next) => {
 			if (items.length < 3)
 				items.push(`Updated ${moment.utc(bot.updated_at).fromNow()}`);
 
+			const theme = {
+				light: false,
+				background: '#202225',
+			};
+
+			if (ctx.query.bg && /^([0-9A-Fa-f]{3}){1,2}$/.test(ctx.query.bg)) {
+				const fullHex = ctx.query.bg.length === 6
+					? ctx.query.bg
+					: ctx.query.bg
+						.split('')
+						.map(c =>  `${c}${c}`)
+						.join('');
+
+				theme.background = `#${fullHex}`;
+
+				const rgb = parseInt(fullHex, 16);
+				const r = (rgb >> 16) & 0xff;
+				const g = (rgb >>  8) & 0xff;
+				const b = (rgb >>  0) & 0xff;
+
+				const luma = 0.299 * r + 0.587 * g + 0.114 * b; // per ITU-R BT.601
+
+				if (luma > 125) {
+					theme.light = true;
+				}
+			}
+
 			ctx.body = ejs.render(template, {
 				items,
 				username: bot.username,
 				avatar: await renderAvatar(bot),
 				online: bot.stats.online,
 				verified: bot.verified,
+				theme,
 				link: `https://discordbotlist.com/bots/${bot.bot_id}`,
 			});
 		}
