@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development env-cmd ./.env node ./index.js",
     "prod": "cross-env NODE_ENV=production env-cmd ./.env node ./index.js",
-    "webapp:dev": "cross-env NODE_ENV=development webpack --progress --hide-modules --watch",
-    "webapp:prod": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "webapp:dev": "cross-env NODE_ENV=development env-cmd ./.env webpack --progress --hide-modules --watch",
+    "webapp:prod": "cross-env NODE_ENV=production env-cmd ./.env webpack --progress --hide-modules",
     "webapp:clean": "rm -f ./public/css/app-*.css && rm -f ./public/js/app-*.js ./public/webpack-manifest.json ./build/*json ./public/fonts/*"
   },
   "keywords": [
@@ -92,6 +92,7 @@
     "vue-template-compiler": "^2.5.17",
     "vue-toasted": "^1.1.24",
     "vuex": "^3.0.1",
+    "web-push": "^3.4.3",
     "webpack": "^4.16.4",
     "webpack-cli": "^3.1.0",
     "window-or-global": "^1.0.1"

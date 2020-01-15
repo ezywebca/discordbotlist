@@ -154,6 +154,9 @@ module.exports.log = ({title, description, color, url, image}) => {
 };
 
 module.exports.sendToModerators = (stuff, ping = false) => {
+	if (!process.env.MODERATORS_CHANNEL_ID)
+		return logger.warn('Moderators channel ID is not set; ignoring moderator notifications');
+
 	return bot.guilds.get(process.env.GUILD_ID).channels.get(process.env.MODERATORS_CHANNEL_ID)
 		.send(`${ping ? `<@${process.env.MODERATORS_ROLE_ID}>\n` : ''}${stuff}`)
 		.catch(e => {

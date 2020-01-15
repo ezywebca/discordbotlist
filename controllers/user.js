@@ -4,7 +4,7 @@
  */
 
 const models = require('../models');
-const {attachBotStats, sanitize, sanitizeBag} = require('../helpers');
+const { attachBotStats, sanitize } = require('../helpers');
 const redis = require('../redis');
 
 module.exports = {

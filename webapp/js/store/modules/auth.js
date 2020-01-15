@@ -19,7 +19,7 @@ const state = () => ({
 });
 
 const actions = {
-	login: ({commit}, code) => {
+	async login({ commit }, code) {
 		return axios.post('/api/auth/login', {
 			code
 		}).then(response => {
@@ -38,6 +38,8 @@ const actions = {
 			root.axios.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
 
 			commit(types.LOGIN, auth);
+
+			return response.data;
 		});
 	},
 

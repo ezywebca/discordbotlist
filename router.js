@@ -20,6 +20,7 @@ const BotController = require('./controllers/bot');
 const UserController = require('./controllers/user');
 const TagController = require('./controllers/tag');
 const DBLController = require('./controllers/dbl');
+const PushSubscriptionsController = require('./controllers/push-subscription');
 
 const protect = (passthrough = false) => {
 	return compose([
@@ -76,6 +77,8 @@ module.exports = () => {
 	router.get('/api/tags/:name', throttle(), TagController.get);
 	router.delete('/api/tags/:name', throttle(), protect(), checkDBLock, adminOnly, TagController.delete);
 	router.get('/api/tags/:name/bots', throttle(), protect(true), TagController.getBots);
+
+	router.post('/api/push-subscriptions', throttle(), protect(), PushSubscriptionsController.subscribe);
 
 	return router;
 };

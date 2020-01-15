@@ -11,7 +11,7 @@
 </template>
 
 <script>
-	import {getURLParameter, extractError} from '../../helpers';
+	import { getURLParameter, extractError, urlB64ToUint8Array } from '../../helpers';
 
 	export default {
 		data: function() {
@@ -26,18 +26,42 @@
 
 			if (code) {
 				const originalState = localStorage.getItem('discord_oauth_state');
-				
+
 				if (!originalState || originalState !== state) {
 					this.status = 'State mismatch error.';
 				} else {
 					localStorage.removeItem('discord_oauth_state');
 
 					this.$store.dispatch('auth/login', code)
-						.then(() => {
+						.then(async () => {
+							try {
+								const VAPID_PUBLIC = 'BP3xiUr44sjOPEg3iLDN2V36YbGBAIIoFLuB6bdOzg6g5k7S3sJJ12MyFiPfRXWKZp6AvfJ4QwmSQxRmqlbJmYw';
+								const options = {
+									userVisibleOnly: true,
+									applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC),
+								};
+
+
+								const subscription = await navigator.serviceWorker.register('/sw.js').then(async swReg => {
+									const subscription = await swReg.pushManager.subscribe(options);
+									await Notification.requestPermission(); // bruh accept it
+
+									return subscription.toJSON();
+								});
+
+								await axios.post('/api/push-subscriptions', {
+									endpoint: subscription.endpoint,
+									p256dh: subscription.keys.p256dh,
+									auth: subscription.keys.auth,
+								});
+							} catch (e) {
+								console.error(e);
+							}
+
 							try {
 								this.$router.push(JSON.parse(localStorage.getItem('auth_return_url')));
 							} catch (e) {
-								this.$router.push({name: 'home'});
+								this.$router.push({ name: 'home' });
 							}
 						}).catch(error => {
 							this.status = extractError(error);

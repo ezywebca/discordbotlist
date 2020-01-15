@@ -83,7 +83,8 @@ module.exports = [
 			}),
 			new webpack.DefinePlugin({
 				'process.env': {
-					NODE_ENV: `'${prod ? 'production' : 'development'}'`
+					NODE_ENV: `'${prod ? 'production' : 'development'}'`,
+					VAPID_PUBLIC: process.env.VAPID_PUBLIC,
 				},
 			}),
 			new HtmlWebpackPlugin({
@@ -118,8 +119,9 @@ module.exports = [
 			new VueLoaderPlugin(),
 			new webpack.DefinePlugin({
 				'process.env': {
-					NODE_ENV: `'${prod ? 'production' : 'development'}'`
+					NODE_ENV: `'${prod ? 'production' : 'development'}'`,
 				},
+				VAPID_PUBLIC: process.env.VAPID_PUBLIC,
 				'process.env.VUE_ENV': '"server"',
 			}),
 

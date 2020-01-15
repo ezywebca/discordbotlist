@@ -64,3 +64,5 @@ router.onReady(() => {
 });
 
 require('pace-progress').start();
+
+navigator.serviceWorker.register('/sw.js');

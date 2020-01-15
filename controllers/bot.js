@@ -3,17 +3,20 @@
  * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
  */
 
-const models = require('../models');
-const axios = require('axios');
-const logger = require('../logger');
-const Sequelize = require('sequelize');
-const redis = require('../redis');
 const _ = require('lodash');
 const crypto = require('crypto');
 const cryptojs = require('crypto-js');
+const axios = require('axios');
+const Sequelize = require('sequelize');
+
+const models = require('../models');
+const logger = require('../logger');
+const redis = require('../redis');
 const {attachBotStats, attachBotUpvotes, generateRandomString, sanitize, sanitizeBag, isInt, isURL} = require('../helpers');
 const serviceBot = require('../bot');
 const webhooksQueue = require('../queues/webhooks');
+const pushNotificationsQueue = require('../queues/push-notifications');
+const webPush = require('../web-push');
 
 const controller = {
 	async add(ctx, next) {
@@ -351,13 +354,13 @@ const controller = {
 		await redis.setAsync(voteKey, 1, 'EX', 3600 * 24 * 7); // a week
 		await redis.setAsync(lockKey, 1, 'EX', 3600 * 24); // a day
 
-		if (bot.webhook_url) {
+		if (bot.webhook_url)
 			webhooksQueue.createJob({
 				url: bot.webhook_url,
 				secret: bot.webhook_secret,
 				user: ctx.state.user,
 				bot,
-			}).timeout(2000)
+			}).timeout(5000)
 				.retries(5)
 				.backoff('exponential', 500)
 				.save()
@@ -365,7 +368,20 @@ const controller = {
 					logger.info(`Webhook delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
 				});
 
-		}
+		if (webPush.isUserSubscribed(ctx.state.user.id))
+			pushNotificationsQueue.createJob({
+				user: ctx.state.user,
+				bot,
+			}).timeout(5000)
+				.retries(5)
+				.backoff('exponential', 500)
+				.delayUntil(Date.now() + (86400 * 1000)) // in 24h
+				.save()
+				.then(job => {
+					logger.info(`Push notifications scheduled (Job #${job.id}) for user '${ctx.state.user.username}#${ctx.state.user.discriminator}'`
+						+ ` (ID: ${ctx.state.user.id}) to upvote '${bot.username}#${bot.discriminator}' (ID: ${bot.id})`);
+				});
+
 		ctx.status = 204;
 	},
 
