@@ -34,8 +34,6 @@ module.exports = {
 			auth,
 		});
 
-		serviceBot.sendToModerators('new subscriber WOOO!!!!!!!!');
-
 		ctx.status = 204;
 	},
 };
