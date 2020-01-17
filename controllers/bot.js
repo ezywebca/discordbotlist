@@ -368,7 +368,7 @@ const controller = {
 					logger.info(`Webhook delivery (Job #${job.id}) for '${job.data.bot.username}' (ID: ${job.data.bot.id}) scheduled.`);
 				});
 
-		if (webPush.isUserSubscribed(ctx.state.user.id))
+		if (await webPush.isUserSubscribed(ctx.state.user.id))
 			pushNotificationsQueue.createJob({
 				user: ctx.state.user,
 				bot,
