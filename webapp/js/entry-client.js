@@ -3,9 +3,9 @@
  * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
  */
 
-import {createApp} from './app';
+import { createApp } from './app';
 import root from 'window-or-global';
-import {getCookie} from './helpers';
+import { getCookie, urlB64ToUint8Array } from './helpers';
 
 const {
 	app,
@@ -65,4 +65,39 @@ router.onReady(() => {
 
 require('pace-progress').start();
 
-navigator.serviceWorker.register('/sw.js');
+navigator.serviceWorker.register('/sw.js').then(async swReg => {
+	const applicationServerKey = urlB64ToUint8Array(process.env.VAPID_PUBLIC);
+
+	const subscribe = async () => {
+		const options = {
+			userVisibleOnly: true,
+			applicationServerKey,
+		};
+
+		const subscription = await swReg.pushManager.subscribe(options);
+		const json = subscription.toJSON();
+
+		axios.post('/api/push-subscriptions', {
+			endpoint: json.endpoint,
+			p256dh: json.keys.p256dh,
+			auth: json.keys.auth,
+		});
+	};
+
+	if (store.getters['auth/isAuthenticated']) {
+		const existingSubscription = await swReg.pushManager.getSubscription();
+
+		if (!existingSubscription) {
+			await subscribe();
+		} else {
+			const usedKey = new Uint8Array(existingSubscription.options.applicationServerKey).join(',');
+			const currentKey = applicationServerKey.join(',');
+
+			if (usedKey !== currentKey) {
+				await existingSubscription.unsubscribe();
+				await subscribe();
+			}
+
+		}
+	}
+}).catch(console.error);

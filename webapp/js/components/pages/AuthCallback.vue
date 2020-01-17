@@ -34,27 +34,32 @@
 
 					this.$store.dispatch('auth/login', code)
 						.then(async () => {
-							try {
-								const options = {
-									userVisibleOnly: true,
-									applicationServerKey: urlB64ToUint8Array(process.env.VAPID_PUBLIC),
+							const applicationServerKey = urlB64ToUint8Array(process.env.VAPID_PUBLIC);
+
+							navigator.serviceWorker.register('/sw.js').then(async swReg => {
+								const subscribe = async () => {
+									const options = {
+										userVisibleOnly: true,
+										applicationServerKey,
+									};
+
+									const subscription = await swReg.pushManager.subscribe(options);
+									const json = subscription.toJSON();
+
+									axios.post('/api/push-subscriptions', {
+										endpoint: json.endpoint,
+										p256dh: json.keys.p256dh,
+										auth: json.keys.auth,
+									});
 								};
 
-								const subscription = await navigator.serviceWorker.register('/sw.js').then(async swReg => {
-									const subscription = await swReg.pushManager.subscribe(options);
-									await Notification.requestPermission(); // bruh accept it
+								const existingSubscription = await swReg.pushManager.getSubscription();
 
-									return subscription.toJSON();
-								});
+								if (existingSubscription)
+									await existingSubscription.unsubscribe();
 
-								await axios.post('/api/push-subscriptions', {
-									endpoint: subscription.endpoint,
-									p256dh: subscription.keys.p256dh,
-									auth: subscription.keys.auth,
-								});
-							} catch (e) {
-								console.error(e);
-							}
+								await subscribe();
+							}).catch(console.error);
 
 							try {
 								this.$router.push(JSON.parse(localStorage.getItem('auth_return_url')));
