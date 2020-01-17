@@ -35,12 +35,10 @@
 					this.$store.dispatch('auth/login', code)
 						.then(async () => {
 							try {
-								const VAPID_PUBLIC = 'BP3xiUr44sjOPEg3iLDN2V36YbGBAIIoFLuB6bdOzg6g5k7S3sJJ12MyFiPfRXWKZp6AvfJ4QwmSQxRmqlbJmYw';
 								const options = {
 									userVisibleOnly: true,
-									applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC),
+									applicationServerKey: urlB64ToUint8Array(process.env.VAPID_PUBLIC),
 								};
-
 
 								const subscription = await navigator.serviceWorker.register('/sw.js').then(async swReg => {
 									const subscription = await swReg.pushManager.subscribe(options);

@@ -84,7 +84,7 @@ module.exports = [
 			new webpack.DefinePlugin({
 				'process.env': {
 					NODE_ENV: `'${prod ? 'production' : 'development'}'`,
-					VAPID_PUBLIC: process.env.VAPID_PUBLIC,
+					VAPID_PUBLIC: `'${process.env.VAPID_PUBLIC}'`,
 				},
 			}),
 			new HtmlWebpackPlugin({
@@ -120,8 +120,8 @@ module.exports = [
 			new webpack.DefinePlugin({
 				'process.env': {
 					NODE_ENV: `'${prod ? 'production' : 'development'}'`,
+					VAPID_PUBLIC: `'${process.env.VAPID_PUBLIC}'`,
 				},
-				VAPID_PUBLIC: process.env.VAPID_PUBLIC,
 				'process.env.VUE_ENV': '"server"',
 			}),
 
