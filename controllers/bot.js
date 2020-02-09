@@ -369,18 +369,18 @@ const controller = {
 				});
 
 		if (await webPush.isUserSubscribed(ctx.state.user.id))
-			pushNotificationsQueue.createJob({
-				user: ctx.state.user,
-				bot,
-			}).timeout(5000)
-				.retries(5)
-				.backoff('exponential', 500)
-				.delayUntil(Date.now() + (86400 * 1000)) // in 24h
-				.save()
-				.then(job => {
-					logger.info(`Push notifications scheduled (Job #${job.id}) for user '${ctx.state.user.username}#${ctx.state.user.discriminator}'`
-						+ ` (ID: ${ctx.state.user.id}) to upvote '${bot.username}#${bot.discriminator}' (ID: ${bot.id})`);
-				});
+			// pushNotificationsQueue.createJob({
+			// 	user: ctx.state.user,
+			// 	bot,
+			// }).timeout(5000)
+			// 	.retries(5)
+			// 	.backoff('exponential', 500)
+			// 	.delayUntil(Date.now() + (86400 * 1000)) // in 24h
+			// 	.save()
+			// 	.then(job => {
+			// 		logger.info(`Push notifications scheduled (Job #${job.id}) for user '${ctx.state.user.username}#${ctx.state.user.discriminator}'`
+			// 			+ ` (ID: ${ctx.state.user.id}) to upvote '${bot.username}#${bot.discriminator}' (ID: ${bot.id})`);
+			// 	});
 
 		ctx.status = 204;
 	},
