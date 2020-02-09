@@ -4,7 +4,7 @@ import sanitizeHtml from 'sanitize-html';
 const renderer = new marked.Renderer();
 
 function sanitize(thing) {
-	sanitizeHtml(thing, {
+	return sanitizeHtml(thing, {
 		allowedTags: [],
 		allowedAttributes: {},
 	});
