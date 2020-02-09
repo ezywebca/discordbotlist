@@ -18,6 +18,8 @@ import root from 'window-or-global';
 import routes from './routes';
 import {createStore} from './store';
 
+import './marked';
+
 root.axios = axios;
 
 Vue.use(VueMeta, {
