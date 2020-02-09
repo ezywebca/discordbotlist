@@ -15,8 +15,8 @@ renderer.image = function (src, title, alt) {
 
 	let res = '<img src="' + sanitize(src) + '" alt="' + sanitize(alt);
 
-	if (exec && exec[1]) res += '" height="' + exec[1];
-	if (exec && exec[2]) res += '" width="' + exec[2];
+	if (exec && exec[1]) res += '" width="' + exec[1];
+	if (exec && exec[2]) res += '" height="' + exec[2];
 
 	return res + '">';
 };
