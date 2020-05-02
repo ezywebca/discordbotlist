@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<h1>Approval Queue</h1>
@@ -27,45 +21,51 @@
 </template>
 
 <script>
-	import { mapGetters, mapState } from 'vuex';
-	import Bot from '../Bot';
-	import moment from 'moment-mini';
+import { mapGetters, mapState } from "vuex";
+import Bot from "../Bot";
+import moment from "moment-mini";
 
-	export default {
-		asyncData: function(store, route) {
-			return Promise.all([
-				store.dispatch('bots/fetchDisapproved'),
-				store.dispatch('dbl/fetchApprovalDelay'),
-			]);
-		},
+export default {
+	asyncData: function(store, route) {
+		return Promise.all([
+			store.dispatch("bots/fetchDisapproved"),
+			store.dispatch("dbl/fetchApprovalDelay"),
+		]);
+	},
 
-		computed:{
-			...mapGetters({
-				bots: 'bots/disapproved',
-			}),
+	computed: {
+		...mapGetters({
+			bots: "bots/disapproved",
+		}),
 
-			...mapState('dbl', {
-				approvalDelay: state => state.approvalDelay,
-			}),
-		},
+		...mapState("dbl", {
+			approvalDelay: (state) => state.approvalDelay,
+		}),
+	},
 
-		methods: {
-			duration: moment.duration,
-		},
+	methods: {
+		duration: moment.duration,
+	},
 
-		meta: {
-			title: 'Approval Queue',
+	meta: {
+		title: "Approval Queue",
 
-			meta: [
-				{name: 'description', content: 'Manage bots approval queue on Discord Bot List'},
-				{property: 'og:title', content: 'Approval Queue / Discord Bots'},
-				{property: 'og:description', content: 'Manage bots approval queue on Discord Bot List'},
-				{name: 'robots', content: 'noindex'},
-			],
-		},
+		meta: [
+			{
+				name: "description",
+				content: "Manage bots approval queue on Discord Bot List",
+			},
+			{ property: "og:title", content: "Approval Queue / Discord Bots" },
+			{
+				property: "og:description",
+				content: "Manage bots approval queue on Discord Bot List",
+			},
+			{ name: "robots", content: "noindex" },
+		],
+	},
 
-		components: {
-			'bot': Bot,
-		}
-	};
+	components: {
+		bot: Bot,
+	},
+};
 </script>

@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<h1>Contact us</h1>
@@ -16,29 +10,37 @@
 </template>
 
 <style scoped>
-	#cheeky-girls {
-		width: 560px;
-		height: 315px;
-		max-width: 100%;
-	}
+#cheeky-girls {
+	width: 560px;
+	height: 315px;
+	max-width: 100%;
+}
 </style>
 
 
 <script>
-	export default {
-		mounted: function() {
-			this.$refs.email.innerText = 'support@discordbotlist.com';
-			this.$refs.email.href = 'mailto:support@discordbotlist.com';
-		},
+export default {
+	mounted: function() {
+		this.$refs.email.innerText = "support@discordbotlist.com";
+		this.$refs.email.href = "mailto:support@discordbotlist.com";
+	},
 
-		meta: {
-			title: 'Contact',
+	meta: {
+		title: "Contact",
 
-			meta: [
-				{name: 'description', content: 'Got a feedback? Have a concern for any content? Reach us now!'},
-				{property: 'og:title', content: 'Contact Discord Bot List'},
-				{property: 'og:description', content: 'Got a feedback? Have a concern for any content? Reach us now!'},
-			],
-		}
-	}
+		meta: [
+			{
+				name: "description",
+				content:
+					"Got a feedback? Have a concern for any content? Reach us now!",
+			},
+			{ property: "og:title", content: "Contact Discord Bot List" },
+			{
+				property: "og:description",
+				content:
+					"Got a feedback? Have a concern for any content? Reach us now!",
+			},
+		],
+	},
+};
 </script>

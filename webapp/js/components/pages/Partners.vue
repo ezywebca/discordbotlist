@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<h1>These guys are ultra hot!</h1>
@@ -27,15 +21,21 @@
 </template>
 
 <script>
-	export default {
-		meta: {
-			title: 'Partners',
+export default {
+	meta: {
+		title: "Partners",
 
-			meta: [
-				{name: 'description', content: 'We have partners. We like our partners.'},
-				{property: 'og:title', content: 'Partners / Discord Bots'},
-				{property: 'og:description', content: 'We have partners. We like our partners.'},
-			],
-		},
-	}
+		meta: [
+			{
+				name: "description",
+				content: "We have partners. We like our partners.",
+			},
+			{ property: "og:title", content: "Partners / Discord Bots" },
+			{
+				property: "og:description",
+				content: "We have partners. We like our partners.",
+			},
+		],
+	},
+};
 </script>

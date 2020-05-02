@@ -1,8 +1,3 @@
-/* Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
- * This document is proprietary and confidential.
- * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
- */
-
 const models = require('../models');
 const serviceBot = require('../bot');
 const {sanitize} = require('../helpers');
@@ -120,7 +115,7 @@ function getMemberRoles(memberId) {
 	for (let role of roles)
 		if (serviceBot.hasRole(memberId, role[1]))
 			result.push(role[0]);
-	
+
 	return result;
 }
 

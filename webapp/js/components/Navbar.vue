@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div>
 		<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top d-none d-md-block d-lg-block d-xl-block navbar-expand-md navbar-expand-lg navbar-expand-xl">
@@ -110,116 +104,136 @@
 </template>
 
 <style type="text/css" scoped>
-	.thin {
-		font-weight: 100;
-	}
+.thin {
+	font-weight: 100;
+}
 
-	.profile-image {
-		height: 36px;
-		border-radius: 50%;
-		margin-top: 4px;
-	}
+.profile-image {
+	height: 36px;
+	border-radius: 50%;
+	margin-top: 4px;
+}
 </style>
 
 <script type="text/javascript">
-	import { mapGetters, mapState } from 'vuex';
-	import NavbarDropdown from './NavbarDropdown';
-	import {generateRandomString, getAvatar} from '../helpers';
+import { mapGetters, mapState } from "vuex";
+import NavbarDropdown from "./NavbarDropdown";
+import { generateRandomString, getAvatar } from "../helpers";
 
-	export default {
-		data: function() {
-			return {
-				showMenu: false,
-			};
+export default {
+	data: function() {
+		return {
+			showMenu: false,
+		};
+	},
+
+	methods: {
+		toggleMenu: function() {
+			this.showMenu = !this.showMenu;
 		},
 
-		methods: {
-			toggleMenu: function() {
-				this.showMenu = !this.showMenu;
-			},
-
-			onDropdown: function(item) {
-				switch(item.key) {
-				case 'sign-out':
-					this.$store.dispatch('auth/logout');
+		onDropdown: function(item) {
+			switch (item.key) {
+				case "sign-out":
+					this.$store.dispatch("auth/logout");
 					if (this.$route.meta.requiresAuth)
-						this.$router.push({name: 'home'});
+						this.$router.push({ name: "home" });
 					break;
-				case 'tags':
-					this.$router.push({name: 'tags'});
+				case "tags":
+					this.$router.push({ name: "tags" });
 					break;
-				case 'my-bots':
-					this.$router.push({name: 'my-bots'});
+				case "my-bots":
+					this.$router.push({ name: "my-bots" });
 					break;
-				case 'approval-queue':
-					this.$router.push({name: 'approval-queue'});
+				case "approval-queue":
+					this.$router.push({ name: "approval-queue" });
 					break;
-				case 'dbl-configurations':
-					this.$router.push({name: 'dbl-configurations'});
+				case "dbl-configurations":
+					this.$router.push({ name: "dbl-configurations" });
 					break;
-				case 'toggle-data-saver':
-					this.$store.dispatch('preferences/toggleDataSaver', !this.dataSaverOn);
+				case "toggle-data-saver":
+					this.$store.dispatch(
+						"preferences/toggleDataSaver",
+						!this.dataSaverOn
+					);
 					break;
-				}
-			},
+			}
+		},
 
-			signIn: function() {
-				const state = generateRandomString(32);
+		signIn: function() {
+			const state = generateRandomString(32);
 
-				localStorage.setItem('discord_oauth_state', state);
-				localStorage.setItem('auth_return_url', JSON.stringify({
+			localStorage.setItem("discord_oauth_state", state);
+			localStorage.setItem(
+				"auth_return_url",
+				JSON.stringify({
 					name: this.$route.name,
 					params: this.$route.params,
 					query: this.$route.query,
-				}));
+				})
+			);
 
-				setTimeout(() => {window.location = `${this.discordOAuthURL}&state=${state}&prompt=none`;}, 150);
-			},
-
-			getAvatar,
+			setTimeout(() => {
+				window.location = `${
+					this.discordOAuthURL
+				}&state=${state}&prompt=none`;
+			}, 150);
 		},
 
-		mounted: function() {
-			this.$router.afterEach(() => {
-				this.showMenu = false;
-			});
+		getAvatar,
+	},
+
+	mounted: function() {
+		this.$router.afterEach(() => {
+			this.showMenu = false;
+		});
+	},
+
+	computed: {
+		...mapState("auth", {
+			discordOAuthURL: (state) => state.discordOAuthURL,
+			user: (state) => ({
+				id: state.id,
+				username: state.username,
+				avatar: state.avatar,
+				admin: state.admin,
+				roles: state.roles,
+			}),
+		}),
+
+		...mapState("preferences", {
+			dataSaverOn: (state) => state.dataSaverOn,
+		}),
+
+		...mapGetters({
+			isAuthenticated: "auth/isAuthenticated",
+			hasRole: "auth/hasRole",
+		}),
+
+		dropdownItems: function() {
+			return [
+				{ label: "My bots", key: "my-bots" },
+				{
+					label: `Data saver: ${this.dataSaverOn ? "On" : "Off"}`,
+					key: "toggle-data-saver",
+				},
+				...(this.user && this.user.admin
+					? [{ label: "Tags", key: "tags" }]
+					: []),
+				...(this.user &&
+				(this.user.admin || this.user.roles.includes("approval"))
+					? [{ label: "Approval Queue", key: "approval-queue" }]
+					: []),
+				...(this.user && this.user.admin
+					? [{ label: "DBL Config", key: "dbl-configurations" }]
+					: []),
+				{ label: "Sign out", key: "sign-out" },
+			];
 		},
+	},
 
-		computed: {
-			...mapState('auth', {
-				discordOAuthURL: state => state.discordOAuthURL,
-				user: state => ({
-					id: state.id,
-					username: state.username,
-					avatar: state.avatar,
-					admin: state.admin,
-					roles: state.roles,
-				}),
-			}),
-
-			...mapState('preferences', {
-				dataSaverOn: state => state.dataSaverOn,
-			}),
-
-			...mapGetters({
-				isAuthenticated: 'auth/isAuthenticated',
-				hasRole: 'auth/hasRole',
-			}),
-
-			dropdownItems: function() {
-				return [
-					{label: 'My bots', key: 'my-bots'},
-					{label: `Data saver: ${this.dataSaverOn ? 'On' : 'Off'}`, key: 'toggle-data-saver'},
-					...(this.user && this.user.admin ? [{label: 'Tags', key: 'tags'}] : []),
-					...(this.user && (this.user.admin || this.user.roles.includes('approval')) ? [{label: 'Approval Queue', key: 'approval-queue'}] : []),
-					...(this.user && this.user.admin ? [{label: 'DBL Config', key: 'dbl-configurations'}] : []),
-					{label: 'Sign out', key: 'sign-out'},
-				];
-			},
-		},
-
-		components: {
-			'navbar-dropdown': NavbarDropdown
-		}
-	};
+	components: {
+		"navbar-dropdown": NavbarDropdown,
+	},
+};
 </script>

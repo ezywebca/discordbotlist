@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<div class="row">
@@ -26,33 +20,39 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex';
-	import Bot from '../Bot';
+import { mapGetters } from "vuex";
+import Bot from "../Bot";
 
-	export default {
-		asyncData: function(store, route) {
-			return store.dispatch('bots/fetchMine');
-		},
+export default {
+	asyncData: function(store, route) {
+		return store.dispatch("bots/fetchMine");
+	},
 
-		computed:{
-			...mapGetters({
-				myBots: 'bots/mine',
-			})
-		},
+	computed: {
+		...mapGetters({
+			myBots: "bots/mine",
+		}),
+	},
 
-		meta: {
-			title: 'My bots',
+	meta: {
+		title: "My bots",
 
-			meta: [
-				{name: 'description', content: 'Manage your bots on Discord Bot List'},
-				{property: 'og:title', content: 'My bots / Discord Bots'},
-				{property: 'og:description', content: 'Manage your bots on Discord Bot List'},
-				{name: 'robots', content: 'noindex'},
-			],
-		},
+		meta: [
+			{
+				name: "description",
+				content: "Manage your bots on Discord Bot List",
+			},
+			{ property: "og:title", content: "My bots / Discord Bots" },
+			{
+				property: "og:description",
+				content: "Manage your bots on Discord Bot List",
+			},
+			{ name: "robots", content: "noindex" },
+		],
+	},
 
-		components: {
-			'bot': Bot,
-		}
-	};
+	components: {
+		bot: Bot,
+	},
+};
 </script>

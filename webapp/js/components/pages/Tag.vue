@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container" id="header">
 		<h1>Discord {{ tag.name }} bots</h1>
@@ -21,79 +15,93 @@
 </template>
 
 <script>
-	import {debounce} from 'lodash';
-	import {mapGetters} from 'vuex';
-	import Bot from '../Bot';
-	import {desanitizeTag} from '../../helpers';
+import { debounce } from "lodash";
+import { mapGetters } from "vuex";
+import Bot from "../Bot";
+import { desanitizeTag } from "../../helpers";
 
-	export default {
-		data: function() {
-			return {
-				loading: false,
-				end: false,
-				disableScroll: false,
-			};
-		},
+export default {
+	data: function() {
+		return {
+			loading: false,
+			end: false,
+			disableScroll: false,
+		};
+	},
 
-		asyncData: async function(store, route) {
-			await store.dispatch('tags/fetch', {
-				name: desanitizeTag(route.params.name),
-			});
+	asyncData: async function(store, route) {
+		await store.dispatch("tags/fetch", {
+			name: desanitizeTag(route.params.name),
+		});
 
-			await store.dispatch('tags/fetchBots', {
-				name: desanitizeTag(route.params.name),
-				skip: 0
-			});
-		},
+		await store.dispatch("tags/fetchBots", {
+			name: desanitizeTag(route.params.name),
+			skip: 0,
+		});
+	},
 
-		methods: {
-			loadMore: debounce(function() {
-				this.loading = true;
-				this.disableScroll = true;
+	methods: {
+		loadMore: debounce(function() {
+			this.loading = true;
+			this.disableScroll = true;
 
-				this.$store.dispatch('tags/fetchBots', {
+			this.$store
+				.dispatch("tags/fetchBots", {
 					name: desanitizeTag(this.$route.params.name),
-					skip: this.bots.length
-				}).then(response => {
+					skip: this.bots.length,
+				})
+				.then((response) => {
 					if (response.data && response.data.length < 1)
 						this.end = true;
-					else
-						this.disableScroll = false;
+					else this.disableScroll = false;
 
 					this.loading = false;
 				});
-			}, 300),
+		}, 300),
+	},
+
+	computed: {
+		...mapGetters({
+			getTagBots: "tags/getTagBots",
+			getTagByName: "tags/getTagByName",
+		}),
+
+		tag() {
+			return this.getTagByName(desanitizeTag(this.$route.params.name));
 		},
 
-		computed: {
-			...mapGetters({
-				getTagBots: 'tags/getTagBots',
-				getTagByName: 'tags/getTagByName',
-			}),
-
-			tag() {
-				return this.getTagByName(desanitizeTag(this.$route.params.name));
-			},
-
-			bots() {
-				return this.getTagBots(desanitizeTag(this.$route.params.name));
-			}
+		bots() {
+			return this.getTagBots(desanitizeTag(this.$route.params.name));
 		},
+	},
 
-		meta: function() {
-			return {
-				title: `Discord ${this.tag.name} bots`,
+	meta: function() {
+		return {
+			title: `Discord ${this.tag.name} bots`,
 
-				meta: [
-					{name: 'description', content: `Let's find some interesting Discord ${this.tag.name} bots on Discord Bot List`},
-					{property: 'og:title', content: `Discord ${this.tag.name} bots / Discord bots`},
-					{property: 'og:description', content: `Let's find some interesting Discord ${this.tag.name} bots on Discord Bot List`},
-				],
-			};
-		},
+			meta: [
+				{
+					name: "description",
+					content: `Let's find some interesting Discord ${
+						this.tag.name
+					} bots on Discord Bot List`,
+				},
+				{
+					property: "og:title",
+					content: `Discord ${this.tag.name} bots / Discord bots`,
+				},
+				{
+					property: "og:description",
+					content: `Let's find some interesting Discord ${
+						this.tag.name
+					} bots on Discord Bot List`,
+				},
+			],
+		};
+	},
 
-		components: {
-			'bot': Bot,
-		}
-	};
+	components: {
+		bot: Bot,
+	},
+};
 </script>

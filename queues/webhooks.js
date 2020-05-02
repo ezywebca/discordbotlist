@@ -1,8 +1,3 @@
-/* Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
- * This document is proprietary and confidential.
- * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
- */
-
 const redis = require('../redis');
 const Queue = require('bee-queue');
 const logger = require('../logger');
@@ -19,7 +14,7 @@ const queue = new Queue('webhooks', {
 
 queue.process(4, async job => {
 	const agent = job.data.url.startsWith('https://') ? shttps : shttp;
-	
+
 	return request.post(job.data.url, {
 		headers: {
 			'X-DBL-Signature': `${job.data.secret} ${Date.now()}`,
@@ -27,7 +22,7 @@ queue.process(4, async job => {
 
 		form: models.user.transform(job.data.user),
 		agentClass: agent,
-		
+
 		agentOptions: {
 			socksHost: process.env.SOCKS5_HOST,
 			socksPort: process.env.SOCKS5_PORT,

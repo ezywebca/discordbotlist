@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<span class="far fa-check checkmark" />
@@ -26,47 +20,53 @@
 </template>
 
 <style scoped>
-	.checkmark {
-		font-size: 10rem;
-		margin-top: 2rem;
-		color: #77b255;
-		text-align: center;
-		display: block;
-	}
+.checkmark {
+	font-size: 10rem;
+	margin-top: 2rem;
+	color: #77b255;
+	text-align: center;
+	display: block;
+}
 
-	.container {
-		text-align: center;
-	}
+.container {
+	text-align: center;
+}
 </style>
 
 <script>
-	import { mapState } from 'vuex';
-	import moment from 'moment-mini';
+import { mapState } from "vuex";
+import moment from "moment-mini";
 
-	export default {
-		asyncData(store) {
-			return store.dispatch('dbl/fetchApprovalDelay');
-		},
+export default {
+	asyncData(store) {
+		return store.dispatch("dbl/fetchApprovalDelay");
+	},
 
-		computed: {
-			...mapState('dbl', {
-				approvalDelay: state => state.approvalDelay,
-			}),
-		},
+	computed: {
+		...mapState("dbl", {
+			approvalDelay: (state) => state.approvalDelay,
+		}),
+	},
 
-		methods: {
-			duration: moment.duration,
-		},
+	methods: {
+		duration: moment.duration,
+	},
 
-		meta: {
-			title: 'Bot queued',
+	meta: {
+		title: "Bot queued",
 
-			meta: [
-				{name: 'description', content: 'Bot has been added to the approval queue.'},
-				{property: 'og:title', content: 'Bot queued / Discord Bots'},
-				{property: 'og:description', content: 'Bot has been added to the approval queue.'},
-				{name: 'robots', content: 'noindex'},
-			],
-		},
-	};
+		meta: [
+			{
+				name: "description",
+				content: "Bot has been added to the approval queue.",
+			},
+			{ property: "og:title", content: "Bot queued / Discord Bots" },
+			{
+				property: "og:description",
+				content: "Bot has been added to the approval queue.",
+			},
+			{ name: "robots", content: "noindex" },
+		],
+	},
+};
 </script>

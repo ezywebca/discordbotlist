@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container mb-5">
 		<h3>Bot Statistics</h3>
@@ -120,29 +114,40 @@
 </template>
 
 <script>
-	import {highlightCode} from '../../helpers';
+import { highlightCode } from "../../helpers";
 
-	export default {
-		data: function() {
-			return {
-				widgetCode: '<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
-				coloredWidgetCode: '<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget?bg=400" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
-			};
-		},
+export default {
+	data: function() {
+		return {
+			widgetCode:
+				'<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
+			coloredWidgetCode:
+				'<a href="https://discordbotlist.com/bots/460847447602757633">\n\t<img \n\t\twidth="380" \n\t\theight="140" \n\t\tsrc="https://discordbotlist.com/bots/460847447602757633/widget?bg=400" \n\t\talt="Lithium stats on Discord Bot List">\n</a>',
+		};
+	},
 
-		meta: {
-			title: 'API Documentation',
+	meta: {
+		title: "API Documentation",
 
-			meta: [
-				{name: 'description', content: 'Read on how to use bot tokens and other stuff!'},
-				{property: 'og:title', content: 'API Documentation / Discord Bots'},
-				{property: 'og:description', content: 'Read on how to use bot tokens and other stuff!'},
-				{name: 'robots', content: 'noindex'},
-			],
-		},
+		meta: [
+			{
+				name: "description",
+				content: "Read on how to use bot tokens and other stuff!",
+			},
+			{
+				property: "og:title",
+				content: "API Documentation / Discord Bots",
+			},
+			{
+				property: "og:description",
+				content: "Read on how to use bot tokens and other stuff!",
+			},
+			{ name: "robots", content: "noindex" },
+		],
+	},
 
-		mounted() {
-			highlightCode();
-		}
-	};
+	mounted() {
+		highlightCode();
+	},
+};
 </script>

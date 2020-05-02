@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex"
@@ -102,118 +96,152 @@
 </template>
 
 <style scoped>
-	.user-image {
-		width: 100%;
-		border-radius: 5px;
-		background: #202225;
-	}
+.user-image {
+	width: 100%;
+	border-radius: 5px;
+	background: #202225;
+}
 
-	.links a {
-		display: block;
-	}
+.links a {
+	display: block;
+}
 
-	.links {
-		display: inline-block;
-	}
+.links {
+	display: inline-block;
+}
 </style>
 
 
 <script>
-	import Bot from '../Bot';
-	import moment from 'moment-mini';
-	import marked from 'marked';
-	import {mapGetters, mapState} from 'vuex';
-	import {extractError, getAvatar} from '../../helpers';
+import Bot from "../Bot";
+import moment from "moment-mini";
+import marked from "marked";
+import { mapGetters, mapState } from "vuex";
+import { extractError, getAvatar } from "../../helpers";
 
-	export default {
-		asyncData(store, route) {
-			return new Promise((resolve, reject) => {
-				store.dispatch('users/fetch', {id: route.params.id})
-					.then(resolve)
-					.catch(error => {
-						if (error.response && error.response.status === 404)
-							reject({ status: 404 });
-						else
-							reject(error);
+export default {
+	asyncData(store, route) {
+		return new Promise((resolve, reject) => {
+			store
+				.dispatch("users/fetch", { id: route.params.id })
+				.then(resolve)
+				.catch((error) => {
+					if (error.response && error.response.status === 404)
+						reject({ status: 404 });
+					else reject(error);
 				});
-			});
-		},
+		});
+	},
 
-		data: function() {
-			return {
-				verifyingBan: false,
-				verifyingUnban: false,
-			};
-		},
+	data: function() {
+		return {
+			verifyingBan: false,
+			verifyingUnban: false,
+		};
+	},
 
-		methods: {
-			banUser: function() {
-				if (!this.verifyingBan) {
-					this.verifyingBan = true;
-				} else {
-					axios.post('/api/users/' + this.$route.params.id + '/ban').then(response => {
+	methods: {
+		banUser: function() {
+			if (!this.verifyingBan) {
+				this.verifyingBan = true;
+			} else {
+				axios
+					.post("/api/users/" + this.$route.params.id + "/ban")
+					.then((response) => {
 						this.$router.go();
-					}).catch(e => {
-						this.$vueOnToast.pop('error', extractError(e));
+					})
+					.catch((e) => {
+						this.$vueOnToast.pop("error", extractError(e));
 					});
-				}
-			},
-
-			unbanUser: function() {
-				if (!this.verifyingUnban) {
-					this.verifyingUnban = true;
-				} else {
-					axios.delete('/api/users/' + this.$route.params.id + '/ban').then(response => {
-						this.$router.go();
-					}).catch(e => {
-						this.$vueOnToast.pop('error', extractError(e));
-					});
-				}
-			},
-
-			refreshUser: function() {
-				axios.post(`/api/users/${this.$route.params.id}/refresh`).then(response => {
-					this.$router.go();
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			moment: moment.utc,
-			marked,
-			getAvatar,
-		},
-
-		computed: {
-			...mapState('auth', {
-				isAdmin: state => state.admin
-			}),
-			...mapGetters({
-				getUserById: 'users/getUserById',
-			}),
-
-			user: function() {
-				return this.getUserById(this.$route.params.id);
 			}
 		},
 
-		meta: function() {
-			return {
-				title: this.user.username + '#' + this.user.discriminator || 'View user',
-
-				meta: [
-					{name: 'og:image', content: getAvatar(this.user), vmid: 'og:image'},
-					{name: 'description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
-					{property: 'og:title', content: (this.user.username + '#' + this.user.discriminator || 'View user') + ' / Discord Bots'},
-					{property: 'og:description', content: this.user.username ? `View ${this.user.username}'s stats on Discord Bot List` : 'View a user on Discord Bot List'},
-
-					{ name: 'robots', content: 'noindex' },
-				],
-			};
+		unbanUser: function() {
+			if (!this.verifyingUnban) {
+				this.verifyingUnban = true;
+			} else {
+				axios
+					.delete("/api/users/" + this.$route.params.id + "/ban")
+					.then((response) => {
+						this.$router.go();
+					})
+					.catch((e) => {
+						this.$vueOnToast.pop("error", extractError(e));
+					});
+			}
 		},
 
-		components: {
-			'bot': Bot,
+		refreshUser: function() {
+			axios
+				.post(`/api/users/${this.$route.params.id}/refresh`)
+				.then((response) => {
+					this.$router.go();
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
 		},
-	};
+
+		moment: moment.utc,
+		marked,
+		getAvatar,
+	},
+
+	computed: {
+		...mapState("auth", {
+			isAdmin: (state) => state.admin,
+		}),
+		...mapGetters({
+			getUserById: "users/getUserById",
+		}),
+
+		user: function() {
+			return this.getUserById(this.$route.params.id);
+		},
+	},
+
+	meta: function() {
+		return {
+			title:
+				this.user.username + "#" + this.user.discriminator ||
+				"View user",
+
+			meta: [
+				{
+					name: "og:image",
+					content: getAvatar(this.user),
+					vmid: "og:image",
+				},
+				{
+					name: "description",
+					content: this.user.username
+						? `View ${
+								this.user.username
+						  }'s stats on Discord Bot List`
+						: "View a user on Discord Bot List",
+				},
+				{
+					property: "og:title",
+					content:
+						(this.user.username + "#" + this.user.discriminator ||
+							"View user") + " / Discord Bots",
+				},
+				{
+					property: "og:description",
+					content: this.user.username
+						? `View ${
+								this.user.username
+						  }'s stats on Discord Bot List`
+						: "View a user on Discord Bot List",
+				},
+
+				{ name: "robots", content: "noindex" },
+			],
+		};
+	},
+
+	components: {
+		bot: Bot,
+	},
+};
 </script>

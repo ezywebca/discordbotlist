@@ -1,8 +1,3 @@
-/* Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
- * This document is proprietary and confidential.
- * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
- */
-
 $slightly-dark: #42454d;
 $dark: #36393f;
 $really-dark: #2f3136;
@@ -38,6 +33,6 @@ $link-color: lighten($primary-color, 15%);
 
 $table-border-color: lighten($really-dark, 10%);
 
-$font-family-sans-serif: 'Lato', sans-serif;
+$font-family-sans-serif: "Lato", sans-serif;
 
 $fa-font-path: "./font-awesome-pro/webfonts";

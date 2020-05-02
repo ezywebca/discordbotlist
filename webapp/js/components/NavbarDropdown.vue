@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<li :class="{'nav-link': true, dropdown: true, show: open, clickable: true}" @click="toggle" @blur="hide">
 		<a class="dropdown-toggle">
@@ -19,51 +13,51 @@
 
 
 <script type="text/javascript">
-	export default {
-		props: {
-			label: {
-				type: String,
-				required: true,
-			},
-			options: {
-				type: Array,
-				required: true,
-			},
-			selective: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
-			labelField: {
-				type: String,
-				required: false,
-				default: 'label'
-			},
-			keyField: {
-				type: String,
-				required: false,
-				default: 'key'
-			},
+export default {
+	props: {
+		label: {
+			type: String,
+			required: true,
+		},
+		options: {
+			type: Array,
+			required: true,
+		},
+		selective: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		labelField: {
+			type: String,
+			required: false,
+			default: "label",
+		},
+		keyField: {
+			type: String,
+			required: false,
+			default: "key",
+		},
+	},
+
+	data: () => ({
+		open: false,
+		selected: false,
+	}),
+
+	methods: {
+		toggle() {
+			this.open = !this.open;
 		},
 
-		data: () => ({
-			open: false,
-			selected: false,
-		}),
+		hide() {
+			this.open = false;
+		},
 
-		methods: {
-			toggle() {
-				this.open = !this.open;
-			},
-
-			hide() {
-				this.open = false;
-			},
-
-			select: function (item) {
-				this.selected = item[this.labelField];
-				this.$emit('on-select', item);
-			},
-		}
-	};
+		select: function(item) {
+			this.selected = item[this.labelField];
+			this.$emit("on-select", item);
+		},
+	},
+};
 </script>

@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<h1>Add a new bot</h1>
@@ -116,89 +110,102 @@
 </template>
 
 <style scoped>
-	#short-description {
-		height: 80px;
-	}
+#short-description {
+	height: 80px;
+}
 
-	#long-description {
-		height: 240px;
-	}
+#long-description {
+	height: 240px;
+}
 </style>
 
 <script>
-	import { mapState } from 'vuex';
-	import { extractError } from '../../helpers';
-	import TagsInput from '@voerro/vue-tagsinput';
+import { mapState } from "vuex";
+import { extractError } from "../../helpers";
+import TagsInput from "@voerro/vue-tagsinput";
 
-	export default {
-		data: function() {
-			return {
-				botId: '',
-				clientId: '',
-				shortDescription: '',
-				longDescription: '',
-				prefix: '',
-				website: '',
-				botInvite: '',
-				serverInvite: '',
-				tags: [],
-				added: false
-			};
-		},
+export default {
+	data: function() {
+		return {
+			botId: "",
+			clientId: "",
+			shortDescription: "",
+			longDescription: "",
+			prefix: "",
+			website: "",
+			botInvite: "",
+			serverInvite: "",
+			tags: [],
+			added: false,
+		};
+	},
 
-		computed: {
-			...mapState('tags', {
-				availableTags: state => state.tags.reduce((object, tag) => ({ ...object, [tag.name]: tag.name }), {}),
-			})
-		},
+	computed: {
+		...mapState("tags", {
+			availableTags: (state) =>
+				state.tags.reduce(
+					(object, tag) => ({ ...object, [tag.name]: tag.name }),
+					{}
+				),
+		}),
+	},
 
-		asyncData: async (store, route) => {
-			await store.dispatch('tags/fetchAll');
-		},
+	asyncData: async (store, route) => {
+		await store.dispatch("tags/fetchAll");
+	},
 
-		methods: {
-			add() {
-				this.$refs.addButton.disabled = true;
+	methods: {
+		add() {
+			this.$refs.addButton.disabled = true;
 
-				axios.post('/api/bots', {
+			axios
+				.post("/api/bots", {
 					id: this.botId,
 					client_id: this.clientId,
 					short_description: this.shortDescription,
 					long_description: this.longDescription,
 					prefix: this.prefix,
 					website: this.website,
-					tags: this.tags.join(','),
+					tags: this.tags.join(","),
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
-				}).then(response => {
+				})
+				.then((response) => {
 					this.added = true;
-					this.$vueOnToast.pop('error', 'Queued for approval!');
-					this.$router.push({name: 'queued'});
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
+					this.$vueOnToast.pop("error", "Queued for approval!");
+					this.$router.push({ name: "queued" });
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
 					this.$refs.addButton.disabled = false;
 				});
-			}
 		},
+	},
 
-		beforeRouteLeave(to, from, next) {
-			if (this.added || confirm('You have unsaved changes!')) next();
-			else next(false);
-		},
+	beforeRouteLeave(to, from, next) {
+		if (this.added || confirm("You have unsaved changes!")) next();
+		else next(false);
+	},
 
-		meta: {
-			title: 'Add new bot',
+	meta: {
+		title: "Add new bot",
 
-			meta: [
-				{name: 'description', content: 'Add new bot to Discord Bot List\'s database'},
-				{property: 'og:title', content: 'Add new bot / Discord Bots'},
-				{property: 'og:description', content: 'Add new bot to Discord Bot List\'s database'},
-				{name: 'robots', content: 'noindex'},
-			]
-		},
+		meta: [
+			{
+				name: "description",
+				content: "Add new bot to Discord Bot List's database",
+			},
+			{ property: "og:title", content: "Add new bot / Discord Bots" },
+			{
+				property: "og:description",
+				content: "Add new bot to Discord Bot List's database",
+			},
+			{ name: "robots", content: "noindex" },
+		],
+	},
 
-		components: {
-			'tags-input': TagsInput,
-		}
-	};
+	components: {
+		"tags-input": TagsInput,
+	},
+};
 </script>

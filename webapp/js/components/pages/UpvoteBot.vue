@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container text-center">
 		<div class="d-inline-block bot-image-container">
@@ -25,92 +19,115 @@
 </template>
 
 <style scoped>
-	.bot-image-container {
-		overflow: hidden;
-	}
+.bot-image-container {
+	overflow: hidden;
+}
 
-	.bot-image {
-		width: 100%;
-		max-width: 280px;
-		border-radius: 5px;
-	}
+.bot-image {
+	width: 100%;
+	max-width: 280px;
+	border-radius: 5px;
+}
 
-	.bot-image.nsfw {
-		filter: grayscale(1) blur(15px);
-		transition: filter 0.5s;
-	}
+.bot-image.nsfw {
+	filter: grayscale(1) blur(15px);
+	transition: filter 0.5s;
+}
 
-	.bot-image.nsfw:hover {
-		filter: none;
-		transition: filter 1.25s;
-	}
+.bot-image.nsfw:hover {
+	filter: none;
+	transition: filter 1.25s;
+}
 
-	#view-bot-link {
-		display: block;
-	}
+#view-bot-link {
+	display: block;
+}
 </style>
 
 
 <script>
-	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString, getAvatar} from '../../helpers';
+import { mapGetters, mapState } from "vuex";
+import { extractError, generateRandomString, getAvatar } from "../../helpers";
 
-	export default {
-		asyncData: (store, route) => {
-			return store.dispatch('bots/fetch', {id: route.params.id});
-		},
+export default {
+	asyncData: (store, route) => {
+		return store.dispatch("bots/fetch", { id: route.params.id });
+	},
 
-		methods: {
-			upvote: function() {
-				if (!this.isAuthenticated) {
-					const state = generateRandomString(32);
+	methods: {
+		upvote: function() {
+			if (!this.isAuthenticated) {
+				const state = generateRandomString(32);
 
-					localStorage.setItem('discord_oauth_state', state);
-					localStorage.setItem('auth_return_url', JSON.stringify({
+				localStorage.setItem("discord_oauth_state", state);
+				localStorage.setItem(
+					"auth_return_url",
+					JSON.stringify({
 						name: this.$route.name,
 						params: this.$route.params,
 						query: this.$route.query,
-					}));
-					
-					window.location = this.discordOAuthURL + '&state=' + state;
-				} else {
-					this.$store.dispatch('bots/upvote', {id: this.$route.params.id}).catch(e => {
-						this.$vueOnToast.pop('error', extractError(e));
+					})
+				);
+
+				window.location = this.discordOAuthURL + "&state=" + state;
+			} else {
+				this.$store
+					.dispatch("bots/upvote", { id: this.$route.params.id })
+					.catch((e) => {
+						this.$vueOnToast.pop("error", extractError(e));
 					});
-				}
-			},
-
-			getAvatar,
-		},
-
-		computed: {
-			...mapState('auth', {
-				discordOAuthURL: state => state.discordOAuthURL,
-				currentUserId: state => state.id,
-
-			}),
-			...mapGetters({
-				getBotById: 'bots/getBotById',
-				isAuthenticated: 'auth/isAuthenticated'
-			}),
-
-			bot: function() {
-				return this.getBotById(this.$route.params.id);
 			}
 		},
 
-		meta: function() {
-			return {
-				title: `Vote for ${this.bot.username}` || 'Vote for a bot',
+		getAvatar,
+	},
 
-				meta: [
-					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
-					{property: 'og:title', content: (`Vote for ${this.bot.username}` || 'Vote for a bot') + ' / Discord Bots'},
-					{property: 'og:description', content: this.bot.short_description || 'Vote for a bot on Discord Bot List'},
-					{name: 'robots', content: 'noindex'},
-				],
-			};
+	computed: {
+		...mapState("auth", {
+			discordOAuthURL: (state) => state.discordOAuthURL,
+			currentUserId: (state) => state.id,
+		}),
+		...mapGetters({
+			getBotById: "bots/getBotById",
+			isAuthenticated: "auth/isAuthenticated",
+		}),
+
+		bot: function() {
+			return this.getBotById(this.$route.params.id);
 		},
-	};
+	},
+
+	meta: function() {
+		return {
+			title: `Vote for ${this.bot.username}` || "Vote for a bot",
+
+			meta: [
+				{
+					name: "og:image",
+					content: getAvatar(this.bot),
+					vmid: "og:image",
+				},
+				{
+					name: "description",
+					content:
+						this.bot.short_description ||
+						"Vote for a bot on Discord Bot List",
+				},
+				{
+					property: "og:title",
+					content:
+						(`Vote for ${this.bot.username}` || "Vote for a bot") +
+						" / Discord Bots",
+				},
+				{
+					property: "og:description",
+					content:
+						this.bot.short_description ||
+						"Vote for a bot on Discord Bot List",
+				},
+				{ name: "robots", content: "noindex" },
+			],
+		};
+	},
+};
 </script>

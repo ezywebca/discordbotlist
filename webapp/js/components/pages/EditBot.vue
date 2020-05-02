@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<h1>Edit {{bot.username}}</h1>
@@ -96,131 +90,168 @@
 </template>
 
 <style scoped>
-	#short-description {
-		height: 80px;
-	}
+#short-description {
+	height: 80px;
+}
 
-	#long-description {
-		height: 240px;
-	}
+#long-description {
+	height: 240px;
+}
 </style>
 
 
 <script>
-	import {extractError, getAvatar} from '../../helpers';
-	import {mapGetters, mapState} from 'vuex';
-	import TagsInput from '@voerro/vue-tagsinput';
+import { extractError, getAvatar } from "../../helpers";
+import { mapGetters, mapState } from "vuex";
+import TagsInput from "@voerro/vue-tagsinput";
 
-	export default {
-		asyncData: async (store, route) => {
-			await store.dispatch('bots/fetch', {id: route.params.id});
-			await store.dispatch('tags/fetchAll');
+export default {
+	asyncData: async (store, route) => {
+		await store.dispatch("bots/fetch", { id: route.params.id });
+		await store.dispatch("tags/fetchAll");
+	},
+
+	data: function() {
+		return {
+			shortDescription: "",
+			longDescription: "",
+			prefix: "",
+			website: "",
+			botInvite: "",
+			serverInvite: "",
+			tags: [],
+			webhookURL: "",
+			webhookSecret: "",
+			saved: false,
+		};
+	},
+
+	mounted: function() {
+		this.shortDescription = this.bot.short_description;
+		this.longDescription = this.bot.long_description;
+		this.prefix = this.bot.prefix;
+		this.website = this.bot.website;
+		this.botInvite = this.bot.bot_invite;
+		this.serverInvite = this.bot.server_invite;
+		this.tags = this.bot.tags.map((tag) => tag.name).join(",");
+		this.webhookURL = this.bot.webhook_url;
+		this.webhookSecret = this.bot.webhook_secret;
+	},
+
+	computed: {
+		...mapState("tags", {
+			availableTags: (state) =>
+				state.tags.reduce(
+					(object, tag) => ({ ...object, [tag.name]: tag.name }),
+					{}
+				),
+		}),
+
+		...mapGetters({
+			getBotById: "bots/getBotById",
+		}),
+
+		bot: function() {
+			return this.getBotById(this.$route.params.id);
 		},
+	},
 
-		data: function() {
-			return {
-				shortDescription: '',
-				longDescription: '',
-				prefix: '',
-				website: '',
-				botInvite: '',
-				serverInvite: '',
-				tags: [],
-				webhookURL: '',
-				webhookSecret: '',
-				saved: false,
-			};
-		},
+	methods: {
+		save() {
+			this.$refs.editButton.disabled = true;
 
-		mounted: function() {
-			this.shortDescription = this.bot.short_description;
-			this.longDescription = this.bot.long_description;
-			this.prefix = this.bot.prefix;
-			this.website = this.bot.website;
-			this.botInvite = this.bot.bot_invite;
-			this.serverInvite = this.bot.server_invite;
-			this.tags = this.bot.tags.map(tag => tag.name).join(',');
-			this.webhookURL = this.bot.webhook_url;
-			this.webhookSecret = this.bot.webhook_secret;
-		},
-
-		computed: {
-			...mapState('tags', {
-				availableTags: state => state.tags.reduce((object, tag) => ({...object, [tag.name]: tag.name}), {}),
-			}),
-
-			...mapGetters({
-				getBotById: 'bots/getBotById',
-			}),
-
-			bot: function() {
-				return this.getBotById(this.$route.params.id);
-			}
-		},
-
-		methods: {
-			save() {
-				this.$refs.editButton.disabled = true;
-
-				axios.put(`/api/bots/${this.$route.params.id}`, {
+			axios
+				.put(`/api/bots/${this.$route.params.id}`, {
 					short_description: this.shortDescription,
 					long_description: this.longDescription,
 					prefix: this.prefix,
 					website: this.website,
 					bot_invite: this.botInvite,
 					server_invite: this.serverInvite,
-					tags: this.tags.join(','),
+					tags: this.tags.join(","),
 					webhook_url: this.webhookURL,
 					webhook_secret: this.webhookSecret,
-				}).then(response => {
+				})
+				.then((response) => {
 					this.saved = true;
-					this.$router.push({name: 'view-bot', params: {id: this.bot.id}});
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));	
+					this.$router.push({
+						name: "view-bot",
+						params: { id: this.bot.id },
+					});
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
 					this.$refs.editButton.disabled = false;
 				});
-			},
+		},
 
-			testWebhook() {
-				this.$refs.webhookTestButton.disabled = true;
+		testWebhook() {
+			this.$refs.webhookTestButton.disabled = true;
 
-				axios.post(`/api/bots/${this.$route.params.id}/upvotes/webhook-test`, {
-					webhook_url: this.webhookURL,
-					webhook_secret: this.webhookSecret,
-				}).then(() => {
-					this.$vueOnToast.pop('success', 'Delivery job dispatched!', 'Webhook should be delivered within few seconds');
+			axios
+				.post(
+					`/api/bots/${this.$route.params.id}/upvotes/webhook-test`,
+					{
+						webhook_url: this.webhookURL,
+						webhook_secret: this.webhookSecret,
+					}
+				)
+				.then(() => {
+					this.$vueOnToast.pop(
+						"success",
+						"Delivery job dispatched!",
+						"Webhook should be delivered within few seconds"
+					);
 					setTimeout(() => {
 						this.$refs.webhookTestButton.disabled = false;
 					}, 1000);
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));	
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
 					this.$refs.webhookTestButton.disabled = false;
 				});
-			}
 		},
+	},
 
-		beforeRouteLeave(to, from, next) {
-			if (this.saved || confirm('You have unsaved changes tho!'))
-				next();
-			else
-				next(false);
-		},
+	beforeRouteLeave(to, from, next) {
+		if (this.saved || confirm("You have unsaved changes tho!")) next();
+		else next(false);
+	},
 
-		meta: function() {
-			return {
-				title: `Edit ${this.bot.username}` || 'Edit bot',
+	meta: function() {
+		return {
+			title: `Edit ${this.bot.username}` || "Edit bot",
 
-				meta: [
-					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
-					{property: 'og:title', content: (`Edit ${this.bot.username}` || 'Edit bot') + ' / Discord Bots'},
-					{property: 'og:description', content: this.bot.short_description || 'Edit a bot on Discord Bot List'},
-				],
-			};
-		},
+			meta: [
+				{
+					name: "og:image",
+					content: getAvatar(this.bot),
+					vmid: "og:image",
+				},
+				{
+					name: "description",
+					content:
+						this.bot.short_description ||
+						"Edit a bot on Discord Bot List",
+				},
+				{
+					property: "og:title",
+					content:
+						(`Edit ${this.bot.username}` || "Edit bot") +
+						" / Discord Bots",
+				},
+				{
+					property: "og:description",
+					content:
+						this.bot.short_description ||
+						"Edit a bot on Discord Bot List",
+				},
+			],
+		};
+	},
 
-		components: {
-			'tags-input': TagsInput
-		},
-	};
+	components: {
+		"tags-input": TagsInput,
+	},
+};
 </script>

@@ -1,8 +1,3 @@
-/* Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
- * This document is proprietary and confidential.
- * Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
- */
-
 import * as types from '../mutation-types';
 import {unionState} from '../helpers';
 
@@ -45,7 +40,7 @@ const actions = {
 			return response;
 		});
 	},
-	
+
 	fetch: ({commit}, {id}) => {
 		return axios.get('/api/bots/' + id).then(response => {
 			commit(types.STORE_BOT, response.data);
@@ -94,7 +89,7 @@ const actions = {
 
 	delete: ({commit}, {id}) => {
 		return axios.delete(`/api/bots/${id}`).then(response => {
-			commit(types.DELETE_BOT, id);	
+			commit(types.DELETE_BOT, id);
 		});
 	}
 };
@@ -123,7 +118,7 @@ const mutations = {
 		const bot = state.bots.find(bot => bot.id === id);
 		++bot.upvotes;
 		bot.upvote_lock = true;
-		
+
 		state.bots = unionState(state.bots, [bot], 'id', 'id');
 	},
 

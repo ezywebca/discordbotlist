@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="card">
 		<router-link :to="{name: 'view-bot', params: {id: bot.id}}">
@@ -66,123 +60,140 @@
 </template>
 
 <style scoped>
-	.verification-badge, .availability-badge {
-		vertical-align: middle;
-		font-size: 18px;
-	}
+.verification-badge,
+.availability-badge {
+	vertical-align: middle;
+	font-size: 18px;
+}
 
-	.verification-badge {
-		color: #e0cf37;
-	}
+.verification-badge {
+	color: #e0cf37;
+}
 
-	.availability-badge {
-		color: #747f8d;
-	}
+.availability-badge {
+	color: #747f8d;
+}
 
-	.online {
-		color: #43b581;
-	}
+.online {
+	color: #43b581;
+}
 
-	.bot-image-container {
-		overflow: hidden;
-		padding-bottom: 100%;
-		position: relative;
-	}
+.bot-image-container {
+	overflow: hidden;
+	padding-bottom: 100%;
+	position: relative;
+}
 
-	.bot-image-container img {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-	}
+.bot-image-container img {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
 
-	.bot-image.nsfw {
-		filter: grayscale(1) blur(15px);
-		transition: filter 0.5s;
-	}
+.bot-image.nsfw {
+	filter: grayscale(1) blur(15px);
+	transition: filter 0.5s;
+}
 
-	.bot-image.nsfw:hover {
-		filter: none;
-		transition: filter 1.25s;
-	}
+.bot-image.nsfw:hover {
+	filter: none;
+	transition: filter 1.25s;
+}
 </style>
 
 
 <script>
-	import moment from 'moment-mini';
-	import {getAvatar, formatNumber, extractError} from '../helpers';
+import moment from "moment-mini";
+import { getAvatar, formatNumber, extractError } from "../helpers";
 
-	export default {
-		props: {
-			bot: {
-				type: Object,
-				required: true,
-			},
-
-			overrideInvitation: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
+export default {
+	props: {
+		bot: {
+			type: Object,
+			required: true,
 		},
 
-		data() {
-			return {
-				approving: false,
-				approved: false,
-
-				denying: false,
-				denied: false,
-
-				addedToTesting: false,
-			};
+		overrideInvitation: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
+	},
 
-		methods: {
-			approve() {
-				axios.post(`/api/bots/disapproved/${this.bot.id}/approve`).then(response => {
+	data() {
+		return {
+			approving: false,
+			approved: false,
+
+			denying: false,
+			denied: false,
+
+			addedToTesting: false,
+		};
+	},
+
+	methods: {
+		approve() {
+			axios
+				.post(`/api/bots/disapproved/${this.bot.id}/approve`)
+				.then((response) => {
 					this.approved = true;
 					this.approving = false;
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
 					this.approving = false;
 				});
 
-				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.client_id}&scope=bot&guild_id=450100127256936458`);
-			},
+			window.open(
+				`https://discordapp.com/oauth2/authorize?client_id=${
+					this.bot.client_id
+				}&scope=bot&guild_id=450100127256936458`
+			);
+		},
 
-			deny() {
-				this.denying = true;
+		deny() {
+			this.denying = true;
 
-				const reason = prompt('Reason for denial:');
+			const reason = prompt("Reason for denial:");
 
-				if (!reason) {
-					this.$vueOnToast.pop('error', 'You need to provide a reason when denying a bot');
-					this.denying = false;
-					return;
-				}
+			if (!reason) {
+				this.$vueOnToast.pop(
+					"error",
+					"You need to provide a reason when denying a bot"
+				);
+				this.denying = false;
+				return;
+			}
 
-				axios.post(`/api/bots/disapproved/${this.bot.id}/deny`, {
+			axios
+				.post(`/api/bots/disapproved/${this.bot.id}/deny`, {
 					reason,
-				}).then(response => {
+				})
+				.then((response) => {
 					this.denied = true;
 					this.denying = false;
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
 					this.denying = false;
 				});
-			},
-
-			test() {
-				window.open(`https://discordapp.com/oauth2/authorize?client_id=${this.bot.client_id}&scope=bot&guild_id=530821081485803571`);
-				this.addedToTesting = true;
-			},
-
-			moment: moment.utc,
-			getAvatar,
-			formatNumber,
 		},
-	};
-</script>
 
+		test() {
+			window.open(
+				`https://discordapp.com/oauth2/authorize?client_id=${
+					this.bot.client_id
+				}&scope=bot&guild_id=530821081485803571`
+			);
+			this.addedToTesting = true;
+		},
+
+		moment: moment.utc,
+		getAvatar,
+		formatNumber,
+	},
+};
+</script>

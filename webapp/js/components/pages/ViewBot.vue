@@ -1,9 +1,3 @@
-<!--
-	Copyright (C) 2018 Yousef Sultan <yousef.su.2000@gmail.com> - All Rights Reserved.
-	This document is proprietary and confidential.
-	Unauthorized copying of this file, via any medium, in whole or in part, is strictly prohibited.
--->
-
 <template>
 	<div class="container">
 		<div class="expanded row d-none d-md-flex d-lg-flex d-xl-flex">
@@ -184,199 +178,249 @@
 </template>
 
 <style scoped>
-	.bot-image-container {
-		overflow: hidden;
-	}
+.bot-image-container {
+	overflow: hidden;
+}
 
-	.bot-image {
-		width: 100%;
-		border-radius: 5px;
-		background: #202225;
-	}
+.bot-image {
+	width: 100%;
+	border-radius: 5px;
+	background: #202225;
+}
 
-	.bot-image.nsfw {
-		filter: grayscale(1) blur(15px);
-		transition: filter 0.5s;
-	}
+.bot-image.nsfw {
+	filter: grayscale(1) blur(15px);
+	transition: filter 0.5s;
+}
 
-	.bot-image.nsfw:hover {
-		filter: none;
-		transition: filter 1.25s;
-	}
+.bot-image.nsfw:hover {
+	filter: none;
+	transition: filter 1.25s;
+}
 
-	.links > * {
-		display: block;
-	}
+.links > * {
+	display: block;
+}
 
-	.links {
-		display: inline-block;
-	}
+.links {
+	display: inline-block;
+}
 
-	.verification-badge, .availability-badge {
-		vertical-align: middle;
-		font-size: 18px;
-	}
+.verification-badge,
+.availability-badge {
+	vertical-align: middle;
+	font-size: 18px;
+}
 
-	.verification-badge {
-		color: #e0cf37;
-	}
+.verification-badge {
+	color: #e0cf37;
+}
 
-	.availability-badge {
-		color: #747f8d;
-	}
+.availability-badge {
+	color: #747f8d;
+}
 
-	.online {
-		color: #43b581;
-	}
+.online {
+	color: #43b581;
+}
 
-	.description >>> img {
-		max-width: 100%;
-	}
+.description >>> img {
+	max-width: 100%;
+}
 </style>
 
 
 <script>
-	import moment from 'moment-mini';
-	import marked from 'marked';
-	import {mapGetters, mapState} from 'vuex';
-	import {extractError, generateRandomString, formatNumber, getAvatar, highlightCode, sanitizeTag} from '../../helpers';
+import moment from "moment-mini";
+import marked from "marked";
+import { mapGetters, mapState } from "vuex";
+import {
+	extractError,
+	generateRandomString,
+	formatNumber,
+	getAvatar,
+	highlightCode,
+	sanitizeTag,
+} from "../../helpers";
 
-	export default {
-		asyncData(store, route) {
-			return new Promise((resolve, reject) => {
-				store.dispatch('bots/fetch', {id: route.params.id})
-					.then(resolve)
-					.catch(error => {
-						if (error.response && error.response.status === 404)
-							reject({ status: 404 });
-						else
-							reject(error);
+export default {
+	asyncData(store, route) {
+		return new Promise((resolve, reject) => {
+			store
+				.dispatch("bots/fetch", { id: route.params.id })
+				.then(resolve)
+				.catch((error) => {
+					if (error.response && error.response.status === 404)
+						reject({ status: 404 });
+					else reject(error);
 				});
-			});
-		},
+		});
+	},
 
-		data() {
-			return {
-				verifyingDeletion: false,
-				verifyingTokenGeneration: false,
-				botToken: '',
-			};
-		},
+	data() {
+		return {
+			verifyingDeletion: false,
+			verifyingTokenGeneration: false,
+			botToken: "",
+		};
+	},
 
-		methods: {
-			deleteBot: function() {
-				if (!this.verifyingDeletion) {
-					this.verifyingDeletion = true;
-				} else {
-					this.$router.push({name: 'my-bots'});
-					this.$store.dispatch('bots/delete', {id: this.$route.params.id}).catch(e => {
-						this.$vueOnToast.pop('error', extractError(e));
+	methods: {
+		deleteBot: function() {
+			if (!this.verifyingDeletion) {
+				this.verifyingDeletion = true;
+			} else {
+				this.$router.push({ name: "my-bots" });
+				this.$store
+					.dispatch("bots/delete", { id: this.$route.params.id })
+					.catch((e) => {
+						this.$vueOnToast.pop("error", extractError(e));
 					});
-				}
-			},
-
-			upvote: function() {
-				if (!this.isAuthenticated) {
-					const state = generateRandomString(32);
-
-					localStorage.setItem('discord_oauth_state', state);
-					localStorage.setItem('auth_return_url', JSON.stringify({
-						name: this.$route.name,
-						params: this.$route.params,
-						query: this.$route.query,
-					}));
-
-					setTimeout(() => {window.location = this.discordOAuthURL + '&state=' + state;}, 150);
-				} else {
-					this.$store.dispatch('bots/upvote', {id: this.$route.params.id}).catch(e => {
-						this.$vueOnToast.pop('error', extractError(e));
-					});
-				}
-			},
-
-			refreshBot: function() {
-				axios.post(`/api/bots/${this.$route.params.id}/refresh`).then(response => {
-					this.$router.go();
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			generateToken: function() {
-				if (!this.verifyingTokenGeneration)
-					return this.verifyingTokenGeneration = true;
-
-				axios.get(`/api/bots/${this.$route.params.id}/token`).then(response => {
-					this.botToken = response.data.token;
-				}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			verifyBot: function() {
-				this.$store.dispatch('bots/verify', {id: this.$route.params.id}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			unverifyBot: function() {
-				this.$store.dispatch('bots/unverify', {id: this.$route.params.id}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			setNSFW: function() {
-				this.$store.dispatch('bots/setNSFW', {id: this.$route.params.id}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			unsetNSFW: function() {
-				this.$store.dispatch('bots/unsetNSFW', {id: this.$route.params.id}).catch(e => {
-					this.$vueOnToast.pop('error', extractError(e));
-				});
-			},
-
-			moment: moment.utc,
-			marked,
-			formatNumber,
-			getAvatar,
-			sanitizeTag,
-		},
-
-		computed: {
-			...mapState('auth', {
-				discordOAuthURL: state => state.discordOAuthURL,
-				isAdmin: state => state.admin,
-				currentUserId: state => state.id,
-
-			}),
-			...mapGetters({
-				getBotById: 'bots/getBotById',
-				isAuthenticated: 'auth/isAuthenticated'
-			}),
-
-			bot: function() {
-				return this.getBotById(this.$route.params.id);
 			}
 		},
 
-		mounted: function() {
-			highlightCode();
-			document.querySelectorAll('.description table').forEach(table => table.classList.add('table'));
+		upvote: function() {
+			if (!this.isAuthenticated) {
+				const state = generateRandomString(32);
+
+				localStorage.setItem("discord_oauth_state", state);
+				localStorage.setItem(
+					"auth_return_url",
+					JSON.stringify({
+						name: this.$route.name,
+						params: this.$route.params,
+						query: this.$route.query,
+					})
+				);
+
+				setTimeout(() => {
+					window.location = this.discordOAuthURL + "&state=" + state;
+				}, 150);
+			} else {
+				this.$store
+					.dispatch("bots/upvote", { id: this.$route.params.id })
+					.catch((e) => {
+						this.$vueOnToast.pop("error", extractError(e));
+					});
+			}
 		},
 
-		meta: function() {
-			return {
-				title: this.bot.username || 'View bot',
-
-				meta: [
-					{name: 'og:image', content: getAvatar(this.bot), vmid: 'og:image'},
-					{name: 'description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
-					{property: 'og:title', content: (this.bot.username || 'View bot') + ' / Discord Bots'},
-					{property: 'og:description', content: this.bot.short_description || 'View a bot on Discord Bot List'},
-				],
-			};
+		refreshBot: function() {
+			axios
+				.post(`/api/bots/${this.$route.params.id}/refresh`)
+				.then((response) => {
+					this.$router.go();
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
 		},
-	};
+
+		generateToken: function() {
+			if (!this.verifyingTokenGeneration)
+				return (this.verifyingTokenGeneration = true);
+
+			axios
+				.get(`/api/bots/${this.$route.params.id}/token`)
+				.then((response) => {
+					this.botToken = response.data.token;
+				})
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
+		},
+
+		verifyBot: function() {
+			this.$store
+				.dispatch("bots/verify", { id: this.$route.params.id })
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
+		},
+
+		unverifyBot: function() {
+			this.$store
+				.dispatch("bots/unverify", { id: this.$route.params.id })
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
+		},
+
+		setNSFW: function() {
+			this.$store
+				.dispatch("bots/setNSFW", { id: this.$route.params.id })
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
+		},
+
+		unsetNSFW: function() {
+			this.$store
+				.dispatch("bots/unsetNSFW", { id: this.$route.params.id })
+				.catch((e) => {
+					this.$vueOnToast.pop("error", extractError(e));
+				});
+		},
+
+		moment: moment.utc,
+		marked,
+		formatNumber,
+		getAvatar,
+		sanitizeTag,
+	},
+
+	computed: {
+		...mapState("auth", {
+			discordOAuthURL: (state) => state.discordOAuthURL,
+			isAdmin: (state) => state.admin,
+			currentUserId: (state) => state.id,
+		}),
+		...mapGetters({
+			getBotById: "bots/getBotById",
+			isAuthenticated: "auth/isAuthenticated",
+		}),
+
+		bot: function() {
+			return this.getBotById(this.$route.params.id);
+		},
+	},
+
+	mounted: function() {
+		highlightCode();
+		document
+			.querySelectorAll(".description table")
+			.forEach((table) => table.classList.add("table"));
+	},
+
+	meta: function() {
+		return {
+			title: this.bot.username || "View bot",
+
+			meta: [
+				{
+					name: "og:image",
+					content: getAvatar(this.bot),
+					vmid: "og:image",
+				},
+				{
+					name: "description",
+					content:
+						this.bot.short_description ||
+						"View a bot on Discord Bot List",
+				},
+				{
+					property: "og:title",
+					content:
+						(this.bot.username || "View bot") + " / Discord Bots",
+				},
+				{
+					property: "og:description",
+					content:
+						this.bot.short_description ||
+						"View a bot on Discord Bot List",
+				},
+			],
+		};
+	},
+};
 </script>
